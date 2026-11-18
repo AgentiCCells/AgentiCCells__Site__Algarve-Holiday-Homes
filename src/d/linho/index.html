@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Linho: five houses at the edge of Europe (made-up example) | Cinco Chaminés</title>
+<meta name="description" content="Design 3 of 5 of a made-up example site: the five invented Algarve holiday homes of Cinco Chaminés as a quiet boutique-hotel page, one large AI-generated picture per home, with simulated availability, invented prices and IPMA's real weather read live.">
+<meta name="share-image" content="/assets/share/d-linho.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/d/linho/style.css">
+<script type="module" src="/d/linho/linho.js"></script>
+</head>
+<body class="d-linho" data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
+<!--HEADER-->
+<main id="main" class="ln">
+<div class="ln-wx" aria-labelledby="ln-wx-h">
+<h2 id="ln-wx-h" class="sr-only">The coast today, read live from IPMA</h2>
+<p class="ln-wx-line" id="ln-wx-line"><span>Reading IPMA's figures for the coast...</span></p>
+<details class="ln-wx-src" id="ln-wx-src">
+<summary>Sources and read times</summary>
+<div id="ln-wx-srcs"><p class="ln-wait">Waiting for the files...</p></div>
+</details>
+<noscript><p class="fail">The live figures need JavaScript: this page reads them in your browser from data.promptugal.news. See <a href="https://www.ipma.pt/en/">ipma.pt</a> directly.</p></noscript>
+</div>
+
+<section class="ln-hero" aria-labelledby="ln-h1">
+<img src="/assets/img/cape-hero-1264.jpg" srcset="/assets/img/cape-hero-800.jpg 800w, /assets/img/cape-hero-1264.jpg 1264w" sizes="100vw" width="1264" height="843" alt="AI-generated picture of the invented Cape House: a long, low white house with thick walls on a windy clifftop, a surfboard by the outdoor shower, big Atlantic waves behind." fetchpriority="high" decoding="async">
+<div class="ln-hero-text">
+<p class="ln-caps">Five invented homes, one coast</p>
+<h1 id="ln-h1">Five houses at the edge of Europe</h1>
+</div>
+<p class="ln-chip">AI-generated picture of an invented house, not a photograph</p>
+</section>
+
+<section class="ln-intro" aria-labelledby="ln-intro-h">
+<p class="ln-caps">A made-up example</p>
+<h2 id="ln-intro-h">Stay a while</h2>
+<p>From the salt pans of Tavira to the cliffs at Sagres, five quiet houses, each with one white chimney. They are invented, as are their prices and their free nights. The weather beside them is real, read from IPMA as you open the page.</p>
+<form class="ln-plan" id="ln-plan" aria-label="Your dates" autocomplete="off" novalidate>
+<label>Arrive <input type="date" name="arrive" required></label>
+<label>Leave <input type="date" name="leave" required></label>
+<button type="submit" class="ln-btn">See the houses for these dates</button>
+<p class="ln-msg" data-msg role="status" aria-live="polite"></p>
+</form>
+<p class="ln-fine">Availability is simulated and prices are invented. Your dates stay in this tab and the page address; nothing is sent.</p>
+<p class="ln-also">One of five designs of the same made-up example. <a href="/d/">All designs</a> <span aria-hidden="true">·</span> <a href="/">Main site</a></p>
+</section>
+
+<section class="ln-homes" aria-labelledby="ln-homes-h">
+<h2 id="ln-homes-h" class="sr-only">The five houses</h2>
+<div id="ln-panels">
+<ul class="ln-fallback">
+<li><a href="/homes/salt/">The Salt House, Tavira</a></li>
+<li><a href="/homes/lagoon/">The Lagoon House, Faro</a></li>
+<li><a href="/homes/hill/">The Hill House, near Loulé</a></li>
+<li><a href="/homes/harbour/">The Harbour House, Lagos</a></li>
+<li><a href="/homes/cape/">The Cape House, Sagres</a></li>
+</ul>
+</div>
+</section>
+
+<section class="ln-row" aria-labelledby="ln-row-h">
+<h2 id="ln-row-h" class="ln-caps">The Algarve around them</h2>
+<div class="ln-row-pics">
+<figure><img src="/assets/img/algarve-market-800.jpg" srcset="/assets/img/algarve-market-800.jpg 800w, /assets/img/algarve-market-1264.jpg 1264w" sizes="(min-width: 900px) 33vw, 100vw" width="800" height="533" alt="AI-generated picture of a market stall: crates of oranges, sacks of almonds, dried figs and carob pods." loading="lazy" decoding="async"><figcaption>The market. AI-generated picture of the Algarve, not a photograph.</figcaption></figure>
+<figure><img src="/assets/img/algarve-street-800.jpg" srcset="/assets/img/algarve-street-800.jpg 800w, /assets/img/algarve-street-1264.jpg 1264w" sizes="(min-width: 900px) 33vw, 100vw" width="800" height="533" alt="AI-generated picture of a quiet whitewashed street with blue and ochre trims, cobbles, bougainvillea and one lattice chimney." loading="lazy" decoding="async"><figcaption>The old town. AI-generated picture of the Algarve, not a photograph.</figcaption></figure>
+<figure><img src="/assets/img/algarve-dawn-800.jpg" srcset="/assets/img/algarve-dawn-800.jpg 800w, /assets/img/algarve-dawn-1264.jpg 1264w" sizes="(min-width: 900px) 33vw, 100vw" width="800" height="533" alt="AI-generated picture of an empty beach at dawn, pink sky reflected in wet sand, cliffs to one side and a few seabirds." loading="lazy" decoding="async"><figcaption>The beach at dawn. AI-generated picture of the Algarve, not a photograph.</figcaption></figure>
+</div>
+</section>
+
+<section class="ln-on" aria-labelledby="ln-on-h">
+<h2 id="ln-on-h" class="ln-caps">This week on the coast</h2>
+<div id="ln-on" class="ln-on-cols"><p class="ln-wait" role="status">Reading the town agendas...</p></div>
+</section>
+
+<aside class="ln-note" aria-labelledby="ln-note-h">
+<h2 id="ln-note-h" class="ln-caps">A made-up example</h2>
+<p>Cinco Chaminés is an invented company, and this is not a real hotel. The houses, prices and free nights are made up, and every picture is AI-generated. Nothing can be booked here.</p>
+</aside>
+</main>
+<!--FOOTER-->
+</body>
+</html>

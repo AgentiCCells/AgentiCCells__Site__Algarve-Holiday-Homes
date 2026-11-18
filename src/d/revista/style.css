@@ -1,0 +1,139 @@
+/* Revista: design 1 of 5 for the made-up example site Cinco Chaminés, a calm travel-magazine
+   issue (team/rounds/2/design/PROPOSAL.md, section 3.1). Light only in this round: the page sets
+   its own palette on body.d-revista, so the shared header, band and footer follow it in dark mode
+   too. System font stacks only, nothing from another host. Code Apache-2.0.
+   developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2. */
+html:has(body.d-revista){background:#FAF8F3;color-scheme:light}
+body.d-revista{
+  --paper:#FAF8F3;--rv-ink:#1C1B19;--rv-ink-2:#5C5850;--rv-accent:#8E3A1E;--column:#F0ECE3;--rule:#1C1B19;--rv-band:#EFE3C2;--rv-warn:#FFF1B8;
+  --display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua","URW Palladio L",Caladea,Georgia,serif;
+  --text:Charter,"Bitstream Charter","Sitka Text",Cambria,Caladea,Georgia,serif;
+  --label:"Avenir Next","Segoe UI",Inter,"Helvetica Neue",Arial,sans-serif;
+  /* the site's tokens, set light for this page (header, band, footer, dock) */
+  --bg:var(--paper);--surface:#FFFFFF;--ink:var(--rv-ink);--ink-2:var(--rv-ink-2);--line:#D8D1C3;--accent:var(--rv-accent);--on-accent:#FFFFFF;
+  --sea:var(--rv-ink);--band-bg:var(--rv-band);--band-ink:var(--rv-ink);--wall:#FFFFFF;--roof:var(--rv-accent);
+  color-scheme:light;background:var(--paper);color:var(--rv-ink);font:17px/1.6 var(--text)}
+body.d-revista a{color:var(--rv-accent)}
+body.d-revista :focus-visible{outline:3px solid var(--rv-ink);outline-offset:2px}
+body.d-revista img{display:block;width:100%;height:auto;background:var(--column)}
+
+/* the band: a printed notice, small caps label, ruled underneath */
+body.d-revista .band{background:var(--rv-band);color:var(--rv-ink);font:14px/1.5 var(--label);border-bottom:1px solid var(--rule);padding:8px 16px}
+body.d-revista .band strong{letter-spacing:.14em;text-transform:uppercase;font-size:.86em;margin-right:.4em}
+body.d-revista .band a{color:var(--rv-accent)}
+
+/* the site header becomes a slim strap above the masthead */
+body.d-revista .site-head{border-bottom:1px solid var(--line)}
+body.d-revista .site-head .bar{max-width:74rem;padding:8px 24px}
+body.d-revista .brand{font:600 13px/1.3 var(--label);letter-spacing:.12em;text-transform:uppercase}
+body.d-revista .brand small{letter-spacing:.04em;text-transform:none;font-weight:400}
+body.d-revista .nav ul{font:500 12.5px var(--label);letter-spacing:.1em;text-transform:uppercase;gap:20px}
+body.d-revista .menu{font:600 12px var(--label);letter-spacing:.1em;text-transform:uppercase;border-radius:0;border-color:var(--rv-ink)}
+body.d-revista .nav a[aria-current]{border-bottom-color:var(--rv-accent)}
+
+main.rv{max-width:74rem;margin:0 auto;padding:0 24px 48px}
+.rv-also{font:13px/1.5 var(--label);color:var(--rv-ink-2);text-align:center;margin:12px 0 0}
+.rv-label,.rv-kicker{font:600 13px/1.4 var(--label);letter-spacing:.12em;text-transform:uppercase;margin:0}
+.rv-kicker{color:var(--rv-accent);margin:22px 0 10px}
+.rv-live{font:600 11px var(--label);letter-spacing:.1em;text-transform:uppercase;color:var(--rv-ink);background:var(--rv-warn);padding:1px 6px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+
+/* masthead */
+.rv-mast{text-align:center;padding-top:18px}
+.rv-title{font:400 64px/1.05 var(--display);letter-spacing:.01em;margin:8px 0 6px}
+.rv-strap{font-style:italic;color:var(--rv-ink-2);margin:0 0 18px}
+.rv-dateline{display:flex;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;border-top:3px double var(--rule);border-bottom:1px solid var(--rule);padding:7px 0;font:500 13px/1.4 var(--label);letter-spacing:.1em;text-transform:uppercase}
+.rv-contents ul{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 28px;list-style:none;margin:0;padding:9px 0;border-bottom:1px solid var(--rule)}
+.rv-contents a{font:500 13px/1.6 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--rv-ink);text-decoration:none}
+.rv-contents a:hover{text-decoration:underline}
+
+/* cover */
+.rv-cover{display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);gap:32px;margin-top:30px;padding-bottom:36px;border-bottom:1px solid var(--rule)}
+.rv-fig{margin:0}
+.rv-fig figcaption{font:12.5px/1.45 var(--label);color:var(--rv-ink-2);margin-top:6px}
+.rv-h1{font:400 52px/1.08 var(--display);margin:0 0 14px;letter-spacing:-.005em}
+.rv-standfirst{font-style:italic;font-size:19px;line-height:1.55;color:var(--rv-ink-2);margin:0 0 14px}
+.rv-side>*+*{margin-top:26px}
+.rv-cond{background:var(--column);border-top:3px solid var(--rule);padding:16px 18px 14px}
+.rv-table{width:100%;border-collapse:collapse;margin:10px 0 12px;font:15px/1.4 var(--label)}
+.rv-table th{text-align:left;font-weight:400;padding:7px 0;border-bottom:1px solid #D2CBBC}
+.rv-table td{text-align:right;font-weight:600;padding:7px 0;border-bottom:1px solid #D2CBBC}
+.rv-na{font-weight:400;font-style:italic;color:var(--rv-ink-2)}
+.rv-warn{font:14px/1.45 var(--label);background:var(--rv-warn);border-left:4px solid var(--rv-ink);padding:8px 10px;margin:0 0 10px}
+.rv-warn-orange{background:#FFD9B0}.rv-warn-red{background:#F8C9C2}
+.rv-warn-none{background:transparent;border-left-color:#B8B0A0}
+body.d-revista .src{font:italic 12.5px/1.5 var(--text);color:var(--rv-ink-2);margin:6px 0 0}
+body.d-revista .src code{font-size:1em;font-family:inherit}
+body.d-revista .src.is-error strong,body.d-revista .src .stale{color:#7A2A10}
+.fail{font:14px/1.5 var(--label);background:#FBEDE6;border-left:4px solid var(--rv-accent);padding:8px 10px;margin:8px 0}
+.retry,.rv-btn{font:600 13px var(--label);letter-spacing:.1em;text-transform:uppercase;background:var(--rv-ink);color:var(--paper);border:0;padding:10px 16px;cursor:pointer}
+.retry{padding:4px 10px;margin-left:6px;font-size:12px}
+.rv-wait{font:italic 15px var(--text);color:var(--rv-ink-2)}
+.rv-plan{border-top:1px solid var(--rule);padding-top:12px}
+.rv-plan-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.rv-plan label{display:block;font:600 12px var(--label);letter-spacing:.1em;text-transform:uppercase}
+.rv-plan input{display:block;width:100%;margin-top:4px;font:15px var(--label);color:var(--rv-ink);background:#fff;border:1px solid var(--rv-ink-2);border-radius:0;padding:8px}
+.rv-msg{font:13px/1.45 var(--label);margin:8px 0 0}.rv-msg.bad{color:#7A2A10;font-weight:600}
+.rv-fine{font:12.5px/1.45 var(--label);color:var(--rv-ink-2);margin:6px 0 0}
+.rv-issue ol{list-style:none;margin:8px 0 0;padding:0;border-top:1px solid var(--rule);counter-reset:i}
+.rv-issue li{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-bottom:1px dotted #B8B0A0;padding:7px 0}
+.rv-issue li a{color:var(--rv-ink);text-decoration:none;font-size:16px}.rv-issue li a:hover{text-decoration:underline}
+.rv-issue li span{font:13px var(--label);color:var(--rv-ink-2);white-space:nowrap}
+
+/* features */
+.rv-section{font:400 34px/1.15 var(--display);margin:40px 0 6px;padding-top:10px;border-top:3px double var(--rule)}
+.rv-section span:not(.rv-live){display:block;font:italic 16px/1.5 var(--text);color:var(--rv-ink-2);margin-top:4px}
+.rv-feature{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:36px;padding:34px 0;border-bottom:1px solid var(--rule)}
+.rv-feature.flip .rv-feature-pics{order:2}
+.rv-feature-text .rv-kicker{margin-top:4px}
+.rv-h2{font:400 40px/1.1 var(--display);margin:0 0 10px}
+.rv-h2 a{color:var(--rv-ink);text-decoration:none}.rv-h2 a:hover{text-decoration:underline;text-decoration-thickness:1px}
+.rv-facts{display:flex;flex-wrap:wrap;gap:4px 22px;font:500 13px/1.5 var(--label);letter-spacing:.1em;text-transform:uppercase;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:7px 0;margin:14px 0}
+.rv-body::first-letter{float:left;font:400 66px/.8 var(--display);color:var(--rv-accent);padding:6px 8px 0 0}
+.rv-avail{font:14px/1.5 var(--label);margin:14px 0 6px;padding:8px 0;border-top:1px dotted #B8B0A0}
+.rv-avail-k{display:inline-block;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:12px;padding:1px 7px;margin-right:6px;border:1px solid currentColor}
+.rv-avail.is-free .rv-avail-k{background:var(--rv-ink);color:var(--paper);border-color:var(--rv-ink)}
+.rv-avail.is-taken{color:var(--rv-ink-2)}.rv-avail.is-taken .rv-avail-k{text-decoration:line-through}
+.rv-readon a{font:600 13px/1.5 var(--label);letter-spacing:.08em;text-transform:uppercase}
+.rv-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+
+/* week and events */
+.rv-deck{font-style:italic;color:var(--rv-ink-2);margin:0 0 14px}
+.rv-scroll{overflow-x:auto}
+.rv-wtable{width:100%;min-width:640px;border-collapse:collapse;font:14px/1.4 var(--label)}
+.rv-wtable th,.rv-wtable td{text-align:left;vertical-align:top;padding:9px 10px 9px 0;border-bottom:1px solid #D2CBBC}
+.rv-wtable thead th{font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--rule)}
+.rv-wtable tbody th{font:400 18px/1.3 var(--display)}
+.rv-wtable small{display:block;font:12.5px/1.4 var(--label);color:var(--rv-ink-2)}
+.rv-on-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.rv-on-col{border-top:1px solid var(--rule);padding-top:10px}
+.rv-on-col>.rv-label{margin-bottom:8px}
+.rv-ev{list-style:none;margin:0;padding:0}
+.rv-ev li{padding:8px 0;border-bottom:1px dotted #B8B0A0;font-size:16px;line-height:1.45}
+.rv-ev a{color:var(--rv-ink)}
+.ev-d{display:block;font:600 12px var(--label);letter-spacing:.1em;text-transform:uppercase;color:var(--rv-accent)}
+.ev-v{font-style:italic}.ev-s{font:12.5px var(--label);color:var(--rv-ink-2)}
+.rv-colophon{margin-top:44px;background:var(--rv-band);border-top:3px double var(--rule);border-bottom:1px solid var(--rule);padding:16px 20px}
+.rv-colophon p{margin:8px 0 0;font-size:15.5px}
+
+/* footer and dock in the magazine's colours */
+body.d-revista .site-foot{background:var(--column);border-top:3px double var(--rule);color:var(--rv-ink-2);font-family:var(--label)}
+body.d-revista .site-foot a{color:var(--rv-ink)}
+body.d-revista .dock{background:var(--rv-ink);color:var(--paper);font-family:var(--label)}
+body.d-revista .dock svg{--wall:var(--paper);--ink:var(--paper);--roof:var(--paper)}
+body.d-revista .dock:focus-visible{outline-color:var(--rv-accent)}
+
+@media (max-width:900px){
+  .rv-cover,.rv-feature{grid-template-columns:minmax(0,1fr);gap:18px}
+  .rv-feature.flip .rv-feature-pics{order:0}
+  .rv-on-cols{grid-template-columns:minmax(0,1fr);gap:18px}
+  .rv-h1{font-size:36px}.rv-h2{font-size:32px}.rv-title{font-size:48px}
+}
+@media (max-width:600px){
+  main.rv{padding:0 16px 40px}
+  body.d-revista .site-head .bar{padding:8px 16px}
+  .rv-title{font-size:40px}.rv-h1{font-size:31px}.rv-section{font-size:28px}
+  .rv-dateline{justify-content:center;text-align:center;font-size:12px}
+  .rv-contents ul{gap:2px 16px}
+  .rv-pair{gap:10px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}

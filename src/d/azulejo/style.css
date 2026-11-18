@@ -1,0 +1,132 @@
+/* Azulejo: design 2 of 5 for the made-up example site Cinco Chaminés, blue and white tiles
+   (team/rounds/2/design/PROPOSAL.md, section 3.2). The 48 x 48 tile is drawn by the team (corner
+   quarter circles, a four-point star, a centre dot, joining strokes), as an SVG data URI, CC BY 4.0;
+   it copies no real tile. Light only in this round: the page sets its own palette on body.d-azulejo,
+   so the shared header, band and footer follow it in dark mode too. System fonts only.
+   Code Apache-2.0. developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2. */
+html:has(body.d-azulejo){background:#F6F8FC;color-scheme:light}
+body.d-azulejo{
+  --az-bg:#F6F8FC;--az-tile:#FFFFFF;--az-ink:#14306E;--az-ink-2:#3D4F75;--cobalt:#1F4FA3;--on-cobalt:#FFFFFF;--az-band:#DCE6F7;--ochre:#7A4A00;--az-line:#B9C8E6;--az-warn:#FFF4C2;
+  --head:Optima,Candara,"Gill Sans","Gill Sans MT","Noto Sans","Segoe UI",Carlito,sans-serif;
+  --text:"Gill Sans","Gill Sans MT",Calibri,Carlito,"Segoe UI",system-ui,sans-serif;
+  --tilebg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23fff'/%3E%3Cg fill='%231F4FA3'%3E%3Cpath d='M0 0h12a12 12 0 0 1-12 12zM48 0v12a12 12 0 0 1-12-12zM0 48v-12a12 12 0 0 1 12 12zM48 48h-12a12 12 0 0 1 12-12z'/%3E%3Cpath d='M24 8l4 12 12 4-12 4-4 12-4-12-12-4 12-4z'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='3' fill='%23fff'/%3E%3Cpath d='M24 0v5M24 43v5M0 24h5M43 24h5' stroke='%231F4FA3' stroke-width='2'/%3E%3C/svg%3E");
+  --bg:var(--az-bg);--surface:#FFFFFF;--ink:var(--az-ink);--ink-2:var(--az-ink-2);--line:var(--az-line);--accent:var(--cobalt);--on-accent:#FFFFFF;
+  --sea:var(--cobalt);--band-bg:var(--az-band);--band-ink:var(--az-ink);--wall:#FFFFFF;--roof:var(--cobalt);
+  color-scheme:light;background:var(--az-bg);color:var(--az-ink);font:17px/1.55 var(--text)}
+body.d-azulejo a{color:var(--cobalt)}
+body.d-azulejo :focus-visible{outline:3px solid var(--az-ink);outline-offset:2px}
+body.d-azulejo img{display:block;width:100%;height:auto;background:var(--az-band)}
+
+/* band, then a strip of tiles */
+body.d-azulejo .band{background:var(--az-band);color:var(--az-ink);font:14px/1.5 var(--text);border-bottom:2px solid var(--cobalt)}
+body.d-azulejo .band a{color:var(--cobalt)}
+body.d-azulejo .site-head::before{content:"";display:block;height:32px;background:var(--tilebg) 0 0/32px 32px}
+body.d-azulejo .site-head .bar{max-width:76rem;padding:16px 28px}
+body.d-azulejo .brand{font:600 22px/1.2 var(--head);letter-spacing:.05em;text-transform:uppercase;color:var(--az-ink)}
+body.d-azulejo .brand::before{content:"";flex:none;width:44px;height:44px;background:var(--tilebg) 0 0/44px 44px;border:2px solid var(--cobalt)}
+body.d-azulejo .brand svg{display:none}
+body.d-azulejo .brand small{font:400 13px var(--text);letter-spacing:0;text-transform:none;color:var(--az-ink-2)}
+body.d-azulejo .nav ul{font:600 13.5px var(--head);letter-spacing:.08em;text-transform:uppercase;gap:22px}
+body.d-azulejo .nav a[aria-current]{border-bottom-color:var(--cobalt)}
+body.d-azulejo .menu{font:600 13px var(--head);letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--cobalt);border-radius:0;color:var(--az-ink)}
+
+main.az{max-width:76rem;margin:0 auto;padding:0 28px 48px}
+.az-also{font-size:14px;color:var(--az-ink-2);margin:0 0 14px}
+.az h2{font:600 30px/1.2 var(--head);letter-spacing:.02em;margin:48px 0 6px}
+.az-sub{color:var(--az-ink-2);margin:0 0 18px}
+.az-wait{font-style:italic;color:var(--az-ink-2)}
+
+/* hero: picture and cobalt panel inside a tile border */
+.az-hero{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);border:16px solid transparent;border-image:var(--tilebg) 16 round;background:var(--cobalt)}
+.az-hero-pic{position:relative;margin:0}
+.az-hero-pic img{height:100%;object-fit:cover}
+.az-hero-pic figcaption{position:absolute;left:10px;bottom:10px;background:rgba(10,24,60,.82);color:#fff;font-size:12.5px;padding:3px 8px}
+.az-panel{color:var(--on-cobalt);padding:36px 34px;display:flex;flex-direction:column;justify-content:center}
+.az-eyebrow{font:600 12.5px var(--head);letter-spacing:.14em;text-transform:uppercase;margin:0 0 10px}
+.az-panel h1{font:600 46px/1.1 var(--head);margin:0 0 14px;letter-spacing:.01em}
+.az-panel p{margin:0 0 18px;font-size:18px}
+.az-panel a{color:#fff}
+.az-panel :focus-visible{outline-color:#fff}
+.az-plan-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.az-plan label{font:600 12.5px var(--head);letter-spacing:.1em;text-transform:uppercase}
+.az-plan input{display:block;width:100%;margin-top:4px;font:16px var(--text);color:var(--az-ink);background:#fff;border:2px solid #fff;border-radius:0;padding:8px}
+.az-btn,.retry{font:700 15px var(--head);letter-spacing:.08em;text-transform:uppercase;background:#fff;color:var(--az-ink);border:2px solid #fff;padding:12px 18px;cursor:pointer}
+.az-panel .az-msg{font-size:15px;margin:10px 0 0}.az-msg.bad{font-weight:700;background:#fff;color:#7A1A1A;padding:4px 8px}
+.az-panel .az-fine{font-size:13.5px;margin:6px 0 0;opacity:1}
+
+/* figure tiles */
+.az-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:2px solid var(--cobalt);background:var(--cobalt);gap:2px}
+.az-tile{background:var(--az-tile);padding:18px 18px 16px;position:relative;min-width:0}
+.az-tile::before{content:"";position:absolute;right:0;top:0;width:28px;height:28px;background:var(--tilebg) 0 0/56px 56px}
+.az-k{font:600 12.5px var(--head);letter-spacing:.12em;text-transform:uppercase;color:var(--az-ink-2);margin:0 30px 0 0}
+.az-v{font:600 30px/1.15 var(--head);margin:6px 0 2px}
+.az-w{font-size:14.5px;margin:0}
+.az-tile.az-warn{background:var(--az-warn)}
+.az-tile.az-warn-orange{background:#FFDDB8}.az-tile.az-warn-red{background:#F9CFC9}
+.az-na{color:var(--az-ink-2);font-style:italic}
+.az-v.az-na{font-size:22px}
+body.d-azulejo .src{font-size:12.5px;line-height:1.5;color:var(--az-ink-2);margin:6px 0 0}
+body.d-azulejo .src.is-error strong,body.d-azulejo .src .stale{color:#7A1A1A}
+.az-srcs{margin-top:8px}
+.fail{background:#FDECEC;border-left:4px solid var(--cobalt);padding:8px 12px;font-size:15px}
+.retry{font-size:12px;padding:4px 10px;margin-left:6px;background:var(--cobalt);color:#fff;border-color:var(--cobalt)}
+
+/* homes: framed in tiles */
+.az-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;list-style:none;margin:0;padding:0}
+.az-home{background:var(--az-tile);border:2px solid var(--cobalt);min-width:0}
+.az-home.wide{grid-column:span 2}
+.az-frame{margin:0;padding:16px;background:var(--tilebg) 0 0/32px 32px;border-bottom:2px solid var(--cobalt)}
+.az-frame img{border:2px solid var(--cobalt)}
+.az-frame figcaption{background:var(--az-ink);color:#fff;font-size:12.5px;padding:3px 8px;margin-top:8px;display:inline-block}
+.az-home-body{padding:14px 18px 18px}
+.az-home h3{font:600 23px/1.25 var(--head);margin:0 0 6px}
+.az-home h3 a{color:var(--az-ink);text-decoration:none}.az-home h3 a:hover{text-decoration:underline}
+.az-home p{margin:0 0 8px}
+.az-meta{font-size:15px}
+.az-price{color:var(--ochre);font-weight:700}
+.az-avail{font-size:14.5px;padding:6px 10px;border:2px solid var(--cobalt)}
+.az-avail.is-free{background:var(--az-band)}
+.az-avail.is-taken{border-style:dashed;color:var(--az-ink-2)}
+.az-today{font-size:15px}
+
+/* events tiles */
+.az-on-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.az-on-tile{background:var(--az-tile);border:2px solid var(--cobalt);padding:16px 18px;position:relative;min-width:0}
+.az-on-tile::before{content:"";position:absolute;right:0;top:0;width:28px;height:28px;background:var(--tilebg) 0 0/56px 56px}
+.az-on-tile h3{font:600 15px var(--head);letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px}
+.az-ev{list-style:none;margin:0;padding:0}
+.az-ev li{padding:7px 0;border-bottom:1px solid var(--az-line);font-size:15.5px;line-height:1.4}
+.ev-d{display:block;font:600 12px var(--head);letter-spacing:.1em;text-transform:uppercase;color:var(--cobalt)}
+.ev-s{font-size:12.5px;color:var(--az-ink-2)}
+
+/* the made-up note, a tile panel */
+.az-note{display:flex;gap:20px;align-items:flex-start;margin-top:48px;background:var(--az-band);border:2px solid var(--cobalt);padding:18px 20px}
+.az-note-tile{flex:none;width:64px;height:64px;background:var(--tilebg) 0 0/64px 64px;border:2px solid var(--cobalt)}
+.az-note h2{font-size:20px;margin:0 0 6px}
+.az-note p{margin:0}
+
+/* footer framed by a tile strip */
+body.d-azulejo .site-foot{border-top:0;padding-top:0;color:var(--az-ink-2);background:var(--az-tile)}
+body.d-azulejo .site-foot::before{content:"";display:block;height:32px;margin:0 -16px 24px;background:var(--tilebg) 0 0/32px 32px}
+body.d-azulejo .site-foot a{color:var(--cobalt)}
+body.d-azulejo .dock{background:var(--cobalt);color:#fff;border-radius:0;border:2px solid #fff}
+body.d-azulejo .dock svg{--wall:#fff;--ink:#fff;--roof:#fff}
+
+@media (max-width:900px){
+  .az-hero{grid-template-columns:minmax(0,1fr)}
+  .az-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .az-grid,.az-on-row{grid-template-columns:minmax(0,1fr)}
+  .az-home.wide{grid-column:auto}
+  .az-panel h1{font-size:36px}
+}
+@media (max-width:600px){
+  main.az{padding:0 16px 40px}
+  body.d-azulejo .site-head .bar{padding:12px 16px}
+  body.d-azulejo .brand{font-size:18px}
+  .az-hero{border-width:10px}
+  .az-panel{padding:24px 18px}
+  .az-panel h1{font-size:31px}
+  .az h2{font-size:25px;margin-top:38px}
+  .az-v{font-size:22px}.az-tile{padding:14px 12px}
+  .az-frame{padding:10px}
+}

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Costa: the coast today, home by home (made-up example) | Cinco Chaminés</title>
+<meta name="description" content="Design 4 of 5 of a made-up example site: a drawn map of the Algarve coast with the five invented holiday homes of Cinco Chaminés pinned at their town centres, each with IPMA's real forecast read live, simulated availability and invented prices.">
+<meta name="share-image" content="/assets/share/d-costa.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/d/costa/style.css">
+<script type="module" src="/d/costa/costa.js"></script>
+</head>
+<body class="d-costa" data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
+<!--HEADER-->
+<main id="main" class="co">
+<p class="co-also">One of five designs of the same made-up example. <a href="/d/">All designs</a> <span aria-hidden="true">·</span> <a href="/">Main site</a></p>
+<div class="co-intro">
+<div>
+<h1>The coast today, home by home</h1>
+<p>Five invented homes from Sagres in the west to Tavira in the east, each with today's forecast for its nearest IPMA place, read live. Positions are town centres, not houses.</p>
+</div>
+<p class="co-legend"><span class="co-pin-key" aria-hidden="true">1</span> invented home (town centre)<br><span class="co-mu">A made-up example: homes and prices invented</span></p>
+</div>
+
+<figure class="co-map" id="co-map" aria-labelledby="co-map-cap">
+<div class="co-map-box">
+<svg viewBox="0 0 1100 520" role="img" aria-labelledby="co-map-title" focusable="false">
+<title id="co-map-title">Drawn map of the Algarve coast from Sagres to Tavira with the five invented homes marked at their town centres: 1 Cape House at Sagres, 2 Harbour House at Lagos, 3 Hill House near Loulé, 4 Lagoon House at Faro, 5 Salt House at Tavira.</title>
+<defs>
+<linearGradient id="co-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFE8EE"/><stop offset="1" stop-color="#A9D3DE"/></linearGradient>
+<pattern id="co-waves" width="60" height="22" patternUnits="userSpaceOnUse"><path d="M0 11q15-8 30 0t30 0" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/></pattern>
+<pattern id="co-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" stroke="#D9C79E" stroke-width="2"/></pattern>
+</defs>
+<rect width="1100" height="520" fill="url(#co-sea)"/><rect width="1100" height="520" fill="url(#co-waves)"/>
+<path d="M77.6,0 L84.1,55.7 L64.7,130 L42.1,222.9 L34.3,312.9 L51.8,325 L66,338.9 L77.6,325 L110,306.4 L148.8,273.9 L207.1,255.4 L245.9,241.4 L249.1,260 L265.3,241.4 L297.6,222.9 L336.5,222.9 L375.3,246.1 L446.5,241.4 L517.6,255.4 L601.8,269.3 L660,297.1 L724.7,334.3 L763.5,366.8 L808.8,334.3 L847.6,297.1 L905.9,241.4 L938.2,213.6 L1035.3,176.4 L1067.6,167.1 L1080.6,0 Z" fill="#F5EBD6" stroke="#10252D" stroke-width="2" stroke-linejoin="round"/>
+<path d="M1067.6,167.1 L1100,160 L1100,0 L1080.6,0 Z" fill="url(#co-hatch)"/>
+<path d="M660,297 Q720,322 763,352 Q800,330 848,297" fill="none" stroke="#7FB9C9" stroke-width="5" stroke-dasharray="2 7" stroke-linecap="round"/>
+<g fill="none" stroke="#3F5961" stroke-width="1" stroke-opacity=".35"><path d="M150 130q120-40 260-10t300-30 330-20"/><path d="M200 70q150-30 300 0t300-20 250 0"/></g>
+<g font-family="system-ui,-apple-system,'Segoe UI',Arial,sans-serif" font-size="14" fill="#3F5961">
+<text x="96" y="236">Vila do Bispo</text><text x="318" y="212">Portimão</text><text x="470" y="232">Albufeira</text><text x="600" y="232">Loulé</text><text x="676" y="300">Faro</text><text x="924" y="244">Tavira</text><text x="16" y="508" font-size="13">Atlantic</text><text x="760" y="408" font-size="12">Ria Formosa</text><text x="1058" y="196" font-size="12">Spain</text>
+</g>
+<g class="co-leaders" stroke="#10252D" stroke-width="1.5">
+<line x1="71" y1="326" x2="98" y2="340"/><line x1="243" y1="240" x2="262" y2="290"/><line x1="666" y1="206" x2="666" y2="174"/><line x1="721" y1="318" x2="721" y2="340"/><line x1="906" y1="216" x2="930" y2="174"/>
+</g>
+<g class="co-pins" font-family="system-ui,-apple-system,'Segoe UI',Arial,sans-serif" font-size="12" font-weight="700" text-anchor="middle">
+<g><circle cx="71" cy="326" r="11" fill="#A63D17" stroke="#fff" stroke-width="2.5"/><text x="71" y="330" fill="#fff">1</text></g>
+<g><circle cx="243" cy="240" r="11" fill="#A63D17" stroke="#fff" stroke-width="2.5"/><text x="243" y="244" fill="#fff">2</text></g>
+<g><circle cx="666" cy="206" r="11" fill="#A63D17" stroke="#fff" stroke-width="2.5"/><text x="666" y="210" fill="#fff">3</text></g>
+<g><circle cx="721" cy="318" r="11" fill="#A63D17" stroke="#fff" stroke-width="2.5"/><text x="721" y="322" fill="#fff">4</text></g>
+<g><circle cx="906" cy="216" r="11" fill="#A63D17" stroke="#fff" stroke-width="2.5"/><text x="906" y="220" fill="#fff">5</text></g>
+</g>
+</svg>
+<div class="co-calls" id="co-calls"></div>
+<p class="co-ribbon" id="co-ribbon" hidden></p>
+</div>
+<figcaption id="co-map-cap">Map drawn by the team from rounded points; not for navigation. Pins are town centres. Each callout: an AI-generated picture of an invented house, not a photograph, and IPMA's forecast for today.</figcaption>
+</figure>
+<div id="co-map-src" class="co-srcs"><p class="co-wait" role="status">Reading IPMA's forecast, sea, UV and warnings from data.promptugal.news...</p>
+<noscript><p class="fail">The live figures need JavaScript: this page reads them in your browser from data.promptugal.news. See <a href="https://www.ipma.pt/en/">ipma.pt</a> directly.</p></noscript></div>
+
+<section class="co-along" aria-labelledby="co-along-h">
+<div class="co-along-head">
+<h2 id="co-along-h">Along the coast, west to east</h2>
+<form class="co-plan" id="co-plan" aria-label="Your dates" autocomplete="off" novalidate>
+<label>Arrive <input type="date" name="arrive" required></label>
+<label>Leave <input type="date" name="leave" required></label>
+<button type="submit" class="co-btn">Check the homes</button>
+<p class="co-msg" data-msg role="status" aria-live="polite"></p>
+</form>
+</div>
+<p class="co-sub" id="co-for">Availability is simulated and prices are invented. Your dates stay in this tab and the page address; nothing is sent.</p>
+<div id="co-table">
+<ol class="co-fallback">
+<li><a href="/homes/cape/">The Cape House, Sagres</a></li>
+<li><a href="/homes/harbour/">The Harbour House, Lagos</a></li>
+<li><a href="/homes/hill/">The Hill House, near Loulé</a></li>
+<li><a href="/homes/lagoon/">The Lagoon House, Faro</a></li>
+<li><a href="/homes/salt/">The Salt House, Tavira</a></li>
+</ol>
+</div>
+</section>
+
+<section class="co-on" aria-labelledby="co-on-h">
+<figure class="co-banner">
+<img src="/assets/img/algarve-cliffs-1264.jpg" srcset="/assets/img/algarve-cliffs-800.jpg 800w, /assets/img/algarve-cliffs-1264.jpg 1264w" sizes="100vw" width="800" height="533" alt="AI-generated picture of golden limestone cliffs, sea arches and stacks above a turquoise sea at sunset." loading="lazy" decoding="async">
+<figcaption>AI-generated picture of the Algarve, not a photograph.</figcaption>
+</figure>
+<h2 id="co-on-h">What's on along the coast this week</h2>
+<p class="co-sub">From each town's own agenda, west to east, as published. Check every event with its organiser.</p>
+<div id="co-on" class="co-on-cols"><p class="co-wait" role="status">Reading the town agendas...</p></div>
+</section>
+
+<aside class="co-note" aria-labelledby="co-note-h">
+<h2 id="co-note-h">A made-up example</h2>
+<p>Cinco Chaminés is an invented company. The homes, their prices and availability are made up, and every picture is an AI-generated picture of an invented house. The map is drawn from about thirty rounded points and is not for navigation. Nothing can be booked here.</p>
+</aside>
+</main>
+<!--FOOTER-->
+</body>
+</html>

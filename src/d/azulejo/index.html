@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Azulejo: blue and white tiles (made-up example) | Cinco Chaminés</title>
+<meta name="description" content="Design 2 of 5 of a made-up example site: the five invented Algarve holiday homes of Cinco Chaminés framed in blue and white tiles drawn by the team, with simulated availability, invented prices and IPMA's real weather, sea, UV and warnings read live.">
+<meta name="share-image" content="/assets/share/d-azulejo.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/d/azulejo/style.css">
+<script type="module" src="/d/azulejo/azulejo.js"></script>
+</head>
+<body class="d-azulejo" data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
+<!--HEADER-->
+<main id="main" class="az">
+<p class="az-also">One of five designs of the same made-up example. <a href="/d/">All designs</a> <span aria-hidden="true">·</span> <a href="/">Main site</a></p>
+
+<section class="az-hero" aria-labelledby="az-h1">
+<figure class="az-hero-pic">
+<img src="/assets/img/harbour-hero-1264.jpg" srcset="/assets/img/harbour-hero-800.jpg 800w, /assets/img/harbour-hero-1264.jpg 1264w" sizes="(min-width: 900px) 680px, 100vw" width="800" height="533" alt="AI-generated picture of the invented Harbour House: a white town house with a blue cornice and a walled courtyard on a cobbled street, old walls and marina masts behind." fetchpriority="high" decoding="async">
+<figcaption>AI-generated picture of an invented house, not a photograph.</figcaption>
+</figure>
+<div class="az-panel">
+<p class="az-eyebrow">A made-up example</p>
+<h1 id="az-h1">Blue, white and five chimneys</h1>
+<p>Five invented homes from Tavira to Sagres, each with one white lattice chimney. Free days are simulated and prices invented; the weather, sea and events are real.</p>
+<form class="az-plan" id="az-plan" aria-label="Choose your dates" autocomplete="off" novalidate>
+<div class="az-plan-row">
+<label>Arrive <input type="date" name="arrive" required></label>
+<label>Leave <input type="date" name="leave" required></label>
+</div>
+<button type="submit" class="az-btn">Choose your dates</button>
+<p class="az-msg" data-msg role="status" aria-live="polite"></p>
+</form>
+<p class="az-fine">Your dates stay in this tab and the page address. Nothing is kept or sent.</p>
+</div>
+</section>
+
+<section class="az-now" aria-labelledby="az-now-h">
+<h2 id="az-now-h">The Algarve now</h2>
+<p class="az-sub">Read live in your browser from IPMA, through data.promptugal.news.</p>
+<div id="az-now"><p class="az-wait" role="status">Reading IPMA's forecast, sea, UV and warnings...</p>
+<noscript><p class="fail">The live figures need JavaScript: this page reads them in your browser from data.promptugal.news. See <a href="https://www.ipma.pt/en/">ipma.pt</a> directly.</p></noscript></div>
+</section>
+
+<section class="az-homes" aria-labelledby="az-homes-h">
+<h2 id="az-homes-h">The five homes</h2>
+<p class="az-sub" id="az-for">Invented homes, invented prices. Every picture is AI-generated.</p>
+<ul class="az-grid" id="az-grid">
+<li><a href="/homes/salt/">The Salt House, Tavira</a></li>
+<li><a href="/homes/lagoon/">The Lagoon House, Faro</a></li>
+<li><a href="/homes/hill/">The Hill House, near Loulé</a></li>
+<li><a href="/homes/harbour/">The Harbour House, Lagos</a></li>
+<li><a href="/homes/cape/">The Cape House, Sagres</a></li>
+</ul>
+<div id="az-homes-src"></div>
+</section>
+
+<section class="az-on" aria-labelledby="az-on-h">
+<h2 id="az-on-h">What's on this week</h2>
+<p class="az-sub">From each town's own agenda, as published. Check every event with its organiser.</p>
+<div id="az-on" class="az-on-row"><p class="az-wait" role="status">Reading the town agendas...</p></div>
+</section>
+
+<aside class="az-note" aria-labelledby="az-note-h">
+<div class="az-note-tile" aria-hidden="true"></div>
+<div>
+<h2 id="az-note-h">A made-up example</h2>
+<p>Cinco Chaminés is an invented company. The homes, their prices and availability are made up, and every picture is an AI-generated picture of an invented house. The tile pattern was drawn by the team for this page; it copies no real tile. Nothing can be booked here.</p>
+</div>
+</aside>
+</main>
+<!--FOOTER-->
+</body>
+</html>

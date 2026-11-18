@@ -1,0 +1,128 @@
+/* Postal: design 5 of 5 for the made-up example site Cinco Chaminés, warm Mediterranean postcards:
+   each home a postcard with a stamp and a round postmark carrying today's forecast
+   (team/rounds/2/design/PROPOSAL.md, section 3.5). Light only in this round: the page sets its own
+   palette on body.d-postal, so the shared header, band and footer follow it in dark mode too.
+   System fonts only. Code Apache-2.0.
+   developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2. */
+html:has(body.d-postal){background:#F3E9D8;color-scheme:light}
+body.d-postal{
+  --pc-bg:#F3E9D8;--card:#FFFDF8;--pc-ink:#2A1F17;--pc-ink-2:#5E4B3C;--terracotta:#A3361F;--on-terracotta:#FFFFFF;--pc-sea:#1D5E73;--mustard:#E3B341;--pc-band:#F2D27A;
+  --slab:Rockwell,"Roboto Slab","Zilla Slab","DejaVu Serif",Georgia,serif;
+  --text:Charter,"Bitstream Charter",Cambria,Caladea,Georgia,serif;
+  --narrow:"Avenir Next Condensed","Arial Narrow","Liberation Sans Narrow",Arial,sans-serif;
+  --bg:var(--pc-bg);--surface:var(--card);--ink:var(--pc-ink);--ink-2:var(--pc-ink-2);--line:#DCCDB4;--accent:var(--terracotta);--on-accent:#FFFFFF;
+  --sea:var(--pc-sea);--band-bg:var(--pc-band);--band-ink:var(--pc-ink);--wall:var(--card);--roof:var(--terracotta);
+  color-scheme:light;background:var(--pc-bg);color:var(--pc-ink);font:17px/1.55 var(--text)}
+body.d-postal a{color:var(--terracotta)}
+body.d-postal :focus-visible{outline:3px solid var(--pc-ink);outline-offset:2px}
+body.d-postal img{display:block;width:100%;height:auto;background:#E8DAC0}
+
+body.d-postal .band{background:var(--pc-band);color:var(--pc-ink);font:14px/1.5 var(--narrow);letter-spacing:.02em}
+body.d-postal .band a{color:var(--pc-ink)}
+body.d-postal .site-head .bar{max-width:76rem;padding:14px 24px}
+body.d-postal .brand{font:700 24px/1.15 var(--slab);color:var(--terracotta)}
+body.d-postal .brand small{font:400 13px var(--text);color:var(--pc-ink-2)}
+body.d-postal .nav ul{font:600 15px var(--narrow);letter-spacing:.08em;text-transform:uppercase}
+body.d-postal .nav a[aria-current]{border-bottom-color:var(--terracotta)}
+body.d-postal .menu{font:600 14px var(--narrow);letter-spacing:.08em;text-transform:uppercase;border-color:var(--pc-ink)}
+
+main.pc{max-width:76rem;margin:0 auto;padding:0 24px 48px}
+.pc h2{font:700 32px/1.2 var(--slab);margin:52px 0 4px}
+.pc-sub{color:var(--pc-ink-2);margin:0 0 20px}
+.pc-small,.pc-place{font:600 13px var(--narrow);letter-spacing:.14em;text-transform:uppercase;color:var(--pc-ink-2);margin:0}
+.pc-wait,.pc-na{color:var(--pc-ink-2);font-style:italic}
+
+/* hero: the dawn picture with a large postcard turned on it */
+.pc-hero{position:relative;margin:0 -24px;min-height:480px;padding:48px 24px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pc-hero-bg{position:absolute;inset:0;height:100%;object-fit:cover}
+.pc-hero-chip{position:absolute;right:12px;bottom:10px;margin:0;background:rgba(42,31,23,.82);color:#fff;font:12.5px var(--narrow);padding:3px 9px}
+.pc-big{position:relative;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);width:min(100%,860px);background:var(--card);border:12px solid #fff;box-shadow:0 10px 30px rgba(42,31,23,.35);transform:rotate(-2deg);padding:28px 0}
+.pc-big-front{padding:0 28px;border-right:2px dashed #CDB99A}
+.pc-big h1{font:700 44px/1.08 var(--slab);color:var(--terracotta);margin:8px 0 14px}
+.pc-big p{margin:0 0 12px}
+.pc-also{font-size:14.5px}
+.pc-big-back{padding:0 28px;display:flex;flex-direction:column;gap:10px;background:repeating-linear-gradient(transparent 0 37px,#E3D5BE 37px 38px)}
+.pc-big-back label{font:600 13px var(--narrow);letter-spacing:.1em;text-transform:uppercase}
+.pc-big-back input{display:block;width:100%;margin-top:4px;font:16px var(--text);color:var(--pc-ink);background:#fff;border:1px solid var(--pc-ink-2);border-radius:3px;padding:7px 9px}
+.pc-btn,.retry{font:700 15px var(--narrow);letter-spacing:.08em;text-transform:uppercase;background:var(--terracotta);color:var(--on-terracotta);border:0;border-radius:3px;padding:11px 16px;cursor:pointer}
+.retry{padding:4px 10px;font-size:12px;margin-left:6px}
+.pc-msg{font-size:14.5px;margin:0}.pc-msg.bad{color:#7A1E0E;font-weight:700}
+.pc-fine{font-size:13px;color:var(--pc-ink-2);margin:0!important}
+
+/* today's post: four perforated stamps */
+.pc-stamps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;list-style:none;margin:0;padding:0}
+.pc-st{background:var(--card);padding:18px 18px 16px;border:2px solid var(--pc-sea);outline:6px solid var(--card);outline-offset:0;
+  -webkit-mask:radial-gradient(circle 5px at 50% 0,#0000 98%,#000) 0 0/16px 51% repeat-x,radial-gradient(circle 5px at 50% 100%,#0000 98%,#000) 0 100%/16px 51% repeat-x;
+  mask:radial-gradient(circle 5px at 50% 0,#0000 98%,#000) 0 0/16px 51% repeat-x,radial-gradient(circle 5px at 50% 100%,#0000 98%,#000) 0 100%/16px 51% repeat-x}
+.pc-st-k{font:600 12.5px var(--narrow);letter-spacing:.12em;text-transform:uppercase;color:var(--pc-sea);margin:4px 0 0}
+.pc-st-v{font:700 27px/1.2 var(--slab);margin:4px 0 2px}
+.pc-st-w{font-size:14.5px;margin:0 0 4px}
+.pc-st-warn{background:#FCEFC4}.pc-st-orange{background:#FAD9B5}.pc-st-red{background:#F6CBC3}
+body.d-postal .src{font:12.5px/1.5 var(--narrow);color:var(--pc-ink-2);margin:6px 0 0}
+body.d-postal .src.is-error strong,body.d-postal .src .stale{color:#7A1E0E}
+.pc-srcs{margin-top:12px}
+.fail{font-size:15px;background:var(--card);border-left:4px solid var(--terracotta);padding:8px 12px;margin:10px 0}
+
+/* postcards */
+.pc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 30px;list-style:none;margin:0;padding:0}
+.pc-card{min-width:0}
+.pc-card article{background:var(--card);padding:10px;box-shadow:0 4px 14px rgba(42,31,23,.22);transition:transform .2s ease}
+.pc-card.r0 article{transform:rotate(-1.5deg)}.pc-card.r1 article{transform:rotate(1deg)}.pc-card.r2 article{transform:rotate(2deg)}
+.pc-card article:focus-within,.pc-card article:hover{transform:translateY(-4px)}
+.pc-front{margin:0;position:relative}
+.pc-front figcaption{position:absolute;left:6px;bottom:6px;max-width:calc(100% - 170px);background:rgba(42,31,23,.82);color:#fff;font:12px var(--narrow);padding:2px 7px}
+.pc-back{position:relative;padding:18px 8px 6px}
+.pc-back h3{font:700 22px/1.2 var(--slab);margin:0 158px 2px 0}
+.pc-back h3 a{color:var(--pc-ink);text-decoration:none}.pc-back h3 a:hover{text-decoration:underline}
+.pc-place{margin-right:158px!important}
+
+.pc-line{margin:10px 0 8px;font-size:16px}
+.pc-meta{font-size:15px;margin:0 0 8px}.pc-meta b{color:var(--terracotta)}
+.pc-avail{font:15px/1.4 var(--narrow);margin:0;padding:6px 8px;border:1px dashed var(--pc-ink-2)}
+.pc-avail.is-free{border:1px solid var(--pc-sea);background:#E9F1F2}
+.pc-avail.is-taken{color:var(--pc-ink-2)}
+.pc-stamp{position:absolute;right:8px;top:14px;width:62px;height:76px;background:var(--mustard);border:3px solid var(--card);outline:1px solid #C99A2E;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  --wall:var(--card);--ink:var(--pc-ink);--roof:var(--terracotta)}
+.pc-stamp span{font:700 8px/1.1 var(--narrow);letter-spacing:.06em;text-transform:uppercase;color:var(--pc-ink);text-align:center}
+.pc-pm{position:absolute;right:46px;top:-58px;width:112px;height:112px;color:var(--pc-sea);transform:rotate(-12deg)}
+.pc-market h4{font:700 15px var(--narrow);letter-spacing:.12em;text-transform:uppercase;color:var(--pc-sea);margin:10px 0 2px}
+.pc-market .pc-back h3{margin-right:80px}
+.pc-market .pc-line{margin-right:80px}
+.pc-ev{list-style:none;margin:0;padding:0}
+.pc-ev li{font-size:14.5px;line-height:1.4;padding:4px 0;border-bottom:1px dotted #CDB99A}
+.pc-ev a{color:var(--pc-ink)}
+.ev-d{font:700 12px var(--narrow);letter-spacing:.08em;text-transform:uppercase;color:var(--terracotta)}
+.ev-s{font:12.5px var(--narrow);color:var(--pc-ink-2)}
+.pc-card>.src{padding:0 4px;margin-top:12px}
+
+/* wish you were here */
+.pc-wish-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;list-style:none;margin:0;padding:0}
+.pc-wish-row figure{margin:0;background:var(--card);padding:7px 7px 9px;box-shadow:0 3px 10px rgba(42,31,23,.2)}
+.pc-wish-row li:nth-child(odd) figure{transform:rotate(-2deg)}.pc-wish-row li:nth-child(even) figure{transform:rotate(1.5deg)}
+.pc-wish-row figcaption{font:13px/1.35 var(--narrow);color:var(--pc-ink-2);margin-top:6px}
+.pc-note{margin-top:52px;background:var(--card);border:2px dashed var(--terracotta);padding:16px 20px}
+.pc-note h2{font-size:22px;margin:0 0 6px}.pc-note p{margin:0}
+
+body.d-postal .site-foot{background:#EADBC2;border-top:4px solid var(--terracotta);color:var(--pc-ink-2)}
+body.d-postal .site-foot a{color:var(--pc-ink)}
+body.d-postal .dock{background:var(--terracotta);color:#fff;font-family:var(--narrow);letter-spacing:.04em}
+body.d-postal .dock svg{--wall:#fff;--ink:#fff;--roof:#fff}
+
+@media (max-width:1000px){.pc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pc-stamps{grid-template-columns:repeat(2,minmax(0,1fr))}.pc-wish-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:700px){
+  main.pc{padding:0 16px 40px}
+  body.d-postal .site-head .bar{padding:12px 16px}
+  .pc-hero{margin:0 -16px;padding:28px 16px;min-height:0}
+  .pc-big{grid-template-columns:minmax(0,1fr);transform:none;border-width:8px;padding:20px 0}
+  .pc-big-front{border-right:0;border-bottom:2px dashed #CDB99A;padding:0 18px 18px}
+  .pc-big-back{padding:18px 18px 0}
+  .pc-big h1{font-size:32px}
+  .pc h2{font-size:26px;margin-top:40px}
+  .pc-grid{grid-template-columns:minmax(0,1fr)}
+  .pc-card.r0 article,.pc-card.r1 article,.pc-card.r2 article{transform:none}
+  .pc-stamps{gap:14px}.pc-st{padding:14px 12px}.pc-st-v{font-size:21px}
+  .pc-wish-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){
+  .pc-big,.pc-card article,.pc-wish-row figure,.pc-card.r0 article,.pc-card.r1 article,.pc-card.r2 article{transform:none!important;transition:none}
+}

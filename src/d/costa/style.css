@@ -1,0 +1,134 @@
+/* Costa: design 4 of 5 for the made-up example site Cinco Chaminés, the coast first: a drawn map
+   of the Algarve with each home pinned and its own forecast beside it
+   (team/rounds/2/design/PROPOSAL.md, section 3.4). Light only in this round: the page sets its own
+   palette on body.d-costa, so the shared header, band and footer follow it in dark mode too.
+   System fonts only. Code Apache-2.0.
+   developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2. */
+html:has(body.d-costa){background:#FFFFFF;color-scheme:light}
+body.d-costa{
+  --land:#F5EBD6;--land-2:#EADBB9;--co-sea:#CFE8EE;--sea-2:#A9D3DE;--co-ink:#10252D;--co-ink-2:#3F5961;--pin:#A63D17;--on-pin:#FFFFFF;--panel:#FFFFFF;--deep:#0B4F63;--co-band:#FBE7A1;--co-line:#C9D9DD;
+  --head:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold","Segoe UI",Inter,system-ui,sans-serif;
+  --text:system-ui,-apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif;
+  --num:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,"JetBrains Mono",monospace;
+  --bg:#FFFFFF;--surface:#FFFFFF;--ink:var(--co-ink);--ink-2:var(--co-ink-2);--line:var(--co-line);--accent:var(--deep);--on-accent:#FFFFFF;
+  --sea:var(--deep);--band-bg:var(--co-band);--band-ink:var(--co-ink);--wall:#FFFFFF;--roof:var(--pin);
+  color-scheme:light;background:#FFFFFF;color:var(--co-ink);font:16px/1.55 var(--text)}
+body.d-costa a{color:var(--deep)}
+body.d-costa :focus-visible{outline:3px solid var(--co-ink);outline-offset:2px}
+body.d-costa img{display:block;width:100%;height:auto;background:var(--land)}
+
+body.d-costa .band{background:var(--co-band);color:var(--co-ink)}
+body.d-costa .band a{color:var(--co-ink)}
+body.d-costa .site-head .bar{max-width:76rem;padding:14px 24px}
+body.d-costa .brand{font:700 20px/1.2 var(--head)}
+body.d-costa .nav ul{font:600 15px var(--text)}
+body.d-costa .nav a[aria-current]{border-bottom-color:var(--pin)}
+
+main.co{max-width:76rem;margin:0 auto;padding:0 24px 48px}
+.co-also{font-size:14px;color:var(--co-ink-2);margin:4px 0 0}
+.co h1{font:700 40px/1.15 var(--head);margin:12px 0 8px}
+.co h2{font:700 28px/1.2 var(--head);margin:0 0 6px}
+.co-intro{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:16px}
+.co-intro p{margin:0;max-width:40rem;font-size:17px;color:var(--co-ink-2)}
+.co-legend{text-align:right;font-size:14px!important;flex:none}
+.co-pin-key{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--pin);color:#fff;font:700 11px var(--text);box-shadow:0 0 0 2px #fff,0 0 0 3px var(--pin);vertical-align:-4px;margin-right:4px}
+.co-mu{display:inline-block;background:var(--co-band);color:var(--co-ink);padding:1px 8px;margin-top:4px}
+.co-wait,.co-na{color:var(--co-ink-2);font-style:italic}
+
+/* the map: svg and html callouts share the same box, so percentages match the viewBox */
+.co-map{position:relative;margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--co-line)}
+.co-map svg{display:block;width:100%;height:auto}
+.co-map figcaption{background:#fff;border-top:1px solid var(--co-line);font-size:13px;color:var(--co-ink-2);padding:8px 14px}
+.co-map-box{position:relative}
+.co-calls{position:absolute;inset:0}
+.co-call{position:absolute;width:17.2%;background:var(--panel);border-radius:10px;box-shadow:0 2px 10px rgba(16,37,45,.22);overflow:hidden;font-size:13px;line-height:1.35}
+.co-call-pic{position:relative}
+.co-call-pic img{aspect-ratio:2.6/1;object-fit:cover}
+.co-call-pic span{position:absolute;left:6px;bottom:6px;background:rgba(16,37,45,.85);color:#fff;font-size:11px;padding:1px 6px;border-radius:3px}
+.co-call-b{padding:7px 10px 9px}
+.co-call h3{font:700 14.5px/1.25 var(--head);margin:0 0 3px;display:flex;align-items:center;gap:6px}
+.co-call h3 a{color:var(--co-ink);text-decoration:none}.co-call h3 a:hover{text-decoration:underline}
+.co-n{display:inline-grid;place-items:center;flex:none;width:20px;height:20px;border-radius:50%;background:var(--pin);color:var(--on-pin);font:700 11px var(--text)}
+.co-f{margin:0}.co-f b{font:600 13px var(--num);font-variant-numeric:tabular-nums}
+.co-w{display:block;color:var(--co-ink-2);font-size:12.5px}
+.co-ribbon{position:absolute;left:77%;top:86%;right:1.5%;margin:0;background:#FFF1B8;border-left:5px solid var(--co-ink);padding:6px 12px;font-size:13.5px;line-height:1.35;border-radius:0 6px 6px 0}
+.co-ribbon-orange{background:#FFD9B0}.co-ribbon-red{background:#F8C9C2}
+.co-ribbon-none{background:#fff;border-left-color:var(--co-line)}.co-ribbon-na{background:#fff;font-style:italic}
+body.d-costa .src{font-size:12.5px;line-height:1.5;color:var(--co-ink-2);margin:5px 0 0}
+body.d-costa .src.is-error strong,body.d-costa .src .stale{color:#8A2A0C}
+.co-srcs{margin:8px 0 0}
+.fail{background:#FDF0EA;border-left:4px solid var(--pin);padding:8px 12px;font-size:14.5px;margin:8px 0}
+.retry,.co-btn{font:700 14px var(--head);background:var(--deep);color:#fff;border:0;border-radius:999px;padding:10px 18px;cursor:pointer}
+.retry{padding:4px 12px;font-size:12px;margin-left:6px}
+
+/* table, west to east */
+.co-along{margin-top:48px}
+.co-along-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap}
+.co-plan{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.co-plan label{font-size:13px;font-weight:600;color:var(--co-ink-2)}
+.co-plan input{display:block;margin-top:3px;font:15px var(--text);color:var(--co-ink);background:#fff;border:1px solid var(--co-ink-2);border-radius:8px;padding:7px 9px}
+.co-msg{flex-basis:100%;margin:0;font-size:14px;text-align:right}.co-msg.bad{color:#8A2A0C;font-weight:600}
+.co-sub{color:var(--co-ink-2);margin:6px 0 12px;font-size:15px}
+.co-tbl{width:100%;border-collapse:collapse}
+.co-tbl thead th{font:600 12px var(--text);letter-spacing:.1em;text-transform:uppercase;text-align:left;color:var(--co-ink-2);border-bottom:2px solid var(--co-ink);padding:8px}
+.co-tbl td,.co-tbl tbody th{text-align:left;vertical-align:middle;padding:10px 8px;border-bottom:1px solid var(--co-line);font-weight:400}
+.co-tbl tbody th a{font:700 17px var(--head)}
+.co-tbl small{display:block;font:12.5px/1.4 var(--text);color:var(--co-ink-2)}
+.co-thumb{width:110px}.co-thumb img{width:96px;border-radius:6px;aspect-ratio:3/2;object-fit:cover}
+.co-fig{font:14px var(--num);font-variant-numeric:tabular-nums}
+.co-free b{color:#14532D}.co-taken{color:var(--co-ink-2)}.co-taken b{text-decoration:line-through}
+.co-capt{font-size:13px;color:var(--co-ink-2);margin:8px 0 0}
+
+/* events */
+.co-on{margin-top:56px}
+.co-banner{position:relative;margin:0 0 20px;border-radius:14px;overflow:hidden}
+.co-banner img{aspect-ratio:4/1;object-fit:cover}
+.co-banner figcaption{position:absolute;right:8px;bottom:8px;background:rgba(16,37,45,.85);color:#fff;font-size:12px;padding:2px 8px;border-radius:3px}
+.co-on-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.co-on-col{background:var(--land);border-radius:12px;padding:14px 16px}
+.co-on-col h3{font:700 18px var(--head);margin:0 0 6px}
+.co-ev{list-style:none;margin:0;padding:0}
+.co-ev li{padding:7px 0;border-bottom:1px solid var(--land-2);font-size:15px;line-height:1.4}
+.co-ev a{color:var(--co-ink)}
+.ev-d{display:block;font:600 12px var(--num);color:#8A2A0C}
+.ev-s{font-size:12.5px;color:var(--co-ink-2)}
+.co-note{margin-top:48px;background:var(--co-band);border-radius:12px;padding:16px 20px}
+.co-note h2{font-size:20px}.co-note p{margin:0}
+
+body.d-costa .site-foot{background:var(--land);border-top:1px solid var(--land-2);color:var(--co-ink-2)}
+body.d-costa .site-foot a{color:var(--co-ink)}
+body.d-costa .dock{background:var(--deep);color:#fff}
+body.d-costa .dock svg{--wall:#fff;--ink:#fff;--roof:#fff}
+
+/* below 1100 px the callouts would crowd the map: pins only, the table carries the figures */
+@media (max-width:1099px){
+  .co-calls{display:none}
+  .co-ribbon{position:static;border-radius:0}
+}
+@media (max-width:900px){
+  .co-intro{display:block}.co-legend{text-align:left;margin-top:8px!important}
+  .co-on-cols{grid-template-columns:minmax(0,1fr)}
+  .co-tbl thead{display:none}
+  .co-tbl,.co-tbl tbody,.co-tbl tr{display:block}
+  .co-tbl tr{display:grid;grid-template-columns:96px minmax(0,1fr) minmax(0,1fr);gap:4px 12px;padding:14px 0;border-bottom:1px solid var(--co-line)}
+  .co-tbl td,.co-tbl tbody th{border:0;padding:0}
+  .co-tbl .co-thumb{grid-row:span 2;width:auto}
+  .co-tbl tbody th{grid-column:2/-1}
+  .co-tbl td[data-k]::before{content:attr(data-k);display:block;font:600 11px var(--text);letter-spacing:.08em;text-transform:uppercase;color:var(--co-ink-2)}
+  .co-tbl td[data-k="Forecast place"]{grid-column:2/-1}
+}
+@media (max-width:600px){
+  main.co{padding:0 16px 40px}
+  body.d-costa .site-head .bar{padding:12px 16px}
+  .co h1{font-size:30px}.co h2{font-size:24px}
+  .co-map{border-radius:8px}
+  .co-tbl tr{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .co-tbl .co-thumb{grid-row:auto;grid-column:1/-1}
+  .co-tbl .co-thumb img{width:100%;aspect-ratio:2.6/1}
+  .co-tbl tbody th,.co-tbl td[data-k="Forecast place"]{grid-column:1/-1}
+  .co-plan{width:100%}.co-plan label{flex:1 1 40%}.co-plan input{width:100%}
+  .co-msg{text-align:left}
+  .co-banner img{aspect-ratio:2.4/1}
+}
+/* on a phone the map is small: bigger pins and numbers, so they can be read */
+@media (max-width:600px){.co-pins circle{r:24px}.co-pins text{font-size:26px;transform:translateY(5px)}.co-map svg text:not(.co-pins text){font-size:22px}}

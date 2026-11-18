@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Postal: postcards from five invented homes (made-up example) | Cinco Chaminés</title>
+<meta name="description" content="Design 5 of 5 of a made-up example site: the five invented Algarve holiday homes of Cinco Chaminés as postcards with stamps, today's real IPMA forecast in each postmark, simulated availability and invented prices.">
+<meta name="share-image" content="/assets/share/d-postal.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/d/postal/style.css">
+<script type="module" src="/d/postal/postal.js"></script>
+</head>
+<body class="d-postal" data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
+<!--HEADER-->
+<main id="main" class="pc">
+<section class="pc-hero" aria-labelledby="pc-h1">
+<img class="pc-hero-bg" src="/assets/img/algarve-dawn-1264.jpg" srcset="/assets/img/algarve-dawn-800.jpg 800w, /assets/img/algarve-dawn-1264.jpg 1264w" sizes="100vw" width="800" height="533" alt="AI-generated picture of an empty beach at dawn, pink sky reflected in wet sand, cliffs to one side and a few seabirds." fetchpriority="high" decoding="async">
+<p class="pc-hero-chip">AI-generated picture of the Algarve, not a photograph</p>
+<div class="pc-big">
+<div class="pc-big-front">
+<p class="pc-small">A made-up example</p>
+<h1 id="pc-h1">Greetings from the Algarve coast</h1>
+<p>Five invented holiday homes from Tavira to Sagres, sent as postcards. The homes, prices and free nights are made up; the weather in each postmark is IPMA's, read today.</p>
+<p class="pc-also">One of five designs of the same made-up example. <a href="/d/">All designs</a> <span aria-hidden="true">·</span> <a href="/">Main site</a></p>
+</div>
+<form class="pc-big-back" id="pc-plan" aria-label="Your dates" autocomplete="off" novalidate>
+<p class="pc-small">Your dates</p>
+<label>Arrive <input type="date" name="arrive" required></label>
+<label>Leave <input type="date" name="leave" required></label>
+<button type="submit" class="pc-btn">Show the free homes</button>
+<p class="pc-msg" data-msg role="status" aria-live="polite"></p>
+<p class="pc-fine">Availability is simulated and prices are invented. Your dates stay in this tab and the page address; nothing is sent.</p>
+</form>
+</div>
+</section>
+
+<section class="pc-now" aria-labelledby="pc-now-h">
+<h2 id="pc-now-h">Today's post from the coast</h2>
+<p class="pc-sub">Read live from IPMA through data.promptugal.news.</p>
+<div id="pc-now"><p class="pc-wait" role="status">Reading IPMA's forecast, sea, UV and warnings...</p>
+<noscript><p class="fail">The live figures need JavaScript: this page reads them in your browser from data.promptugal.news. See <a href="https://www.ipma.pt/en/">ipma.pt</a> directly.</p></noscript></div>
+</section>
+
+<section class="pc-cards" aria-labelledby="pc-cards-h">
+<h2 id="pc-cards-h">Five postcards</h2>
+<p class="pc-sub" id="pc-for">Each postmark carries today's forecast for the home's nearest IPMA place.</p>
+<ul class="pc-grid" id="pc-grid">
+<li><a href="/homes/salt/">The Salt House, Tavira</a></li>
+<li><a href="/homes/lagoon/">The Lagoon House, Faro</a></li>
+<li><a href="/homes/hill/">The Hill House, near Loulé</a></li>
+<li><a href="/homes/harbour/">The Harbour House, Lagos</a></li>
+<li><a href="/homes/cape/">The Cape House, Sagres</a></li>
+</ul>
+</section>
+
+<section class="pc-wish" aria-labelledby="pc-wish-h">
+<h2 id="pc-wish-h">Wish you were here?</h2>
+<p class="pc-sub">The same five houses, where they do not belong. AI-generated joke pictures of invented houses, not photographs.</p>
+<ul class="pc-wish-row" id="pc-wish"></ul>
+</section>
+
+<aside class="pc-note" aria-labelledby="pc-note-h">
+<h2 id="pc-note-h">Postscript: a made-up example</h2>
+<p>Cinco Chaminés is an invented company and these postcards were never posted. The homes, their prices and free nights are made up, and every picture is AI-generated. Nothing can be booked here.</p>
+</aside>
+</main>
+<!--FOOTER-->
+</body>
+</html>

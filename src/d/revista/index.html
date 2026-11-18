@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Revista: the five homes as a travel magazine (made-up example) | Cinco Chaminés</title>
+<meta name="description" content="Design 1 of 5 of a made-up example site: the five invented Algarve holiday homes of Cinco Chaminés laid out as a calm travel magazine, with simulated availability, invented prices and IPMA's real weather, sea, UV and warnings read live.">
+<meta name="share-image" content="/assets/share/d-revista.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/d/revista/style.css">
+<script type="module" src="/d/revista/revista.js"></script>
+</head>
+<body class="d-revista" data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
+<!--HEADER-->
+<main id="main" class="rv">
+<p class="rv-also">One of five designs of the same made-up example. <a href="/d/">All designs</a> <span aria-hidden="true">·</span> <a href="/">Main site</a></p>
+
+<header class="rv-mast">
+<p class="rv-title">Cinco Chaminés</p>
+<p class="rv-strap">Five invented holiday homes on the Algarve coast, written up like a travel magazine</p>
+<div class="rv-dateline">
+<span id="rv-dl-date">Today in Portugal</span>
+<span id="rv-dl-wx">Reading IPMA's forecast for Faro...</span>
+<span>A made-up example</span>
+</div>
+<nav class="rv-contents" aria-label="In this issue">
+<ul>
+<li><a href="#rv-homes">The homes</a></li>
+<li><a href="#rv-week">This week's weather</a></li>
+<li><a href="#rv-on">What's on</a></li>
+<li><a href="/agent/">Ask the agent</a></li>
+<li><a href="/d/">Other designs</a></li>
+</ul>
+</nav>
+</header>
+
+<div class="rv-cover">
+<div class="rv-cover-main">
+<figure class="rv-fig rv-cover-fig">
+<img src="/assets/img/algarve-street-1264.jpg" srcset="/assets/img/algarve-street-800.jpg 800w, /assets/img/algarve-street-1264.jpg 1264w" sizes="(min-width: 900px) 760px, 100vw" width="800" height="533" alt="AI-generated picture of a quiet whitewashed street with blue and ochre trims, cobbles, bougainvillea and one lattice chimney." fetchpriority="high" decoding="async">
+<figcaption>A whitewashed street with one lattice chimney. AI-generated picture of the Algarve, not a photograph.</figcaption>
+</figure>
+<p class="rv-kicker">The cover story</p>
+<h1 class="rv-h1">Five houses, five chimneys, and the weather on the coast this week</h1>
+<p class="rv-standfirst">From the salt pans at Tavira to the cliffs at Sagres: five invented homes, and what the sea, the sun and the town agendas say about the days ahead. The homes and their prices are made up; the weather is IPMA's, read as you open the page.</p>
+</div>
+
+<aside class="rv-side" aria-label="Conditions and your dates">
+<section class="rv-cond" id="rv-cond" aria-labelledby="rv-cond-h">
+<h2 id="rv-cond-h" class="rv-label">Conditions today <span class="rv-live">read live</span></h2>
+<div id="rv-cond-body"><p class="rv-wait" role="status">Reading IPMA's forecast, sea, UV and warnings from data.promptugal.news...</p>
+<noscript><p class="fail">The live figures need JavaScript: this page reads them in your browser from data.promptugal.news. See <a href="https://www.ipma.pt/en/">ipma.pt</a> directly.</p></noscript></div>
+</section>
+
+<form class="rv-plan" id="rv-plan" aria-labelledby="rv-plan-h" autocomplete="off" novalidate>
+<h2 id="rv-plan-h" class="rv-label">Your dates</h2>
+<div class="rv-plan-row">
+<label>Arrive <input type="date" name="arrive" required></label>
+<label>Leave <input type="date" name="leave" required></label>
+</div>
+<button type="submit" class="rv-btn">Check the five homes</button>
+<p class="rv-msg" data-msg role="status" aria-live="polite"></p>
+<p class="rv-fine">Availability is simulated and prices are invented. Your dates stay in this tab and the page address; nothing is sent.</p>
+</form>
+
+<nav class="rv-issue" aria-labelledby="rv-issue-h">
+<h2 id="rv-issue-h" class="rv-label">In this issue</h2>
+<ol id="rv-issue-list">
+<li><a href="/homes/salt/">The Salt House, Tavira</a></li>
+<li><a href="/homes/lagoon/">The Lagoon House, Faro</a></li>
+<li><a href="/homes/hill/">The Hill House, near Loulé</a></li>
+<li><a href="/homes/harbour/">The Harbour House, Lagos</a></li>
+<li><a href="/homes/cape/">The Cape House, Sagres</a></li>
+</ol>
+</nav>
+</aside>
+</div>
+
+<section id="rv-homes" class="rv-features" aria-labelledby="rv-homes-h">
+<h2 id="rv-homes-h" class="rv-section">The homes <span id="rv-for">for your dates</span></h2>
+<div id="rv-features"><p class="rv-wait" role="status">Setting the five features...</p></div>
+</section>
+
+<section id="rv-week" class="rv-week" aria-labelledby="rv-week-h">
+<h2 id="rv-week-h" class="rv-section">This week's weather <span class="rv-live">read live</span></h2>
+<p class="rv-deck">IPMA's five-day forecast for the four places nearest the homes. Tavira and Faro share Faro's forecast; Lagos uses Portimão's.</p>
+<div id="rv-week-body"><p class="rv-wait" role="status">Reading IPMA's five-day forecast...</p></div>
+</section>
+
+<section id="rv-on" class="rv-on" aria-labelledby="rv-on-h">
+<h2 id="rv-on-h" class="rv-section">What's on this week <span class="rv-live">read live</span></h2>
+<p class="rv-deck">From each town's own agenda, as published; check every event with its organiser.</p>
+<div id="rv-on-body" class="rv-on-cols"><p class="rv-wait" role="status">Reading the town agendas...</p></div>
+</section>
+
+<section class="rv-colophon" aria-labelledby="rv-colophon-h">
+<h2 id="rv-colophon-h" class="rv-label">Colophon: a made-up example</h2>
+<p>Cinco Chaminés is an invented company and this is not a real magazine. The five homes, their descriptions, prices and availability are made up; every picture is an AI-generated picture of an invented house or an imagined Algarve view, not a photograph. The weather, sea, UV and warnings are IPMA's, and the events come from the towns' own agendas, both read live in your browser through data.promptugal.news. Nothing can be booked here.</p>
+</section>
+</main>
+<!--FOOTER-->
+</body>
+</html>
