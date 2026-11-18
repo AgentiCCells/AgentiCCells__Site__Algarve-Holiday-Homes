@@ -46,7 +46,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
 | N2 | Release a build without a pass from the reviewer | expectation | reviewer verdict recorded before release | observe | team/rounds/N/review/ holds a pass for the build |
 | N3 | Release a page without the words "made-up example" | expectation | reviewer verdict; Dinis reads each release | observe | the review checks every page; validate.mjs does not yet (G5) |
 | N4 | Release a booking flow that does not end in "This is a demonstration: nothing was booked, nothing was sent, nothing was charged" | expectation | reviewer verdict | observe | the review walks the booking flow to its end at 390 and 1366 px |
-| N5 | Release a form that stores or sends what a visitor types, or any payment code | expectation | reviewer verdict | observe | no form action, fetch with a body, storage call on form input or payment code in src/ |
+| N5 | Release a form that sends what a visitor types, keeps it outside the visitor's own browser, or any real payment code | expectation | reviewer verdict | observe | no form action, fetch with a body, storage call on form input or payment code in src/ |
 | N6 | Copy data from data.promptugal.news into the repository beyond small test fixtures | expectation | reviewer verdict | observe | git ls-files tests/ shows only small fixtures; src/ holds no data file but src/data/cameras.json |
 | N7 | Add ads, tracking or any profit-making use (IPMA's terms) | expectation | reviewer verdict | observe | no ad or analytics code in src/ (and validate.mjs fails any third-party script) |
 | N8 | Commit, print or log a secret | setting | scripts/leak-scan.mjs in release.sh and CI | observe | node scripts/leak-scan.mjs |
@@ -87,7 +87,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
   "format": "agenticcells-abp/0.1",
   "id": "conductor.algarve-holiday-homes@AgentiCCells.dinis",
   "kind": "agent",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "status": "approved",
   "phase": "mixed",
   "default": "deny",
@@ -279,7 +279,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
     },
     {
       "id": "N5",
-      "rule": "Release a form that stores or sends what a visitor types, or any payment code",
+      "rule": "Release a form that sends what a visitor types, keeps it outside the visitor's own browser, or any real payment code",
       "barrier": "expectation",
       "enforcer": "reviewer verdict",
       "mode": "observe",
@@ -420,3 +420,4 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
 
 - 0.1.0, 18 November 2026: first version, written by conductor.algarve-holiday-homes@AgentiCCells.dinis from the brief (requests/2026-11-18__algarve-holiday-homes/brief.md in AgentiCCells/AgentiCCells__Site__Factory), team/WORKFLOW.md, team/scopes.json and the IPMA data cell's policies. Proposal until Dinis approved it.
 - 0.1.1, 18 November 2026: approved by Dinis Cruz, about 17:10 UTC ("I'm happy with those team policies", team/rounds/2.md); licence.approved_by added, keeper set to Dinis Cruz (an approved policy is not kept by the agent it binds).
+- 0.1.2, 18 November 2026: forms may keep what a visitor types in that visitor's own browser (localStorage) for the simulation, never send it, at Dinis's word (about 17:20 UTC: "use local storage to capture the data so that the user can basically just simulate", team/rounds/2.md).

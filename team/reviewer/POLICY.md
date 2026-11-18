@@ -47,7 +47,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
 | N10 | Work while board/HOLD.md exists, or remove it | setting | scripts/release.sh and the Pages workflow refuse while it exists | observe | test -e board/HOLD.md before each step |
 | N11 | Pass a build that fails a rule of the brief | expectation | the conductor reads the verdict before release | observe | the verdict lists every rule with its result |
 | N12 | Pass a page without "made-up example" | expectation | the conductor reads the verdict before release | observe | the review has a line per page |
-| N13 | Pass a booking flow that does not end in the demonstration statement, or a form that keeps or sends anything | expectation | the conductor reads the verdict before release | observe | the review walks the flow and records the network and storage calls |
+| N13 | Pass a booking flow that does not end in the demonstration statement, or a form that sends anything or keeps it outside the visitor's own browser | expectation | the conductor reads the verdict before release | observe | the review walks the flow and records the network and storage calls |
 | N14 | Pass a figure without IPMA (or the events source) named, with the read time, the terms and a link | expectation | the conductor reads the verdict before release | observe | the review has a line per figure |
 | N15 | Pass a page that names a booking platform | expectation | the conductor reads the verdict before release | observe | the review records the search of src/ and _site/ |
 | N16 | Pass a camera that is police, traffic-enforcement or private CCTV, has a person as operator, or is embedded where its terms do not allow | expectation | the conductor reads the verdict before release | observe | the review checks each entry of cameras.json against its operator page |
@@ -84,7 +84,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
   "format": "agenticcells-abp/0.1",
   "id": "reviewer.algarve-holiday-homes@AgentiCCells.dinis",
   "kind": "agent",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "status": "approved",
   "phase": "observe",
   "default": "deny",
@@ -270,7 +270,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
     },
     {
       "id": "N13",
-      "rule": "Pass a booking flow that does not end in the demonstration statement, or a form that keeps or sends anything",
+      "rule": "Pass a booking flow that does not end in the demonstration statement, or a form that sends anything or keeps it outside the visitor's own browser",
       "barrier": "expectation",
       "enforcer": "the conductor reads the verdict before release",
       "mode": "observe",
@@ -380,3 +380,4 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
 
 - 0.1.0, 18 November 2026: first version, written by conductor.algarve-holiday-homes@AgentiCCells.dinis from the brief, team/WORKFLOW.md, team/scopes.json and the IPMA data cell's reviewer policy. Proposal until Dinis approved it.
 - 0.1.1, 18 November 2026: approved by Dinis Cruz, about 17:10 UTC ("I'm happy with those team policies", team/rounds/2.md); licence.approved_by added.
+- 0.1.2, 18 November 2026: forms may keep what a visitor types in that visitor's own browser (localStorage) for the simulation, never send it, at Dinis's word (about 17:20 UTC: "use local storage to capture the data so that the user can basically just simulate", team/rounds/2.md).

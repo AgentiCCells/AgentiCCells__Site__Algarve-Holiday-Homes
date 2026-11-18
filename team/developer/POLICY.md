@@ -48,7 +48,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
 | N9 | Weaken, skip or edit a gate (validate, leak scan, check-commits, role-scope, abp-check, release.sh, the Pages workflow) | setting | scripts/role-scope.mjs: only the conductor may change the gates or .github/ | observe | git log -p scripts/validate.mjs scripts/leak-scan.mjs scripts/check-commits.mjs scripts/role-scope.mjs scripts/abp-check.mjs scripts/release.sh .github/ |
 | N10 | Work while board/HOLD.md exists, or remove it | setting | scripts/release.sh and the Pages workflow refuse while it exists | observe | test -e board/HOLD.md before each step |
 | N11 | Load a third-party script or stylesheet | setting | scripts/validate.mjs fails any script or stylesheet from another host | observe | node scripts/validate.mjs |
-| N12 | Build a form that stores or sends what a visitor types (no form action, no request with a body, no storage of form input) | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | grep src/ for action=, method="post", localStorage, sessionStorage, indexedDB and fetch with a body |
+| N12 | Build a form that sends what a visitor types anywhere, or keeps it anywhere but that visitor's own browser (localStorage for the simulation, with a reset button; no form action, no request with a body) | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | grep src/ for action=, method="post", localStorage, sessionStorage, indexedDB and fetch with a body |
 | N13 | Write payment code or ask for card, bank or personal details | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | no payment field or code in src/ |
 | N14 | Copy data from data.promptugal.news into src/ or the build; the pages read it live | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | no data file in src/ or _site/ but data/cameras.json |
 | N15 | Call a live model or any service but data.promptugal.news from the pages; the agent is scripted | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | every fetch in src/ goes to data.promptugal.news or the site itself |
@@ -87,7 +87,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
   "format": "agenticcells-abp/0.1",
   "id": "developer.algarve-holiday-homes@AgentiCCells.dinis",
   "kind": "agent",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "status": "approved",
   "phase": "observe",
   "default": "deny",
@@ -289,7 +289,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
     },
     {
       "id": "N12",
-      "rule": "Build a form that stores or sends what a visitor types (no form action, no request with a body, no storage of form input)",
+      "rule": "Build a form that sends what a visitor types anywhere, or keeps it anywhere but that visitor's own browser (localStorage for the simulation, with a reset button; no form action, no request with a body)",
       "barrier": "expectation",
       "enforcer": "reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round",
       "mode": "observe",
@@ -414,3 +414,4 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
 
 - 0.1.0, 18 November 2026: first version, written by conductor.algarve-holiday-homes@AgentiCCells.dinis from the brief, team/WORKFLOW.md, team/scopes.json and the IPMA data cell's developer policy. Proposal until Dinis approved it.
 - 0.1.1, 18 November 2026: approved by Dinis Cruz, about 17:10 UTC ("I'm happy with those team policies", team/rounds/2.md); licence.approved_by added.
+- 0.1.2, 18 November 2026: forms may keep what a visitor types in that visitor's own browser (localStorage) for the simulation, never send it, at Dinis's word (about 17:20 UTC: "use local storage to capture the data so that the user can basically just simulate", team/rounds/2.md).
