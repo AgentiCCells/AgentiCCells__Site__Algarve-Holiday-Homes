@@ -45,7 +45,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
 | N8 | Start a session, a scheduled task or another sub-agent | expectation | none | observe | list_sessions children and list_triggers show nothing new |
 | N9 | Weaken, skip or edit a gate (validate, leak scan, check-commits, role-scope, abp-check, release.sh, the Pages workflow) | setting | scripts/role-scope.mjs: only the conductor may change the gates or .github/ | observe | git log -p scripts/validate.mjs scripts/leak-scan.mjs scripts/check-commits.mjs scripts/role-scope.mjs scripts/abp-check.mjs scripts/release.sh .github/ |
 | N10 | Work while board/HOLD.md exists, or remove it | setting | scripts/release.sh and the Pages workflow refuse while it exists | observe | test -e board/HOLD.md before each step |
-| N11 | Use a photo of a real place or property as one of the homes | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | every home picture in the proposal is a drawing, labelled as such |
+| N11 | Use a photo of a real place or property as one of the homes, or show an AI-generated picture without saying it is AI-generated | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | every home picture is a drawing or an AI-generated picture of an invented house, labelled as such |
 | N12 | Imitate the look, logo or name of a booking platform or of a real holiday-rental business | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | the review compares the mock-ups against the rule |
 | N13 | Draw a billboard mock-up that is not marked as a proposal | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | each billboard mock-up carries the word proposal |
 | N14 | Leave "made-up example" or the demonstration statement out of a mock-up of a page that needs it | expectation | reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round | observe | the review checks each mock-up |
@@ -82,7 +82,7 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
   "format": "agenticcells-abp/0.1",
   "id": "designer.algarve-holiday-homes@AgentiCCells.dinis",
   "kind": "agent",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "status": "approved",
   "phase": "observe",
   "default": "deny",
@@ -252,11 +252,11 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
     },
     {
       "id": "N11",
-      "rule": "Use a photo of a real place or property as one of the homes",
+      "rule": "Use a photo of a real place or property as one of the homes, or show an AI-generated picture without saying it is AI-generated",
       "barrier": "expectation",
       "enforcer": "reviewer.algarve-holiday-homes@AgentiCCells.dinis checks each round",
       "mode": "observe",
-      "test": "every home picture in the proposal is a drawing, labelled as such"
+      "test": "every home picture is a drawing or an AI-generated picture of an invented house, labelled as such"
     },
     {
       "id": "N12",
@@ -362,3 +362,4 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
 
 - 0.1.0, 18 November 2026: first version, written by conductor.algarve-holiday-homes@AgentiCCells.dinis from the brief, team/WORKFLOW.md, team/scopes.json and the IPMA data cell's designer policy. Proposal until Dinis approved it.
 - 0.1.1, 18 November 2026: approved by Dinis Cruz, about 17:10 UTC ("I'm happy with those team policies", team/rounds/2.md); licence.approved_by added.
+- 0.1.2, 18 November 2026: N11 allows AI-generated pictures of the invented houses when labelled, at Dinis's word (about 17:10 UTC: "see if we can generate some images of the house", team/rounds/2.md).
