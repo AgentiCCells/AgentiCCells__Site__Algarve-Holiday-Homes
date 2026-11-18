@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cinco Chaminés mock-up (made-up example)</title>
+<meta name="description" content="Design mock-up for round 1: the home page and a home page with the stay panel. A made-up example; figures are examples from the research read of 18 November 2026.">
+<style>
+:root{--bg:#FBF7F0;--surface:#FFFFFF;--ink:#1F2328;--ink-2:#545A62;--line:#D9D2C5;--accent:#A13D1A;--on-accent:#FFFFFF;--sea:#0E5A72;--band-bg:#FBE7A1;--band-ink:#3A2E00;--warn-y:#FFF0B3;--warn-o:#FFD6AD;--warn-r:#F7C6C1;--free:#FFFFFF;--taken:#E4DED3;--wall:#FFFFFF;--roof:#C2643D;--water:#9FD3E3;--green:#5E7D4A;
+--s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--r:6px;
+--f:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16130F;--surface:#221E19;--ink:#F2EDE4;--ink-2:#BDB5A8;--line:#3A342C;--accent:#F2A07C;--on-accent:#16130F;--sea:#7EC8DF;--band-bg:#E9CF6E;--band-ink:#2A2200;--warn-y:#4A3D10;--warn-o:#5A3416;--warn-r:#5E2622;--free:#221E19;--taken:#3A342C;--wall:#E9E2D6;--roof:#B85A36;--water:#2F6F84;--green:#7E9E68}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.55 var(--f)}
+a{color:var(--accent)}a:focus-visible,button:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+.band{background:var(--band-bg);color:var(--band-ink);font-size:.875rem;padding:var(--s2) var(--s4);text-align:center}
+.band a{color:var(--band-ink);font-weight:600}
+.mock{background:var(--ink);color:var(--bg);font:12px/1.4 var(--mono);padding:4px 16px;text-align:center}
+header.site{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);max-width:72rem;margin:0 auto;padding:var(--s4)}
+.brand{display:flex;align-items:center;gap:var(--s2);font-weight:700;font-size:1.125rem;color:var(--ink);text-decoration:none}
+.brand small{display:block;font-weight:400;font-size:.75rem;color:var(--ink-2)}
+nav.top ul{display:flex;gap:var(--s4);list-style:none;margin:0;padding:0;font-size:.9375rem}
+nav.top a{color:var(--ink);text-decoration:none;white-space:nowrap}nav.top a[aria-current]{border-bottom:2px solid var(--accent)}
+.menu{display:none}
+main{max-width:72rem;margin:0 auto;padding:0 var(--s4) var(--s7)}
+h1{font-size:clamp(1.75rem,4vw,2.5rem);line-height:1.15;margin:var(--s5) 0 var(--s3)}
+h2{font-size:1.5rem;line-height:1.2;margin:var(--s7) 0 var(--s4)}h3{font-size:1.125rem;margin:0 0 var(--s2)}
+.lead{font-size:1.125rem;color:var(--ink-2);max-width:42rem}
+.small{font-size:.8125rem;color:var(--ink-2)}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;letter-spacing:.02em;border:1px solid currentColor;border-radius:999px;padding:0 8px;color:var(--ink-2)}
+.hero>*,.split>*,.plan .row>*{min-width:0}
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:var(--s6);align-items:center}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s5)}
+.plan label{display:block;font-size:.875rem;font-weight:600;margin-bottom:var(--s1)}
+.plan .row{display:grid;grid-template-columns:1fr 1fr 6rem;gap:var(--s3);margin-bottom:var(--s4)}
+.plan input,.plan select{width:100%;font:inherit;padding:10px;border:1px solid var(--ink-2);border-radius:var(--r);background:var(--bg);color:var(--ink)}
+.btn{display:inline-block;font:inherit;font-weight:600;background:var(--accent);color:var(--on-accent);border:0;border-radius:var(--r);padding:12px 18px;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+.now{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:var(--s3) 0;margin-top:var(--s6);font-size:.9375rem}
+.now b{font-size:1.125rem}
+.homes{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s4)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s3);display:flex;flex-direction:column}
+.card svg{width:100%;height:auto;display:block;margin-bottom:var(--s2)}
+.card p{margin:0 0 var(--s2);font-size:.875rem}.card .price{margin-top:auto;font-weight:600}
+.agent-cta{display:grid;grid-template-columns:auto 1fr auto;gap:var(--s4);align-items:center;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--sea);border-radius:var(--r);padding:var(--s4) var(--s5);margin-top:var(--s6)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--s2)}.chip{font:inherit;font-size:.875rem;background:transparent;color:var(--sea);border:1px solid var(--sea);border-radius:999px;padding:6px 12px}
+footer{border-top:1px solid var(--line);margin-top:var(--s7);padding:var(--s5) var(--s4);font-size:.8125rem;color:var(--ink-2)}
+footer .in{max-width:72rem;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:var(--s5)}
+footer a{color:var(--ink-2)}
+/* home page */
+.crumbs{font-size:.875rem;margin-top:var(--s4)}
+.split{display:grid;grid-template-columns:1fr 26rem;gap:var(--s6);align-items:start}
+.facts{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);padding:0;list-style:none;font-size:.9375rem}
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s4)}
+.cal table{border-collapse:collapse;width:100%;text-align:center;font-size:.875rem}
+.cal th{font-weight:600;color:var(--ink-2);padding:4px 0}
+.cal td{padding:2px}.cal td span{display:block;padding:6px 0;border-radius:4px;border:1px solid var(--line);background:var(--free)}
+.cal td.t span{background:var(--taken);color:var(--ink-2);text-decoration:line-through;background-image:repeating-linear-gradient(135deg,transparent 0 5px,rgba(0,0,0,.08) 5px 7px)}
+.cal td.s span{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:700}
+.cal td.p span{opacity:.45}
+.cal td.o span{border:2px solid var(--accent);font-weight:700}
+.legend{display:flex;gap:var(--s4);flex-wrap:wrap;font-size:.8125rem;margin-top:var(--s3)}
+.legend i{display:inline-block;width:14px;height:14px;border:1px solid var(--line);vertical-align:-2px;margin-right:4px;border-radius:3px}
+.stay{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s5);margin-top:var(--s5)}
+.stay h2{margin-top:0}
+.blk{border-top:1px solid var(--line);padding:var(--s4) 0}
+.src{font-size:.75rem;color:var(--ink-2);margin-top:var(--s2)}
+.src .stale{font-weight:700;color:var(--ink)}
+.days{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--s2)}
+.day{border:1px solid var(--line);border-radius:var(--r);padding:var(--s2);font-size:.8125rem;text-align:center}
+.day b{display:block;font-size:.9375rem}
+.day.none{border-style:dashed;color:var(--ink-2)}
+.warn{background:var(--warn-y);border-left:6px solid #8A6D00;border-radius:var(--r);padding:var(--s3)}
+.warn .lvl{font-weight:700;text-transform:uppercase;font-size:.75rem;letter-spacing:.04em}
+.pt{font-style:italic}
+.ev{list-style:none;padding:0;margin:0}.ev li{padding:var(--s2) 0;border-bottom:1px dashed var(--line)}
+.book{display:flex;gap:var(--s3);align-items:center;flex-wrap:wrap;margin-top:var(--s4)}
+.steps{display:flex;gap:var(--s2);list-style:none;padding:0;margin:0 0 var(--s3);font-size:.8125rem}
+.steps li{border:1px solid var(--line);border-radius:999px;padding:2px 10px}.steps li[aria-current]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.dock{position:fixed;right:var(--s4);bottom:var(--s4);background:var(--sea);color:var(--bg);border:0;border-radius:999px;padding:12px 18px;font:inherit;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.page{display:none}.page.on{display:block}
+@media (max-width:900px){.homes{grid-template-columns:repeat(2,1fr)}.hero,.split{grid-template-columns:1fr}footer .in{grid-template-columns:1fr}}
+@media (max-width:640px){nav.top{display:none}.menu{display:inline-block;font:inherit;background:transparent;color:var(--ink);border:1px solid var(--ink-2);border-radius:var(--r);padding:8px 12px}
+.plan .row{grid-template-columns:1fr 1fr}.plan .row div:last-child{grid-column:1/-1}.homes{grid-template-columns:1fr}.card{display:grid;grid-template-columns:120px 1fr;gap:var(--s3)}.card svg{grid-row:span 4;margin:0}
+.agent-cta{grid-template-columns:1fr}.days{grid-template-columns:repeat(3,1fr)}.dock{padding:10px 14px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <defs>
+  <!-- the reusable Algarve chimney: 24 x 40 units, base at y=40 -->
+  <symbol id="chimney" viewBox="0 0 24 40">
+   <rect x="8" y="20" width="8" height="20" fill="var(--wall)" stroke="var(--ink)" stroke-width="1.5"/>
+   <rect x="4" y="10" width="16" height="10" fill="var(--wall)" stroke="var(--ink)" stroke-width="1.5"/>
+   <path d="M7 15l2-2.5 2 2.5-2 2.5zM11 15l2-2.5 2 2.5-2 2.5zM15 15l2-2.5 2 2.5-2 2.5z" fill="var(--ink)"/>
+   <path d="M3 10L12 2l9 8z" fill="var(--roof)" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round"/>
+   <circle cx="12" cy="1.5" r="1.3" fill="var(--ink)"/>
+  </symbol>
+ </defs>
+</svg>
+
+<div class="band" role="note"><strong>Made-up example.</strong> Cinco Chaminés is an invented company: the homes, prices, availability and bookings are simulated. The weather, sea, UV and events are real, read live from data.promptugal.news. <a href="#">What is this site?</a></div>
+<div class="mock">DESIGN MOCK-UP, round 1. Figures are examples from the research read of 18 Nov 2026 (16:15 UTC), some illustrative; the built site reads them live.</div>
+
+<header class="site">
+ <a class="brand" href="#home"><svg width="22" height="36" aria-hidden="true"><use href="#chimney"/></svg><span>Cinco Chaminés<small>holiday homes in the Algarve (a made-up example)</small></span></a>
+ <nav class="top" aria-label="Main"><ul><li><a href="#home" aria-current="page">Homes</a></li><li><a href="#">Agent</a></li><li><a href="#">Live cameras</a></li><li><a href="#">Billboard (proposal)</a></li><li><a href="#">Use the data</a></li><li><a href="#">Behind the scenes</a></li></ul></nav>
+ <button class="menu" aria-expanded="false">Menu</button>
+</header>
+
+<!-- ============ HOME PAGE ============ -->
+<main id="home" class="page">
+ <section class="hero">
+  <div>
+   <h1>Five homes, five chimneys, one coast.</h1>
+   <p class="lead">An invented company with five holiday homes from Tavira to Sagres. Pick your dates to see which homes are free (simulated) and what the weather, sea and local events look like for your stay (real, from IPMA and the towns' own agendas).</p>
+  </div>
+  <form class="plan" aria-labelledby="plan-h" onsubmit="return false">
+   <h2 id="plan-h" style="margin:0 0 var(--s4);font-size:1.25rem">Plan your stay</h2>
+   <div class="row">
+    <div><label for="a">Arrive</label><input id="a" type="date" value="2026-11-20"></div>
+    <div><label for="d">Leave</label><input id="d" type="date" value="2026-11-25"></div>
+    <div><label for="g">Guests</label><select id="g"><option>2</option></select></div>
+   </div>
+   <button class="btn" type="submit">Show free homes and the weather</button>
+   <p class="small" style="margin:var(--s3) 0 0">Nothing you type here is kept or sent. Availability is simulated.</p>
+  </form>
+ </section>
+
+ <div class="now" aria-label="The Algarve now">
+  <span>Faro now: <b>19.8 to 22.4 °C</b>, light rain</span><span>Sea, Sagres coast: <b>18.8 to 19 °C</b></span><span>UV, Faro: <b>3</b> moderate</span><span>Warning, Faro district: <b>yellow, rough sea</b></span>
+  <span class="small" style="flex-basis:100%">Source: IPMA, Instituto Português do Mar e da Atmosfera, via data.promptugal.news. Read 16:14 UTC (8 minutes ago). IPMA terms: free for non-profit use, always name IPMA. <a href="#">Details</a></span>
+ </div>
+
+ <h2>The five homes <span class="tag">drawings, not photos</span></h2>
+ <div class="homes">
+  <article class="card">
+   <svg viewBox="0 0 240 160" role="img" aria-label="Drawing of the Salt House: a low white house with a roof terrace above salt pans">
+    <rect x="0" y="140" width="240" height="20" fill="var(--water)" opacity=".5"/>
+    <path d="M10 148h50M70 148h60M140 148h60M20 155h80M120 155h90" stroke="var(--wall)" stroke-width="3"/>
+    <rect x="40" y="80" width="140" height="60" fill="var(--wall)" stroke="var(--ink)" stroke-width="2"/>
+    <rect x="40" y="72" width="140" height="8" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    <path d="M50 72v8M60 72v8M70 72v8M80 72v8M90 72v8M100 72v8M110 72v8M120 72v8" stroke="var(--ink)"/>
+    <rect x="58" y="95" width="18" height="22" fill="var(--sea)"/><rect x="92" y="105" width="20" height="35" fill="var(--sea)"/><rect x="130" y="95" width="18" height="22" fill="var(--sea)"/>
+    <use href="#chimney" x="152" y="32" width="24" height="40"/>
+   </svg>
+   <h3><a href="#stay">The Salt House</a></h3><p>Tavira. Roof terrace over the salt pans.</p><p>Sleeps 4, 2 bedrooms</p><p class="price">EUR 120 a night <span class="small">(invented)</span></p>
+  </article>
+  <article class="card">
+   <svg viewBox="0 0 240 160" role="img" aria-label="Drawing of the Lagoon House: a first-floor flat in a small block by the lagoon, with a boat">
+    <rect x="0" y="140" width="240" height="20" fill="var(--water)"/>
+    <path d="M10 150q10-6 20 0t20 0M150 152q10-6 20 0t20 0" stroke="var(--sea)" stroke-width="2" fill="none"/>
+    <path d="M170 140h50l-8 10h-34z" fill="var(--roof)" stroke="var(--ink)" stroke-width="2"/><path d="M195 140v-26l14 22" stroke="var(--ink)" stroke-width="2" fill="none"/>
+    <rect x="50" y="40" width="110" height="100" fill="var(--wall)" stroke="var(--ink)" stroke-width="2"/>
+    <rect x="50" y="72" width="110" height="34" fill="var(--band-bg)" opacity=".6"/>
+    <rect x="62" y="48" width="16" height="16" fill="var(--sea)"/><rect x="97" y="48" width="16" height="16" fill="var(--sea)"/><rect x="132" y="48" width="16" height="16" fill="var(--sea)"/>
+    <rect x="62" y="78" width="16" height="22" fill="var(--sea)"/><rect x="97" y="78" width="16" height="22" fill="var(--sea)"/><rect x="132" y="78" width="16" height="22" fill="var(--sea)"/>
+    <path d="M56 100h98M60 100v-8M70 100v-8M80 100v-8M90 100v-8M100 100v-8M110 100v-8M120 100v-8M130 100v-8M140 100v-8M150 100v-8M56 92h98" stroke="var(--ink)" stroke-width="1.5"/>
+    <rect x="96" y="114" width="18" height="26" fill="var(--sea)"/>
+    <use href="#chimney" x="128" y="0" width="24" height="40"/>
+   </svg>
+   <h3><a href="#stay">The Lagoon House</a></h3><p>Faro. A first-floor flat for two by the lagoon.</p><p>Sleeps 2, 1 bedroom</p><p class="price">EUR 85 a night <span class="small">(invented)</span></p>
+  </article>
+  <article class="card">
+   <svg viewBox="0 0 240 160" role="img" aria-label="Drawing of the Hill House: a tiled country house with a pool and a carob tree on a hill">
+    <path d="M0 120q60-40 120-20t120-10v70H0z" fill="var(--green)" opacity=".35"/>
+    <rect x="30" y="85" width="115" height="55" fill="var(--wall)" stroke="var(--ink)" stroke-width="2"/>
+    <path d="M22 85L88 58l65 27z" fill="var(--roof)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="45" y="100" width="18" height="20" fill="var(--sea)"/><rect x="80" y="105" width="18" height="35" fill="var(--sea)"/><rect x="112" y="100" width="18" height="20" fill="var(--sea)"/>
+    <rect x="158" y="130" width="62" height="10" fill="var(--water)" stroke="var(--ink)" stroke-width="2"/>
+    <rect x="198" y="96" width="5" height="34" fill="var(--ink)"/>
+    <circle cx="190" cy="88" r="14" fill="var(--green)"/><circle cx="208" cy="82" r="15" fill="var(--green)"/><circle cx="214" cy="98" r="11" fill="var(--green)"/>
+    <use href="#chimney" x="104" y="34" width="24" height="40"/>
+   </svg>
+   <h3><a href="#stay">The Hill House</a></h3><p>Near Loulé. Pool, carob and almond trees.</p><p>Sleeps 6, 3 bedrooms</p><p class="price">EUR 160 a night <span class="small">(invented)</span></p>
+  </article>
+  <article class="card">
+   <svg viewBox="0 0 240 160" role="img" aria-label="Drawing of the Harbour House: a narrow town house with a walled courtyard, masts behind">
+    <path d="M200 140V30M215 140V45M200 30l-25 60h25" stroke="var(--ink-2)" stroke-width="1.5" fill="none"/>
+    <rect x="80" y="50" width="90" height="90" fill="var(--wall)" stroke="var(--ink)" stroke-width="2"/>
+    <rect x="76" y="44" width="98" height="8" fill="var(--sea)" stroke="var(--ink)" stroke-width="2"/>
+    <rect x="94" y="62" width="18" height="26" fill="var(--sea)"/><rect x="138" y="62" width="18" height="26" fill="var(--sea)"/>
+    <path d="M90 88h26M134 88h26" stroke="var(--ink)" stroke-width="2"/>
+    <rect x="116" y="104" width="20" height="36" fill="var(--sea)"/>
+    <rect x="30" y="102" width="50" height="38" fill="var(--wall)" stroke="var(--ink)" stroke-width="2"/>
+    <path d="M45 140v-20a10 10 0 0 1 20 0v20" fill="var(--roof)" stroke="var(--ink)" stroke-width="2"/>
+    <circle cx="36" cy="96" r="6" fill="var(--green)"/>
+    <use href="#chimney" x="146" y="4" width="24" height="40"/>
+   </svg>
+   <h3><a href="#stay">The Harbour House</a></h3><p>Lagos. Town house with a courtyard, near the marina.</p><p>Sleeps 4, 2 bedrooms</p><p class="price">EUR 130 a night <span class="small">(invented)</span></p>
+  </article>
+  <article class="card">
+   <svg viewBox="0 0 240 160" role="img" aria-label="Drawing of the Cape House: a long low house on a cliff top, with wind lines">
+    <path d="M190 140l20 20h30v-20z" fill="var(--water)"/><path d="M0 140h190l20 20H0z" fill="var(--ink-2)" opacity=".35"/>
+    <path d="M6 70q20-8 40 0M14 84q24-8 46 0M4 98q18-6 34 0" stroke="var(--sea)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="40" y="100" width="140" height="40" fill="var(--wall)" stroke="var(--ink)" stroke-width="3"/>
+    <path d="M36 100l144-8v8z" fill="var(--roof)" stroke="var(--ink)" stroke-width="2"/>
+    <rect x="58" y="112" width="12" height="12" fill="var(--sea)"/><rect x="94" y="112" width="16" height="28" fill="var(--sea)"/><rect x="134" y="112" width="12" height="12" fill="var(--sea)"/>
+    <path d="M196 140q-2-14 8-22M204 140q4-12 14-16" stroke="var(--green)" stroke-width="3" fill="none"/>
+    <use href="#chimney" x="58" y="56" width="24" height="40"/>
+   </svg>
+   <h3><a href="#stay">The Cape House</a></h3><p>Sagres. Wind-proof, for surfers and walkers.</p><p>Sleeps 5, 3 bedrooms</p><p class="price">EUR 145 a night <span class="small">(invented)</span></p>
+  </article>
+ </div>
+
+ <section class="agent-cta" aria-labelledby="ag-h">
+  <svg width="28" height="46" aria-hidden="true"><use href="#chimney"/></svg>
+  <div><h3 id="ag-h">Ask the agent <span class="tag">simulation</span></h3><p class="small" style="margin:0 0 var(--s2)">Pre-written answers matched in your browser, no live model. It can still read today's weather and events for you.</p>
+   <div class="chips"><button class="chip">Which home suits four people?</button><button class="chip">Weather in Lagos next weekend?</button><button class="chip">What's on in Tavira?</button></div></div>
+  <a class="btn ghost" href="#">Open the agent</a>
+ </section>
+</main>
+
+<!-- ============ ONE HOME WITH THE STAY PANEL ============ -->
+<main id="stay" class="page">
+ <p class="crumbs"><a href="#home">Homes</a> / The Lagoon House</p>
+ <div class="split">
+  <div>
+   <h1>The Lagoon House, Faro</h1>
+   <ul class="facts"><li>Sleeps 2</li><li>1 bedroom</li><li>Balcony</li><li>Step-free to the lift</li><li><b>EUR 85 a night</b> <span class="small">(invented)</span></li></ul>
+   <p>A small first-floor flat for two at the edge of the old town, near the lagoon and the boats to the islands. <span class="small">(Invented home; drawing, not a photo.)</span></p>
+
+   <section class="stay" aria-labelledby="stay-h">
+    <h2 id="stay-h">Your stay: Fri 20 to Wed 25 November</h2>
+    <p class="small" style="margin-top:-8px">Real data for Faro and the Faro district, read live. Each block names its source.</p>
+
+    <div class="blk">
+     <h3>Forecast, Faro <span class="small">(same town)</span></h3>
+     <div class="days">
+      <div class="day"><span>Fri 20</span><b>15 to 21 °C</b>sunny spells<br>rain 10%</div>
+      <div class="day"><span>Sat 21</span><b>14 to 20 °C</b>clear<br>rain 0%</div>
+      <div class="day"><span>Sun 22</span><b>14 to 19 °C</b>cloudy<br>rain 20%</div>
+      <div class="day none"><span>Mon 23</span><b>not yet</b>appears 19 Nov</div>
+      <div class="day none"><span>Tue 24</span><b>not yet</b>appears 20 Nov</div>
+      <div class="day none"><span>Wed 25</span><b>not yet</b>appears 21 Nov</div>
+     </div>
+     <p class="src">IPMA gives five days ahead; later days appear five days before. Source: IPMA, Instituto Português do Mar e da Atmosfera (ipma-city-forecasts). IPMA issued 15:31; read 16:14 UTC, 8 min ago. Terms: free for non-profit use, always name IPMA. <a href="#">IPMA page</a></p>
+    </div>
+
+    <div class="blk">
+     <h3>Warnings, Faro district</h3>
+     <div class="warn" role="status"><span class="lvl">Yellow: rough sea</span><br>Wed 18 Nov 13:15 to Fri 20 Nov 09:00 (Portugal time). Overlaps your first morning. It is for the west coast; the Lagoon House is on the south coast.<br><span class="pt" lang="pt">"Na costa Ocidental, ondas de noroeste com 4 a 5 metros."</span> <span class="small">(IPMA, in Portuguese: on the west coast, north-west waves of 4 to 5 metres)</span></div>
+     <p class="src">Source: IPMA (ipma-warnings), area FAR covers the whole Algarve. Read 16:14 UTC. Terms as above.</p>
+    </div>
+
+    <div class="blk">
+     <h3>Sea and UV</h3>
+     <p style="margin:0">Faro coast: sea <b>18 to 19 °C</b>, waves 0.5 to 1 m (Fri 20; IPMA gives three days)<br>UV, Faro: <b>3, moderate</b> (Fri 20); Sat 21 <b>2, low</b></p>
+     <p class="src">Source: IPMA (ipma-sea, ipma-uv). Read 16:13 UTC. UV bands: WHO. Terms as above.</p>
+    </div>
+
+    <div class="blk">
+     <h3>On in Faro during your stay</h3>
+     <ul class="ev"><li><a href="#">O Principezinho | Um musical para plateia e marionetas</a><br><span class="small">Wed 25 Nov, Teatro das Figuras. Check details with the organiser.</span></li></ul>
+     <p class="src">Source: Teatro das Figuras, Faro, agenda page, via events-pt. Read 16:11 UTC. Reference use only: name, date, venue and a link. An empty list means no source covers the place, not that nothing is on.</p>
+    </div>
+   </section>
+  </div>
+
+  <aside>
+   <svg viewBox="0 0 240 160" role="img" aria-label="Drawing of the Lagoon House" style="width:100%;background:var(--surface);border:1px solid var(--line);border-radius:6px">
+    <rect x="0" y="140" width="240" height="20" fill="var(--water)"/>
+    <path d="M170 140h50l-8 10h-34z" fill="var(--roof)" stroke="var(--ink)" stroke-width="2"/><path d="M195 140v-26l14 22" stroke="var(--ink)" stroke-width="2" fill="none"/>
+    <rect x="50" y="40" width="110" height="100" fill="var(--wall)" stroke="var(--ink)" stroke-width="2"/>
+    <rect x="50" y="72" width="110" height="34" fill="var(--band-bg)" opacity=".6"/>
+    <rect x="62" y="48" width="16" height="16" fill="var(--sea)"/><rect x="97" y="48" width="16" height="16" fill="var(--sea)"/><rect x="132" y="48" width="16" height="16" fill="var(--sea)"/>
+    <rect x="62" y="78" width="16" height="22" fill="var(--sea)"/><rect x="97" y="78" width="16" height="22" fill="var(--sea)"/><rect x="132" y="78" width="16" height="22" fill="var(--sea)"/>
+    <path d="M56 100h98M56 92h98" stroke="var(--ink)" stroke-width="1.5"/><rect x="96" y="114" width="18" height="26" fill="var(--sea)"/>
+    <use href="#chimney" x="128" y="0" width="24" height="40"/>
+   </svg>
+   <div class="cal" style="margin-top:var(--s4)">
+    <ol class="steps" aria-label="Booking steps"><li aria-current="step">1 Dates</li><li>2 Guests</li><li>3 Details</li><li>4 Review</li></ol>
+    <h3>November 2026 <span class="tag">simulated availability</span></h3>
+    <table role="grid" aria-label="November 2026, simulated availability"><thead><tr><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th><th>S</th></tr></thead><tbody>
+     <tr><td class="p"><span>26</span></td><td class="p"><span>27</span></td><td class="p"><span>28</span></td><td class="p"><span>29</span></td><td class="p"><span>30</span></td><td class="p"><span>31</span></td><td class="p"><span>1</span></td></tr>
+     <tr><td class="p"><span>2</span></td><td class="p"><span>3</span></td><td class="p"><span>4</span></td><td class="p"><span>5</span></td><td class="p"><span>6</span></td><td class="p"><span>7</span></td><td class="p"><span>8</span></td></tr>
+     <tr><td class="p"><span>9</span></td><td class="p"><span>10</span></td><td class="p"><span>11</span></td><td class="p"><span>12</span></td><td class="p"><span>13</span></td><td class="p"><span>14</span></td><td class="p"><span>15</span></td></tr>
+     <tr><td class="p"><span>16</span></td><td class="p"><span>17</span></td><td><span>18</span></td><td class="t"><span>19</span></td><td class="s"><span>20</span></td><td class="s"><span>21</span></td><td class="s"><span>22</span></td></tr>
+     <tr><td class="s"><span>23</span></td><td class="s"><span>24</span></td><td class="o"><span>25</span></td><td class="t"><span>26</span></td><td class="t"><span>27</span></td><td><span>28</span></td><td><span>29</span></td></tr>
+     <tr><td><span>30</span></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </tbody></table>
+    <div class="legend"><span><i></i>free</span><span><i style="background:var(--taken);background-image:repeating-linear-gradient(135deg,transparent 0 3px,rgba(0,0,0,.15) 3px 5px)"></i>taken (struck through)</span><span><i style="background:var(--accent)"></i>your nights</span><span><i style="border:2px solid var(--accent)"></i>leave</span></div>
+    <p class="small">Simulated: made up in your browser from the home and today's date. 5 nights, EUR 425 (invented).</p>
+    <div class="book"><a class="btn" href="#">Next: guests</a><span class="small">Nothing is kept, sent or charged.</span></div>
+   </div>
+  </aside>
+ </div>
+</main>
+
+<footer><div class="in">
+ <div><strong>Cinco Chaminés is a made-up example.</strong> Homes, prices, availability and bookings are invented. Weather, warnings, sea and UV: <b>IPMA, Instituto Português do Mar e da Atmosfera</b>, via data.promptugal.news; IPMA allows use with no profit-making purpose and asks to be named. Events: each town's own agenda, reference use with a link. Data files CC BY 4.0, PrompTugal.news.</div>
+ <div><a href="#">Use the data</a><br><a href="#">Use with AI</a><br><a href="#">Behind the scenes</a></div>
+ <div>Made by the AgentiCCells site factory. Code Apache-2.0, text and drawings CC BY 4.0. Version v0.1.x</div>
+</div></footer>
+<button class="dock" aria-label="Ask the agent (simulation)">Ask the agent</button>
+<script>function show(){var h=location.hash==='#stay'?'stay':'home';document.querySelectorAll('.page').forEach(function(p){p.classList.toggle('on',p.id===h)})}addEventListener('hashchange',show);show();</script>
+</body>
+</html>
