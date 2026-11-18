@@ -11,6 +11,7 @@
 // the footer names no person, and picture() writes every <img> of a home (team/rounds/2/design/PROPOSAL.md, 2.1 and 2.4).
 // Code Apache-2.0; text CC BY 4.0.
 import { chimney } from '../src/assets/js/houses.js';
+import { switcherHTML } from '../src/assets/js/modes/switcher.js'; // round 3: the mode switcher (developer instance D)
 
 export const SITE = 'https://algarve-holiday-homes.agenticcells.site';
 export const REPO = 'https://github.com/AgentiCCells/AgentiCCells__Site__Algarve-Holiday-Homes';
@@ -42,6 +43,7 @@ export function head({ path, title, description, image }) {
     `<link rel="canonical" href="${esc(url)}">`,
     `<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">`,
     `<link rel="stylesheet" href="/assets/site.css">`,
+    `<link rel="stylesheet" href="/assets/modes.css">`,
     `<link rel="alternate" type="text/markdown" href="${esc(twin(path))}" title="This page as Markdown">`,
     `<meta name="color-scheme" content="light dark">`,
     `<meta property="og:type" content="website">`,
@@ -72,6 +74,7 @@ export function header(path) {
 <button class="menu" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
 <nav class="nav" id="site-nav" aria-label="Site"><ul>${links}</ul></nav>
 </div>
+${switcherHTML(path)}
 </header>`;
 }
 

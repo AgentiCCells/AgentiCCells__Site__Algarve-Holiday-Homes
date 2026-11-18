@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin, the back office (made-up example) | Cinco Chaminés</title>
+<meta name="description" content="The simulated back office of an invented holiday-home business: bookings, calendar, rates, stock, cleaning, issues, reviews, money, Portuguese rules and the agents' policies, all in your browser. A made-up example; not legal or tax advice.">
+<meta name="share-image" content="/assets/share/admin.png">
+<link rel="stylesheet" href="/assets/admin.css">
+<!--HEAD-->
+<script type="module" src="/assets/js/admin/admin.js"></script>
+</head>
+<body data-sources="ipma-city-forecasts">
+<!--HEADER-->
+<div class="adm" id="main">
+<nav class="adm-side" aria-label="Admin sections">
+<div class="adm-group"><p class="adm-gt">Operations</p><ul>
+<li><a href="#today" data-sec="today">Today <span class="pill" data-count="today"></span></a></li>
+<li><a href="#bookings" data-sec="bookings">Bookings <span class="pill" data-count="bookings"></span></a></li>
+<li><a href="#calendar" data-sec="calendar">Calendar</a></li>
+<li><a href="#cleaning" data-sec="cleaning">Cleaning <span class="pill" data-count="cleaning"></span></a></li>
+<li><a href="#stock" data-sec="stock">Stock <span class="pill" data-count="stock"></span></a></li>
+<li><a href="#issues" data-sec="issues">Issues <span class="pill" data-count="issues"></span></a></li>
+<li><a href="#messages" data-sec="messages">Messages <span class="pill" data-count="messages"></span></a></li>
+<li><a href="#reviews" data-sec="reviews">Reviews <span class="pill" data-count="reviews"></span></a></li>
+</ul></div>
+<div class="adm-group"><p class="adm-gt">Business</p><ul>
+<li><a href="#rates" data-sec="rates">Rates and rules</a></li>
+<li><a href="#money" data-sec="money">Money</a></li>
+<li><a href="#legality" data-sec="legality">Legality <span class="pill" data-count="legality"></span></a></li>
+<li><a href="#integrations" data-sec="integrations">Integrations</a></li>
+</ul></div>
+<div class="adm-group"><p class="adm-gt">Agents</p><ul>
+<li><a href="#policies" data-sec="policies">Policies <span class="pill" data-count="policies"></span></a></li>
+</ul></div>
+<p class="adm-who">Signed in as the owner <span class="k sim">SIMULATED</span><br>Helena (invented person)</p>
+</nav>
+<main class="adm-main">
+<div class="adm-title">
+<div><h1 id="adm-h">Admin</h1><p class="adm-sub" id="adm-sub">The back office of an invented business, simulated in your browser.</p></div>
+<div class="adm-filter" role="group" aria-label="Show homes"><button type="button" data-home="all" aria-pressed="true">All five</button><button type="button" data-home="salt" aria-pressed="false">Salt</button><button type="button" data-home="lagoon" aria-pressed="false">Lagoon</button><button type="button" data-home="hill" aria-pressed="false">Hill</button><button type="button" data-home="harbour" aria-pressed="false">Harbour</button><button type="button" data-home="cape" aria-pressed="false">Cape</button></div>
+</div>
+<div class="adm-result" id="adm-result" role="status" aria-live="polite"></div>
+<div id="adm-content" class="adm-content">
+<p class="adm-loading">The admin is drawn in your browser from the simulation kept there (localStorage). It needs JavaScript; nothing is sent anywhere.</p>
+<noscript><p>This page needs JavaScript: the back office is a simulation that runs in your browser. Everything on it is a made-up example.</p></noscript>
+</div>
+</main>
+</div>
+<!--FOOTER-->
+</body>
+</html>
