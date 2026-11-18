@@ -1,0 +1,11 @@
+{
+  "schema": "hub.json (draft)",
+  "name": "Algarve holiday homes (made-up example)",
+  "what_it_does": "A made-up company with five holiday homes in the Algarve: availability, a simulated booking, a scripted agent, and live weather and events from our data.",
+  "owner": "AgentiCCells",
+  "team": "factory@AgentiCCells.dinis, instructed by Dinis Cruz",
+  "licence": { "code": "Apache-2.0", "text": "CC BY 4.0" },
+  "repository": "https://github.com/AgentiCCells/AgentiCCells__Site__Algarve-Holiday-Homes",
+  "live_address": "https://algarve-holiday-homes.agenticcells.site",
+  "version_from": "https://algarve-holiday-homes.agenticcells.site/version.json"
+}
