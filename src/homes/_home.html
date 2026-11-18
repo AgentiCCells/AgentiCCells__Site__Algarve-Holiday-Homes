@@ -7,6 +7,7 @@
 <meta name="description" content="{{description}}">
 <meta name="share-image" content="/assets/share/home-{{id}}.png">
 <!--HEAD-->
+<link rel="stylesheet" href="/assets/stay.css">
 <script type="module" src="/assets/js/house.js"></script>
 </head>
 <body data-home="{{id}}" data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
@@ -27,8 +28,8 @@
 <aside class="g-side side" aria-label="Calendar and booking">
 <section class="book" id="book" aria-labelledby="book-h">
 <h2 id="book-h" class="sr-only">Availability and booking (simulated)</h2>
-<div id="book-body"><p class="status loading" role="status">Making up the simulated calendar...</p>
-<noscript><p class="status fail">The simulated calendar and the demonstration booking need JavaScript; they run only in your browser and send nothing.</p></noscript></div>
+<div id="book-body"><p class="status loading" role="status">Reading the simulation in your browser...</p>
+<noscript><p class="status fail">The simulated calendar and the demonstration booking need JavaScript; they run only in your browser (localStorage) and send nothing.</p></noscript></div>
 </section>
 </aside>
 <section class="g-stay stay" id="stay" aria-labelledby="stay-h">

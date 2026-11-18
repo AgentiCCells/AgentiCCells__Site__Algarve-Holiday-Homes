@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Side by side: the visitor and the admin (made-up example) | Cinco Chaminés</title>
+<meta name="description" content="A made-up example: the visitor's site and the admin side of an invented holiday-home business side by side, sharing one simulation in your browser, with one time slider bounded by the days that have real IPMA weather and real events.">
+<meta name="share-image" content="/assets/share/play.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/assets/stay.css">
+<link rel="stylesheet" href="/assets/play.css">
+<script type="module" src="/assets/js/play/play.js"></script>
+</head>
+<body class="mode-play" data-sources="ipma-city-forecasts ipma-sea events-pt">
+<!--HEADER-->
+<main id="main" class="play-main">
+<!-- Side by side (round 3, team/rounds/3/design/PROPOSAL.md section 4): the visitor site and
+     /admin/ in two frames of this same site, one time slider, and a ticker of what happened.
+     Both frames share the simulation in this browser (localStorage "cc.sim.v1"), so a booking on
+     the left shows on the right at once. Nothing is sent anywhere. Code Apache-2.0; text CC BY 4.0. -->
+<h1 class="sr-only">Side by side: the visitor and the admin</h1>
+<p class="mode-note small"><strong>Made-up example: side by side.</strong> The visitor's site on the left and the admin on the right share one simulation in your browser. Book a home on the left and watch it arrive on the right; move the time and watch stays begin, stock go down and cleanings happen. Weather and events are real; everything else is simulated or invented.</p>
+
+<section class="timebar" aria-labelledby="tb-h">
+<h2 id="tb-h" class="sr-only">Simulated time</h2>
+<div class="tb-buttons" role="group" aria-label="Move the simulated time">
+<button type="button" class="tb" id="tb-back" title="Back one day">&larr; 1 day</button>
+<button type="button" class="tb tb-play" id="tb-play" aria-pressed="false">Play</button>
+<button type="button" class="tb" id="tb-hour">+1 hour</button>
+<button type="button" class="tb" id="tb-day">+1 day</button>
+</div>
+<div class="tb-speed" role="radiogroup" aria-label="Speed when playing" id="tb-speed">
+<button type="button" role="radio" aria-checked="false" data-speed="1">1x (real time)</button>
+<button type="button" role="radio" aria-checked="true" data-speed="3600">1 hour a second</button>
+<button type="button" role="radio" aria-checked="false" data-speed="86400">1 day a second</button>
+</div>
+<p class="tb-now" id="tb-now" aria-live="off">Simulated time: reading...</p>
+<div class="rail-wrap">
+<div class="rail" id="rail">
+<div class="rail-wx" id="rail-wx" aria-hidden="true"></div>
+<div class="rail-ev" id="rail-ev" aria-hidden="true"></div>
+<div class="thumb" id="thumb" role="slider" tabindex="0" aria-label="Simulated date and time" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="reading"></div>
+</div>
+<div class="ticks" id="ticks" aria-hidden="true"></div>
+</div>
+<ul class="rail-legend small">
+<li><i class="lg-wx"></i> real weather as IPMA issued it (<span id="lg-wx">reading</span>)</li>
+<li><i class="lg-ev"></i> real events (<span id="lg-ev">reading</span>)</li>
+<li>The slider stops at the last real day. Arrow keys move an hour, Page Up and Page Down a day, Home and End the ends.</li>
+</ul>
+<label class="small synth"><input type="checkbox" id="synth"> Let synthetic visitors book too (a preview of round 4's world: invented people, scripted)</label>
+<p class="small play-note" id="play-note" role="status"></p>
+</section>
+
+<div class="view-toggle" role="group" aria-label="What to show">
+<button type="button" class="vt" data-view="both" aria-pressed="true">Both sides</button>
+<button type="button" class="vt" data-view="visitor" aria-pressed="false">Visitor only</button>
+<button type="button" class="vt" data-view="admin" aria-pressed="false">Admin only</button>
+</div>
+
+<div class="frames" id="frames" data-view="both">
+<section class="pane pane-visitor" aria-labelledby="pv-h">
+<div class="pane-head"><h2 id="pv-h">Visitor and guest</h2><p class="addr" id="addr-v">/ · you are the visitor</p></div>
+<p class="pane-links small"><button type="button" class="linkbtn" data-go="/">Home page</button> · <button type="button" class="linkbtn" data-go="/homes/salt/">A home</button> · <button type="button" class="linkbtn" data-go="/stay/">Your stay</button> · <a id="open-v" href="/">Open in its own tab</a> · <a href="#pane-admin" class="jump">Jump to admin</a></p>
+<div class="frame-box" id="box-v"><iframe id="frame-v" title="The visitor's site, inside this page" loading="eager"></iframe></div>
+</section>
+<section class="pane pane-ticker" aria-labelledby="tk-h">
+<div class="pane-head"><h2 id="tk-h">What just happened</h2><p class="addr">newest first</p></div>
+<ol class="ticker" id="ticker" aria-live="polite" aria-relevant="additions"><li class="tk-empty">Nothing yet. Book a home on the left, or move the time.</li></ol>
+</section>
+<section class="pane pane-admin" id="pane-admin" aria-labelledby="pa-h" tabindex="-1">
+<div class="pane-head"><h2 id="pa-h">Admin</h2><p class="addr">/admin/ · you are the owner</p></div>
+<p class="pane-links small"><a id="open-a" href="/">Open in its own tab</a></p>
+<div class="frame-box" id="box-a"><p class="status loading" role="status">Looking for the admin side...</p></div>
+</section>
+</div>
+</main>
+<!--FOOTER-->
+</body>
+</html>
