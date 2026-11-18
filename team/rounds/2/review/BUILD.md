@@ -49,7 +49,7 @@ No `/billboard/` page, card or nav item; no link containing "billboard" on any p
 No "Dinis" or "Cruz" in visible text, twins or llms.txt on any page outside /behind-the-scenes/ (which renders `team/`, allowed). The agent's "Who made this?" answer names no person. Only HTML comments carry agent ids (S5).
 
 ### Booking platforms
-grep of `_site/` outside behind the scenes for the validator's list plus airbnb, booking.com, vrbo, expedia, tripadvisor, holidu: none. The integration note on /use-the-data/ says "a holiday-rental booking platform". No em dashes.
+grep of `_site/` outside behind the scenes for the validator's list of booking-platform brand names and a few more: none. The integration note on /use-the-data/ says "a holiday-rental booking platform". No em dashes.
 
 ### Source lines (POLICY N14)
 Main site: unchanged from round 1 and passing (each home page block ends with source, read time and terms). Designs: 9 to 13 source lines per page with publisher, file id, read time and age; IPMA terms once per page; events and per-home lines without terms (M1); Linho at 390 hides them (M2).

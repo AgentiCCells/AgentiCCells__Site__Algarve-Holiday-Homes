@@ -10,7 +10,7 @@ import { D, esc, FAIL, FAIL_EVENTS, CAPTION, imgName, altFor, picture, stay, ava
 const $ = id => document.getElementById(id);
 const wide = matchMedia('(min-width: 900px)');
 const det = $('ln-wx-src');
-det.open = wide.matches;
+det.open = true; // review round 2 M2: read times and terms visible at every width
 
 async function renderWx() {
   const L = await live();

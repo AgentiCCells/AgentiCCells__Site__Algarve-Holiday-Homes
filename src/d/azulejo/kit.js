@@ -130,7 +130,7 @@ export async function homeToday(h) {
   return { ...f, day: f.days[0] || null };
 }
 // The source line beside a figure (data.js's, with publisher, file id, read time and age, stale and failure words).
-export const src = (res, opts = { terms: false }) => D.sourceLine(res, opts);
+export const src = (res, opts = {}) => D.sourceLine(res, opts);
 // A plain failure note with a Try again button; bindRetry() wires every such button.
 export const failNote = (words, ids) => `<p class="fail" role="status"><strong>${esc(words)}.</strong> No figure is shown in place of one that could not be read. <button type="button" class="retry" data-retry="${esc(ids.join(' '))}">Try again</button></p>`;
 export function bindRetry(root, rerender) {
@@ -173,5 +173,5 @@ export function shortSrc(res) {
   const body = res.error ? `<strong>could not be read just now (${esc(res.error)})</strong>`
     : res.stale ? `<strong class="stale">read ${esc(D.fmtUTC(res.read_at))}, ${esc(D.ago(res.age_min))}; this may be out of date</strong>`
     : `read ${esc(D.fmtUTC(res.read_at))}, ${esc(D.ago(res.age_min))}`;
-  return `<p class="src src-short${res.stale ? ' is-stale' : ''}${res.error ? ' is-error' : ''}">Source: ${holder} (<code>${esc(res.id)}</code>) via data.promptugal.news, ${body}. <a href="${esc(u.card)}">Source card</a></p>`;
+  return `<p class="src src-short${res.stale ? ' is-stale' : ''}${res.error ? ' is-error' : ''}">Source: ${holder} (<code>${esc(res.id)}</code>) via data.promptugal.news, ${body}. ${holder === 'IPMA' ? "Terms: no profit-making use; always name IPMA." : 'Terms: reference use only, the source named and a link to each event.'} <a href="${esc(u.card)}">Source card</a></p>`;
 }
