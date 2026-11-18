@@ -1,0 +1,122 @@
+<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Use the data | Cinco Chaminés (made-up example)</title><meta name="description" content="How to use the live data behind this made-up example: the five data.promptugal.news sources it reads, copy-paste examples in JavaScript and curl, how to read a source card and its terms, and how a real business could build the same."><meta name="share-image" content="/assets/share/use-the-data.png"><!--HEAD--></head><body data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt"><!--HEADER--><main id="main">
+<h1>Use the data</h1>
+<p class="lede">Cinco Chaminés is a made-up example, but the weather, sea, UV, warnings and events on its pages are real. They come from public JSON files that anyone can read. This page shows where they are, how to read them, the terms that come with them, and how a real business could build something like this site.</p>
+
+<h2>What data.promptugal.news is</h2>
+<p><a href="https://data.promptugal.news/">data.promptugal.news</a> is the raw data behind the PrompTugal.news sites: public data about Portugal, collected by code on a schedule and served as plain JSON files. There are no articles and no model in the loop. Every file is a GET request with no key, and any website may read it from a visitor's browser (CORS is open). The catalogue lists every source with its addresses, and the contract says the version 1 addresses stay for the life of version 1.</p>
+<ul>
+<li><a href="https://data.promptugal.news/llms.txt">llms.txt</a>: the data site in one text file, for people and agents.</li>
+<li><a href="https://data.promptugal.news/api/v1/index.json">Catalogue</a> (<code>api/v1/index.json</code>): every source with its title, publisher, cadence, <code>read_at</code>, <code>status</code> and addresses. Read addresses from here rather than building them by hand.</li>
+<li><a href="https://data.promptugal.news/api/v1/openapi.json">OpenAPI 3.1</a> (<code>api/v1/openapi.json</code>): every path with a schema.</li>
+<li><a href="https://data.promptugal.news/api/v1/README.md">Contract</a> (<code>api/v1/README.md</code>).</li>
+</ul>
+<p>Each source has three files in its own folder, <code>https://data.promptugal.news/api/v1/&lt;source&gt;/</code>: <code>latest.json</code> (the records from the last read, with their provenance), <code>reads.json</code> (a log of the collector's runs, newest first: address, HTTP status, size, checksum and whether the bytes changed; it logs runs, not values) and <code>card.json</code> (who publishes the data, the terms, the schedule). Read the card before you reuse a value.</p>
+
+<h2>The five sources this site reads</h2>
+<div class="table-wrap">
+<table>
+<thead><tr><th scope="col">Source</th><th scope="col">What</th><th scope="col">Publisher</th><th scope="col">Files</th><th scope="col">Status now</th></tr></thead>
+<tbody>
+<tr><td><code>ipma-city-forecasts</code></td><td>Five-day forecasts by place (today and the next four days)</td><td>IPMA</td><td><a href="https://data.promptugal.news/api/v1/ipma-city-forecasts/latest.json">latest</a>, <a href="https://data.promptugal.news/api/v1/ipma-city-forecasts/reads.json">reads</a>, <a href="https://data.promptugal.news/api/v1/ipma-city-forecasts/card.json">card</a></td><td data-status="ipma-city-forecasts">not read yet</td></tr>
+<tr><td><code>ipma-warnings</code></td><td>Yellow, orange and red weather warnings by area</td><td>IPMA</td><td><a href="https://data.promptugal.news/api/v1/ipma-warnings/latest.json">latest</a>, <a href="https://data.promptugal.news/api/v1/ipma-warnings/reads.json">reads</a>, <a href="https://data.promptugal.news/api/v1/ipma-warnings/card.json">card</a></td><td data-status="ipma-warnings">not read yet</td></tr>
+<tr><td><code>ipma-sea</code></td><td>Waves, period, direction and sea temperature, three days ahead</td><td>IPMA</td><td><a href="https://data.promptugal.news/api/v1/ipma-sea/latest.json">latest</a>, <a href="https://data.promptugal.news/api/v1/ipma-sea/reads.json">reads</a>, <a href="https://data.promptugal.news/api/v1/ipma-sea/card.json">card</a></td><td data-status="ipma-sea">not read yet</td></tr>
+<tr><td><code>ipma-uv</code></td><td>UV index forecast by place and day</td><td>IPMA</td><td><a href="https://data.promptugal.news/api/v1/ipma-uv/latest.json">latest</a>, <a href="https://data.promptugal.news/api/v1/ipma-uv/reads.json">reads</a>, <a href="https://data.promptugal.news/api/v1/ipma-uv/card.json">card</a></td><td data-status="ipma-uv">not read yet</td></tr>
+<tr><td><code>events-pt</code></td><td>Public events on now or in the next 60 days, as schema.org Event records</td><td>Câmara Municipal de Lagos, Teatro das Figuras (Faro), Câmara Municipal de Tavira (and the Lisbon agenda, not read at the time of writing)</td><td><a href="https://data.promptugal.news/api/v1/events-pt/latest.json">latest</a>, <a href="https://data.promptugal.news/api/v1/events-pt/reads.json">reads</a>, <a href="https://data.promptugal.news/api/v1/events-pt/card.json">card</a></td><td data-status="events-pt">not read yet</td></tr>
+</tbody>
+</table>
+</div>
+<p>Two helper files are also useful: <a href="https://data.promptugal.news/api/v1/events/by-place/lagos.json"><code>/api/v1/events/by-place/lagos.json</code></a> (the same events, for one place; also <code>faro</code> and <code>tavira</code>; the <a href="https://data.promptugal.news/api/v1/events/by-place/index.json">index</a> lists every Algarve place, most with none) and <a href="https://data.promptugal.news/api/v1/by-place/now/lagos.json"><code>/api/v1/by-place/now/lagos.json</code></a> (for each of the 16 Algarve municipalities, the nearest IPMA values already picked out; good for a "now" strip, not for a stay).</p>
+<p class="prov">Addresses from data.promptugal.news's <a href="https://data.promptugal.news/llms.txt">llms.txt</a> and <a href="https://data.promptugal.news/api/v1/index.json">catalogue</a>; each address on this page answered HTTP 200 to curl on 18 November 2026 at 16:30 UTC. The status column is filled in your browser from the catalogue when the page opens.</p>
+
+<h2>The Algarve in these files</h2>
+<p>The files cover all of Portugal; the Algarve is a small part. What exists for it, as read on 18 November 2026:</p>
+<ul>
+<li><strong>Forecasts</strong> (<code>ipma-city-forecasts</code>): four places with area <code>"FAR"</code>: Faro <code>1080500</code>, Loulé <code>1080800</code>, Portimão <code>1081100</code> and Sagres <code>1081505</code>. Match by <code>id</code>, not by name, because names carry accents.</li>
+<li><strong>Warnings</strong> (<code>ipma-warnings</code>): one area for the whole Algarve, <code>"FAR"</code> (the Faro district). No active <code>FAR</code> entry means no yellow, orange or red warning.</li>
+<li><strong>Sea</strong> (<code>ipma-sea</code>): two coasts, "Faro, costa" <code>1080526</code> and "Sagres, costa" <code>1081526</code>.</li>
+<li><strong>UV</strong> (<code>ipma-uv</code>): Faro <code>1080500</code>, and <code>1081525</code>, which the file leaves unnamed and the by-place files call Sagres.</li>
+<li><strong>Events</strong> (<code>events-pt</code>): three places, <code>lagos</code>, <code>faro</code> and <code>tavira</code>, under <code>places</code>, an object keyed by place, each holding a list of events.</li>
+</ul>
+<p>So each made-up home on this site uses the nearest place that has data: the Salt House in Tavira shows Faro's forecast, for example, and says so. The mapping is in <a href="/data/homes.json">/data/homes.json</a>.</p>
+
+<h2>Copy and paste</h2>
+<h3>JavaScript, in a browser or Node 18 and later</h3>
+<pre><code>const base = 'https://data.promptugal.news/api/v1';
+
+// Faro's five-day forecast (IPMA). Match the place by id.
+const f = await (await fetch(`${base}/ipma-city-forecasts/latest.json`)).json();
+const faro = f.cities.find(c =&gt; c.id === 1080500);
+for (const d of faro.days)
+  console.log(d.date, d.t_min_c, d.t_max_c, `${d.rain_prob_pct}% rain`);
+console.log('Source: IPMA, read', faro.read_at);
+
+// Warnings for the Algarve (area FAR). None listed means no yellow, orange or red warning.
+const w = await (await fetch(`${base}/ipma-warnings/latest.json`)).json();
+const far = w.active.filter(a =&gt; a.area === 'FAR');
+console.log(far.length
+  ? far.map(a =&gt; `${a.level} ${a.type}, ${a.start} to ${a.end}`).join('\n')
+  : 'No warning for the Faro district');
+
+// Events in Lagos between two dates (inclusive, local dates).
+const from = '2026-11-21', to = '2026-11-28';
+const e = await (await fetch(`${base}/events/by-place/lagos.json`)).json();
+const on = e.events.filter(ev =&gt;
+  ev.startDate.slice(0, 10) &lt;= to &amp;&amp; (ev.endDate || ev.startDate).slice(0, 10) &gt;= from);
+for (const ev of on) console.log(ev.startDate, ev.name, ev.url);</code></pre>
+<h3>curl and jq, in a terminal</h3>
+<pre><code># Faro's forecast, one line per day
+curl -s https://data.promptugal.news/api/v1/ipma-city-forecasts/latest.json \
+  | jq -c '.cities[] | select(.id == 1080500) | .days[] | {date, t_min_c, t_max_c, rain_prob_pct}'
+
+# Active warnings for the Algarve (area FAR)
+curl -s https://data.promptugal.news/api/v1/ipma-warnings/latest.json \
+  | jq -c '.active[] | select(.area == "FAR") | {level, type, start, end}'
+
+# Events in Lagos from 21 to 28 November 2026
+curl -s https://data.promptugal.news/api/v1/events-pt/latest.json \
+  | jq -c '.places.lagos[]
+      | select(.startDate[0:10] &lt;= "2026-11-28" and ((.endDate // .startDate)[0:10]) &gt;= "2026-11-21")
+      | {startDate, name, url}'
+
+# Who publishes a source, and on what terms
+curl -s https://data.promptugal.news/api/v1/ipma-uv/card.json | jq '{publisher, terms: .terms.summary}'</code></pre>
+<p class="prov">Each example was run against the live files on 18 November 2026 at about 16:30 UTC and returned data. The dates are examples: events-pt only holds events from now to 60 days ahead, so change them to dates in that window.</p>
+
+<h2>How to read a source card</h2>
+<p>Every source has a <code>card.json</code>. These are the fields to show beside any figure you reuse:</p>
+<dl>
+<dt><code>publisher</code></dt><dd>Who publishes the data, for example "IPMA, Instituto Português do Mar e da Atmosfera". Name them beside every figure.</dd>
+<dt><code>terms</code></dt><dd><code>terms.summary</code> in plain English, <code>terms.quote</code> in the publisher's own words (with <code>terms.quote_lang</code>), <code>terms.page</code> where they were read, <code>terms.republish</code> (whether you may republish) and <code>terms.open_question</code> (anything not yet settled).</dd>
+<dt><code>license</code></dt><dd>The licence of the file's structure: CC BY 4.0, held by PrompTugal.news. Every value inside keeps its source's own terms, which are stricter.</dd>
+<dt><code>schedule.cadence</code></dt><dd>How often the collector is meant to read the source: hourly for the IPMA sources, every 6 hours for events-pt. Runs can be late; <code>reads.json</code> shows when they really happened.</dd>
+<dt><code>read_at</code></dt><dd>Not on the card but on <code>latest.json</code> (and in the catalogue): the time the collector last read the source, in UTC. Show it with every figure.</dd>
+</dl>
+
+<h3>The terms, as the cards give them</h3>
+<ul>
+<li><strong>IPMA</strong> (forecasts, warnings, sea, UV): "free to copy and use for personal or public use if the use has no profit-making or offensive purpose; always name IPMA as the source." So: always name IPMA, and no profit-making use. A real holiday-rental business making money would need IPMA's permission first.</li>
+<li><strong>events-pt</strong>: no reuse licence or terms page was found for any of the hosts, so the card says "reference use only, name the source, link to the event, no AI training", and leaves to a person whether that is enough to republish. On this site an event shows only its name, date, venue, source and a link to the organiser's page, and you are asked to check the details there.</li>
+</ul>
+
+<h3>Staleness</h3>
+<p>A file is only as fresh as the collector's last run. Check <code>read_at</code> on <code>latest.json</code>, and <code>status</code> in the catalogue (<code>"ok"</code>, <code>"partly failed"</code> or <code>"archived"</code>). In <code>reads.json</code>, <code>runs[0].failed</code> above 0 means the last run partly failed. This site calls an IPMA file stale after 2 hours and events after 12 hours, and says so beside the figure; those limits are our choice, not the publishers'. When a file is missing or stale, say so on the page. Never guess a value.</p>
+
+<h2>How a real business could build this</h2>
+<p>This is a proposal for how it could be done, not advice on a particular case.</p>
+<ol>
+<li><strong>Start from your own homes.</strong> A small JSON file like <a href="/data/homes.json">/data/homes.json</a>: each home with its town, and the nearest forecast place, sea coast, UV place and events place.</li>
+<li><strong>Read the data in the visitor's browser.</strong> Fetch <code>latest.json</code> and <code>card.json</code> when the page opens, as in the examples above. Your site then holds no data and needs no server of its own.</li>
+<li><strong>Show the source beside every figure:</strong> the publisher, the time read and the terms from the card, and a clear message when a file is missing or old.</li>
+<li><strong>Keep your own calendar and bookings in your own system.</strong> On this site they are simulated; a real business needs a real booking and payment system, with its own terms and data protection.</li>
+<li><strong>Host it as a static site.</strong> Most of the cost is the static host and a domain name; the data files themselves cost nothing to read.</li>
+</ol>
+<p>What it must check first:</p>
+<ul>
+<li><strong>The terms of every source.</strong> IPMA's terms rule out profit-making use, so a business needs IPMA's permission to show its data. events-pt is reference use only; showing events commercially needs each organiser's permission.</li>
+<li><strong>Permission for commercial use</strong> of anything it did not make, in writing.</li>
+<li><strong>Camera operators' permission</strong> before showing any live camera on its site; until then, link to the operator's page, as <a href="/live/">Live from the Algarve</a> does.</li>
+<li><strong>Local accommodation registration.</strong> Holiday lets in Portugal must be registered as local accommodation (alojamento local) with the municipality, and the registration number shown. Check the current rules with the municipality before taking guests.</li>
+</ul>
+
+<p class="note">This page is part of a made-up example: Cinco Chaminés and its homes are invented. The data sources, their addresses and their terms are real, as read on 18 November 2026.</p>
+</main><!--FOOTER--></body></html>
