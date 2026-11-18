@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The synthetic world (a simulation) | Cinco Chaminés (made-up example)</title>
+<meta name="description" content="A made-up example played like a game: invented people drawn as little figures arrive, ask the agent, book, stay and review the five invented homes, while invented admins run them. Profit and loss, stock, reviews and the Agent Behaviour Policies blocking prompt injections, all simulated in your browser. Nothing is sent.">
+<meta name="share-image" content="/assets/share/world.png">
+<link rel="stylesheet" href="/assets/world.css">
+<!--HEAD-->
+</head>
+<body class="mode-page mode-world" data-mode="world" data-sources="ipma-city-forecasts ipma-sea events-pt">
+<!--HEADER-->
+<main id="main" class="wm world">
+  <h1 class="sr-only">The synthetic world: a simulation of the made-up Cinco Chaminés</h1>
+
+  <div class="w-ctl" role="group" aria-label="Run controls">
+    <div class="w-speed" role="group" aria-label="Speed">
+      <button type="button" data-speed="0" aria-pressed="false" aria-label="Pause"><span aria-hidden="true">&#10074;&#10074;</span></button>
+      <button type="button" data-speed="1" aria-pressed="false">1&times;</button>
+      <button type="button" data-speed="10" aria-pressed="false">10&times;</button>
+      <button type="button" data-speed="100" aria-pressed="false">100&times;</button>
+      <button type="button" data-speed="vf" class="vf" aria-pressed="false">Very fast</button>
+    </div>
+    <p class="w-stats" aria-live="off">
+      <span>Day <b id="st-day">1</b> of <b id="st-days">45</b> <span id="st-window">(17 Nov to 31 Dec)</span></span>
+      <span>People <b id="st-people">12</b> visitors &middot; <b id="st-admins">3</b> admins</span>
+      <span>Bookings <b id="st-bookings">0</b></span>
+      <span>Left unhappy <b id="st-unhappy">0</b></span>
+      <span>Injection attempts blocked <b id="st-inj">0 of 0</b></span>
+    </p>
+    <form class="w-seed" id="seed-form" autocomplete="off">
+      <label for="seed-in">Seed</label>
+      <input id="seed-in" name="seed" type="text" maxlength="40" spellcheck="false">
+      <button type="submit" class="tbtn">Run this seed</button>
+      <button type="button" class="tbtn" id="seed-new">New seed</button>
+    </form>
+  </div>
+  <p class="w-note" id="w-note" role="status"></p>
+
+  <div class="w-layout">
+    <div class="w-main">
+      <section class="w-stagebox" aria-labelledby="stage-h">
+        <h2 id="stage-h" class="sr-only">The stage</h2>
+        <div class="w-stage" id="stage">
+          <svg class="w-bg" id="stage-bg" viewBox="0 0 1000 620" role="img" aria-label="The simulated Algarve: people arrive, use the website, fly to Faro, stay in the five invented homes along the coast, and leave"></svg>
+          <div class="w-ov" id="stage-ov" aria-hidden="true"></div>
+          <div class="w-vf-msg" id="vf-msg" hidden>Very fast: counting whole days. Figures wait; the numbers keep moving.</div>
+          <aside class="w-sign" aria-label="This is a demo">
+            <p class="w-sign-h">THIS IS A DEMO</p>
+            <p class="w-sign-l">Simulated people &middot; invented homes &middot; AI-generated pictures</p>
+            <p class="w-sign-s">Real: IPMA weather and public events only. Nothing here is user research.</p>
+          </aside>
+        </div>
+        <p class="w-live sr-only" id="w-live" aria-live="polite"></p>
+        <p class="src">Figures drawn in your browser by sim/figure.js, after the storyboard kit of storyboards.sgit.ai (Apache-2.0); every person is invented. Home pictures: AI-generated, of houses that do not exist.</p>
+      </section>
+
+      <div class="w-below">
+        <section class="w-box w-profile" id="profile" aria-labelledby="profile-h" tabindex="-1">
+          <h2 id="profile-h">A person in the world</h2>
+          <p class="mini">Choose someone in the row of people below.</p>
+        </section>
+        <section class="w-box" aria-labelledby="found-h">
+          <h2 id="found-h">What this run found <span class="k sim">Simulated</span></h2>
+          <div id="found"></div>
+          <p class="mini">Ordered by cost. Played by the simulation's scripts, not by people: agreement between these invented people says as much about the scripts as about the site.</p>
+          <p><button type="button" class="tbtn" id="export">Export this run (JSON, to your device)</button></p>
+        </section>
+      </div>
+    </div>
+
+    <div class="w-side">
+      <div class="w-tabs" role="tablist" aria-label="Panels">
+        <button type="button" role="tab" id="tab-money" aria-controls="p-money" aria-selected="true">Money</button>
+        <button type="button" role="tab" id="tab-homes" aria-controls="p-homes" aria-selected="false" tabindex="-1">Homes</button>
+        <button type="button" role="tab" id="tab-stock" aria-controls="p-stock" aria-selected="false" tabindex="-1">Stock</button>
+        <button type="button" role="tab" id="tab-reviews" aria-controls="p-reviews" aria-selected="false" tabindex="-1">Reviews</button>
+        <button type="button" role="tab" id="tab-pol" aria-controls="p-pol" aria-selected="false" tabindex="-1">Policies</button>
+      </div>
+      <section class="w-box w-panel" id="p-money" role="tabpanel" aria-labelledby="tab-money">
+        <h2>Profit and loss, this run <span class="k sim">Simulated</span></h2>
+        <div id="pnl"></div>
+      </section>
+      <section class="w-box w-panel" id="p-homes" role="tabpanel" aria-labelledby="tab-homes">
+        <h2>Occupancy tonight <span class="k sim">Simulated</span></h2>
+        <div id="occ"></div>
+      </section>
+      <section class="w-box w-panel" id="p-stock" role="tabpanel" aria-labelledby="tab-stock">
+        <h2>Stock, lowest first <span class="k sim">Simulated</span></h2>
+        <div id="stock"></div>
+      </section>
+      <section class="w-box w-panel" id="p-reviews" role="tabpanel" aria-labelledby="tab-reviews">
+        <h2>Reviews <span id="rv-avg" class="mini"></span></h2>
+        <div id="reviews"></div>
+      </section>
+      <section class="w-box w-panel" id="p-pol" role="tabpanel" aria-labelledby="tab-pol">
+        <h2>Policies at work <span id="pol-n" class="d deny">0 blocked</span></h2>
+        <div id="pol"></div>
+        <p class="mini">Each actor's Agent Behaviour Policy runs in this browser (sim/abp.js): every action is allowed, asked of a person, or denied, with the rule's id. Text from reviews, messages and visitors is material, never an instruction.</p>
+      </section>
+    </div>
+  </div>
+
+  <section class="w-railbox" aria-labelledby="rail-h">
+    <h2 id="rail-h">The people <span class="k inv">Invented</span> <span class="k sim">Synthetic users</span></h2>
+    <ul class="w-rail" id="rail" aria-label="The invented people: choose one to see their profile, journey and outcome"></ul>
+  </section>
+
+  <section class="w-demo" aria-labelledby="demo-h">
+    <h2 id="demo-h">This is a demo of ...</h2>
+    <ul>
+      <li><span class="k sim">Simulated</span> a small holiday-home business run with agents, played like a game: invented visitors arrive, ask the site's agent, book, travel, stay, have good and bad days, and leave reviews, some of them unhappy.</li>
+      <li><span class="k sim">Simulated</span> invented admins (an owner, a housekeeper, a bookkeeper) moving rates, cleaning, reordering stock, registering guests and drafting the tourist tax.</li>
+      <li><span class="k sim">Simulated</span> Agent Behaviour Policies at several levels in the browser (the site's agent, each assistant, each person), refusing prompt-injection attempts and handing large sums to a person.</li>
+      <li><span class="k sim">Simulated</span> a profit and loss for the run, with VAT, commission and costs (not legal or tax advice).</li>
+      <li><span class="k real">Real</span> the weather in the bubbles, as IPMA issued it, and only for the days IPMA forecast; the days of the run stay inside the dates for which real data exists.</li>
+      <li><span class="k inv">Invented</span> the company, the five homes, prices, rules and every person. <span class="k ai">AI-generated</span> every picture of a home.</li>
+    </ul>
+    <p class="mini">The world runs in your browser and writes to the same simulation as <a href="/admin/">the admin</a>: open it in another tab to see this run's bookings. Nothing leaves this browser; Reset clears it. Seeded: the same seed gives the same run.</p>
+  </section>
+</main>
+<!--FOOTER-->
+<script type="module" src="/assets/js/world/world.js"></script>
+</body>
+</html>

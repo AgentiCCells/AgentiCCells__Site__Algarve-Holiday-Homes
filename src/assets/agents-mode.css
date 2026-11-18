@@ -1,0 +1,71 @@
+/* /agents/ of the Cinco Chaminés simulation (a made-up example): "Agents on both sides", three
+   columns, tool-call cards with decision badges (design: team/rounds/3/design/PROPOSAL.md 6).
+   Badges and buttons come from world.css. developer.algarve-holiday-homes@AgentiCCells.dinis (instance F), round 3. Code Apache-2.0. */
+.agm{max-width:96rem;margin:0 auto;padding:0 16px 3rem}
+.ag-sim{position:sticky;top:0;z-index:20;margin:0 -16px;padding:8px 16px;background:var(--sim-bg);color:var(--sim);font-size:.875rem;border-bottom:1px solid var(--line)}
+.ag-intro h1{margin:.8rem 0 .3rem;font-size:1.6rem}
+.ag-intro p{margin:0 0 .6rem;max-width:62rem}
+.ag-ctl{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 18px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.ag-field{display:flex;flex-direction:column;font-size:.8125rem;gap:2px;min-width:0;max-width:100%}
+.ag-field select{font:inherit;font-size:.875rem;padding:4px 6px;border:1px solid var(--ink-2);border-radius:6px;background:var(--surface);color:var(--ink);max-width:100%}
+.ag-mode{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.875rem}
+.ag-mode legend{font-size:.8125rem;padding:0;margin-bottom:2px;float:left;width:100%}
+.ag-mode label{display:flex;align-items:center;gap:4px;cursor:pointer}
+.ag-btns{display:flex;gap:6px;flex-wrap:wrap}
+.wm .tbtn.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.wm .tbtn.ok{border-color:var(--allow);color:var(--allow);background:var(--allow-bg)}
+.wm .tbtn.no{border-color:var(--deny);color:var(--deny);background:var(--deny-bg)}
+.ag-sum,.ag-bk{font-size:.875rem;margin:.5rem 0}
+.ag-bk code{font-size:.8125rem}
+.ag-switch{display:none}
+.ag-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr) minmax(0,1fr);gap:12px;align-items:start}
+.ag-col{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0;min-height:22rem;display:flex;flex-direction:column}
+.ag-col.mid{background:var(--bg);border-style:dashed}
+.ag-col h2{font-size:.9375rem;margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ag-col h2 small{display:block;font-weight:400;font-size:.75rem;color:var(--ink-2)}
+.ag-av svg{width:24px;height:45px;display:block}
+.ag-log{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:8px;flex:1}
+.ln{min-width:0;overflow-wrap:anywhere}
+.ln.in{animation:ag-in .3s ease-out}
+@keyframes ag-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.ln.say .who{font-size:.75rem;color:var(--ink-2);margin:0 0 2px;font-weight:600}
+.ln.say .who .to{font-weight:400}
+.ln.say .txt{margin:0;padding:6px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-size:.875rem}
+.ln.say.guest .txt,.ln.say.owner .txt{background:var(--band-bg);color:var(--band-ink);border-color:transparent}
+.ln.say.guest-assistant .txt{border-left:4px solid #7c3aed}
+.ln.say.host-assistant .txt{border-left:4px solid #0f766e}
+.ag-col.mid .ln.say.guest-assistant{align-self:flex-start;max-width:92%}
+.ag-col.mid .ln.say.host-assistant{align-self:flex-end;max-width:92%}
+.ln.say .txt.flag{font-family:var(--mono);font-size:.8125rem;color:var(--untr);border:1px solid var(--deny)}
+.ln.say .mini{margin:2px 0 0}
+.agm .card{display:block;height:auto;overflow:visible}
+.card{border:1px solid var(--line);border-left:5px solid var(--allow);border-radius:6px;padding:6px 8px;font-size:.8125rem;background:var(--surface)}
+.card.ask{border-left-color:#B8860B}.card.deny{border-left-color:var(--deny);background:var(--deny-bg);color:var(--ink)}
+:root:not([data-theme="dark"]) .card.deny{color:#1F2328}
+.card-h{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;align-items:center}
+.card-h code{font-weight:700;font-size:.8125rem}
+.card dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 8px;margin:4px 0;font-family:var(--mono);font-size:.75rem}
+.card dt{color:var(--ink-2)}.card dd{margin:0;overflow-wrap:anywhere}
+.card .why{margin:2px 0 0;font-size:.75rem;color:var(--ink-2)}
+.card.deny .why{color:inherit}
+.card .mini{margin:2px 0 0}
+.ask-btns{margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.ln.sys .mini{font-style:italic}
+.ag-in{margin-top:10px;border-top:1px solid var(--line);padding-top:8px;font-size:.8125rem}
+.ag-in label{display:block;font-weight:600;margin-bottom:4px}
+.ag-row{display:flex;gap:6px}
+.ag-row input{flex:1;min-width:0;font:inherit;font-size:.9375rem;padding:6px 8px;border:1px solid var(--ink-2);border-radius:6px;background:var(--surface);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 0;align-items:center}
+.wm .chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:99px;padding:2px 9px;font:inherit;font-size:.75rem;cursor:pointer;text-align:left}
+.ag-how{margin-top:16px;font-size:.875rem;max-width:62rem}
+.ag-how h2{font-size:1.1rem}
+@media (max-width:760px){
+  .agm{padding:0 12px 3rem}.ag-sim{margin:0 -12px;padding:8px 12px}
+  .ag-switch{display:flex;gap:2px;margin:8px 0;border-bottom:1px solid var(--line)}
+  .ag-switch button{flex:1;border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:.875rem;padding:8px 6px;border-bottom:3px solid transparent;cursor:pointer}
+  .ag-switch button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:700}
+  .ag-switch .cnt:not(:empty){display:inline-block;min-width:1.2em;border-radius:99px;background:var(--accent);color:var(--on-accent);font-size:.6875rem;padding:0 4px;margin-left:2px}
+  .ag-cols{grid-template-columns:1fr}
+  .ag-col{display:none;min-height:14rem}.ag-col.on{display:flex}
+}
+@media (prefers-reduced-motion:reduce){.ln.in{animation:none}}
