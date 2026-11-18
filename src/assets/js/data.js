@@ -257,6 +257,16 @@ function sourceName(src) {
   if (m) return m[1];
   try { return new URL(s.split(/\s/)[0]).host.replace(/^www\./, ''); } catch { return s || 'the event\'s source'; }
 }
+// The card's spelling of a publisher's name (with its accents) when the data gives it without:
+// "Camara Municipal de Tavira" -> "Câmara Municipal de Tavira" if the card's publisher has it (review S8).
+const ACC = { a: '[aàáâãä]', e: '[eèéêë]', i: '[iìíîï]', o: '[oòóôõö]', u: '[uùúûü]', c: '[cç]', n: '[nñ]' };
+export function cardSpelling(name, cardPublisher) {
+  const n = String(name || ''), pub = String(cardPublisher || '');
+  if (!n || !pub) return n;
+  const src = n.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/[aeiouc n]/gi, ch => ACC[ch.toLowerCase()] || ch);
+  try { const m = pub.match(new RegExp(src, 'i')); return m ? m[0] : n; } catch { return n; }
+}
+const withCardName = (s, pub) => { const [first, ...rest] = String(s).split(/,\s/); return [cardSpelling(first, pub), ...rest].join(', '); };
 // eventsFor(place, from, to) -> { res, items: [{name, start, end, venue, url, source_name, through}] }
 // through: the event runs all through from..to (a long exhibition). Window: now to 60 days ahead.
 export async function eventsFor(place, fromISO, toISO) {
@@ -265,7 +275,7 @@ export async function eventsFor(place, fromISO, toISO) {
   const items = list.map(e => {
     const start = String(e.startDate || '').slice(0, 10), end = String(e.endDate || e.startDate || '').slice(0, 10);
     return { name: e.name || 'an event', start: e.startDate || null, end: e.endDate || null, s: start, e: end,
-      venue: e.location?.name || null, url: e.url || null, source_name: sourceName(e.source), source: e.source || null };
+      venue: e.location?.name || null, url: e.url || null, source_name: withCardName(sourceName(e.source), res.card?.publisher), source: e.source || null };
   }).filter(x => x.s && (!toISO || x.s <= toISO) && (!fromISO || x.e >= fromISO))
     .map(({ s, e, ...x }) => ({ ...x, through: Boolean(fromISO && toISO && s < fromISO && e > toISO) }))
     .sort((a, b) => String(a.start).localeCompare(String(b.start)));
@@ -273,45 +283,43 @@ export async function eventsFor(place, fromISO, toISO) {
 }
 
 // ---------- the chosen stay: page address and this tab only ----------
+// Only the two dates are kept (review M5): never the number of guests or anything else typed.
 const KEY = 'cc-stay';
 function store() { try { return globalThis.sessionStorage || null; } catch { return null; } }
-// stayDates() -> { from, to, guests } (null where none). Reads ?from=&to=&guests= (also
-// ?arrive=&leave= from the design proposal), then this tab's sessionStorage.
+// stayDates() -> { from, to } (null where none). Reads ?from=&to= (also ?arrive=&leave= from
+// the design proposal), then this tab's sessionStorage.
 export function stayDates() {
-  let from = null, to = null, guests = null;
+  let from = null, to = null;
   try {
     const q = new URLSearchParams(globalThis.location?.search || '');
-    from = q.get('from') || q.get('arrive'); to = q.get('to') || q.get('leave'); guests = q.get('guests');
+    from = q.get('from') || q.get('arrive'); to = q.get('to') || q.get('leave');
   } catch { /* no location */ }
   if (!(isDay(from) && isDay(to))) {
-    try { const s = JSON.parse(store()?.getItem(KEY) || 'null'); if (s) { from = s.from; to = s.to; guests = guests || s.guests; } } catch { /* nothing kept */ }
+    try { const s = JSON.parse(store()?.getItem(KEY) || 'null'); if (s) { from = s.from; to = s.to; } } catch { /* nothing kept */ }
   }
   if (!(isDay(from) && isDay(to) && from < to)) { from = null; to = null; }
-  const g = Number(guests);
-  return { from, to, guests: Number.isInteger(g) && g > 0 && g < 20 ? g : null };
+  return { from, to };
 }
-// setStayDates(from, to, guests?): puts the dates in the address (?from=&to=) and this tab's
-// sessionStorage; null clears them. Nothing is sent anywhere.
-export function setStayDates(from, to, guests) {
+// setStayDates(from, to): puts the dates in the address (?from=&to=) and this tab's
+// sessionStorage; null clears them. Any old ?guests= is dropped. Nothing is sent anywhere.
+export function setStayDates(from, to) {
   const ok = isDay(from) && isDay(to) && from < to;
   try {
     const u = new URL(globalThis.location.href);
-    for (const k of ['from', 'to', 'arrive', 'leave']) u.searchParams.delete(k);
+    for (const k of ['from', 'to', 'arrive', 'leave', 'guests']) u.searchParams.delete(k);
     if (ok) { u.searchParams.set('from', from); u.searchParams.set('to', to); }
-    if (guests !== undefined) { if (guests) u.searchParams.set('guests', String(guests)); else u.searchParams.delete('guests'); }
     globalThis.history?.replaceState(globalThis.history.state, '', u.pathname + u.search + u.hash);
   } catch { /* no location */ }
   try {
     const s = store();
-    if (s) ok ? s.setItem(KEY, JSON.stringify({ from, to, guests: guests || null })) : s.removeItem(KEY);
+    if (s) ok ? s.setItem(KEY, JSON.stringify({ from, to })) : s.removeItem(KEY);
   } catch { /* storage blocked: the address still holds the dates */ }
   return ok ? { from, to } : { from: null, to: null };
 }
 // A query string carrying the stay to another page: "?from=..&to=.." or "".
-export function stayQuery({ from, to, guests } = stayDates()) {
+export function stayQuery({ from, to } = stayDates()) {
   const q = new URLSearchParams();
   if (from && to) { q.set('from', from); q.set('to', to); }
-  if (guests) q.set('guests', String(guests));
   const s = q.toString(); return s ? `?${s}` : '';
 }
 

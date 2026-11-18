@@ -134,18 +134,20 @@ test('bad JSON is reported as such, and forget() lets the page try again', { ski
   assert.equal(good.error, null);
 });
 
-test('stayDates and setStayDates use the address and this tab only', () => {
+test('stayDates and setStayDates use the address and this tab only, dates only (review M5)', () => {
   const store = new Map();
   globalThis.location = { href: 'https://x.test/homes/salt/?from=2026-11-20&to=2026-11-25&guests=3', search: '?from=2026-11-20&to=2026-11-25&guests=3' };
   globalThis.history = { state: null, replaceState(_, __, u) { const url = new URL(u, 'https://x.test'); globalThis.location = { href: url.href, search: url.search }; } };
   globalThis.sessionStorage = { getItem: k => store.get(k) ?? null, setItem: (k, v) => store.set(k, v), removeItem: k => store.delete(k) };
-  assert.deepEqual(D.stayDates(), { from: '2026-11-20', to: '2026-11-25', guests: 3 });
+  assert.deepEqual(D.stayDates(), { from: '2026-11-20', to: '2026-11-25' });
   D.setStayDates('2026-12-01', '2026-12-04', 2);
-  assert.equal(globalThis.location.search, '?guests=2&from=2026-12-01&to=2026-12-04');
+  assert.equal(globalThis.location.search, '?from=2026-12-01&to=2026-12-04', 'an old ?guests= is dropped');
+  assert.deepEqual(JSON.parse(store.get('cc-stay')), { from: '2026-12-01', to: '2026-12-04' }, 'only the dates are stored');
   globalThis.location = { href: 'https://x.test/', search: '' };
-  assert.deepEqual(D.stayDates(), { from: '2026-12-01', to: '2026-12-04', guests: 2 });
+  assert.deepEqual(D.stayDates(), { from: '2026-12-01', to: '2026-12-04' });
+  assert.equal(D.stayQuery(), '?from=2026-12-01&to=2026-12-04');
   D.setStayDates(null, null);
-  assert.deepEqual(D.stayDates(), { from: null, to: null, guests: null });
+  assert.deepEqual(D.stayDates(), { from: null, to: null });
   globalThis.location = { href: 'https://x.test/?from=2026-12-05&to=2026-12-01', search: '?from=2026-12-05&to=2026-12-01' };
   assert.deepEqual(D.stayDates().from, null, 'leave before arrive is ignored');
   delete globalThis.location; delete globalThis.history; delete globalThis.sessionStorage;

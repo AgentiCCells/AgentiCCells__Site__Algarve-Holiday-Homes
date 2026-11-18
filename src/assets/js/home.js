@@ -11,10 +11,13 @@ const T = today();
 const form = document.getElementById('plan');
 const msg = document.getElementById('plan-msg');
 const homesFor = document.getElementById('homes-for');
+// The number of guests lives in this page's memory only (review M5): not in the address, not in storage.
+let G = null;
 
 // ---------- cards: simulated availability for the chosen dates ----------
 async function updateCards() {
-  const { from, to, guests } = stayDates();
+  const { from, to } = stayDates();
+  const guests = G;
   const list = await homes();
   const q = stayQuery();
   for (const a of document.querySelectorAll('.card a.home-link')) a.href = a.getAttribute('href').split('?')[0] + q;
@@ -42,9 +45,10 @@ if (form) {
   arrive.min = T; leave.min = addDays(T, 1);
   arrive.max = addDays(T, 364); leave.max = addDays(T, 365);
   const s = stayDates();
+  // An old address may still carry ?guests=: drop it, keeping only the dates (review M5).
+  try { if (new URLSearchParams(location.search).has('guests')) setStayDates(s.from, s.to); } catch { /* no address */ }
   arrive.value = s.from || addDays(T, 2);
   leave.value = s.to || addDays(T, 7);
-  if (s.guests) guests.value = String(Math.min(6, s.guests));
   arrive.addEventListener('change', () => { if (isDay(arrive.value)) { leave.min = addDays(arrive.value, 1); if (!(leave.value > arrive.value)) leave.value = addDays(arrive.value, 5); } });
   form.addEventListener('submit', e => {
     e.preventDefault();
@@ -53,7 +57,8 @@ if (form) {
     if (!isDay(a) || !isDay(l)) { msg.classList.add('bad'); msg.textContent = 'Choose an arrive date and a leave date.'; return; }
     if (a < T) { msg.classList.add('bad'); msg.textContent = 'The arrive date is in the past.'; return; }
     if (l <= a) { msg.classList.add('bad'); msg.textContent = 'The leave date must be after the arrive date.'; return; }
-    setStayDates(a, l, g);
+    G = Number.isInteger(g) && g > 0 ? g : null;
+    setStayDates(a, l);
     msg.textContent = `Showing the five homes for ${fmtDay(a)} to ${fmtDay(l)}. Open a home for its calendar, weather, sea and events.`;
     updateCards();
     document.getElementById('homes-h')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });

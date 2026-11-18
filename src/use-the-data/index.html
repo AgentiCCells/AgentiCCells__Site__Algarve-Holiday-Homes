@@ -26,7 +26,8 @@
 </table>
 </div>
 <p>Two helper files are also useful: <a href="https://data.promptugal.news/api/v1/events/by-place/lagos.json"><code>/api/v1/events/by-place/lagos.json</code></a> (the same events, for one place; also <code>faro</code> and <code>tavira</code>; the <a href="https://data.promptugal.news/api/v1/events/by-place/index.json">index</a> lists every Algarve place, most with none) and <a href="https://data.promptugal.news/api/v1/by-place/now/lagos.json"><code>/api/v1/by-place/now/lagos.json</code></a> (for each of the 16 Algarve municipalities, the nearest IPMA values already picked out; good for a "now" strip, not for a stay).</p>
-<p class="prov">Addresses from data.promptugal.news's <a href="https://data.promptugal.news/llms.txt">llms.txt</a> and <a href="https://data.promptugal.news/api/v1/index.json">catalogue</a>; each address on this page answered HTTP 200 to curl on 18 November 2026 at 16:30 UTC. The status column is filled in your browser from the catalogue when the page opens.</p>
+<p class="prov">Addresses from data.promptugal.news's <a href="https://data.promptugal.news/llms.txt">llms.txt</a> and <a href="https://data.promptugal.news/api/v1/index.json">catalogue</a>; each address on this page answered HTTP 200 to curl on 18 November 2026 at 16:30 UTC. The status column is filled in your browser from the catalogue when the page opens: each source's <code>status</code> and <code>read_at</code>.</p>
+<p class="prov" id="status-note" role="status">The status column needs JavaScript; without it, see the <a href="https://data.promptugal.news/api/v1/index.json">catalogue</a> directly.</p>
 
 <h2>The Algarve in these files</h2>
 <p>The files cover all of Portugal; the Algarve is a small part. What exists for it, as read on 18 November 2026:</p>
@@ -119,4 +120,5 @@ curl -s https://data.promptugal.news/api/v1/ipma-uv/card.json | jq '{publisher, 
 </ul>
 
 <p class="note">This page is part of a made-up example: Cinco Chaminés and its homes are invented. The data sources, their addresses and their terms are real, as read on 18 November 2026.</p>
-</main><!--FOOTER--></body></html>
+</main>
+<script type="module" src="/assets/js/use-the-data.js"></script><!--FOOTER--></body></html>

@@ -45,8 +45,9 @@ async function start() {
   }
   const s = stayDates();
   if (s.from && s.to && s.from >= T && s.to <= addDays(LAST, 1)) { S.from = s.from; S.to = s.to; S.month = s.from.slice(0, 7); S.focus = s.from; }
-  if (s.guests) S.adults = Math.max(1, Math.min(S.home.sleeps, s.guests));
-  else S.adults = Math.min(2, S.home.sleeps);
+  S.adults = Math.min(2, S.home.sleeps);
+  // An old address may still carry ?guests=: drop it, keeping only the dates (review M5).
+  try { if (new URLSearchParams(location.search).has('guests')) setStayDates(S.from, S.to); } catch { /* no address */ }
   renderBook();
   renderStay();
 }
@@ -151,7 +152,7 @@ function pick(d) {
   datesChanged();
 }
 function datesChanged() {
-  setStayDates(S.to ? S.from : null, S.to ? S.to : null, S.adults + S.children);
+  setStayDates(S.to ? S.from : null, S.to ? S.to : null);
   renderBook();
   bookEl.querySelector(`.cal button[data-day="${S.focus}"]`)?.focus();
   if (S.to || !S.from) renderStay();
@@ -256,7 +257,7 @@ function wire() {
     if (isDay(f) && f >= T && f <= LAST) {
       S.from = f; S.month = f.slice(0, 7); S.focus = f;
       S.to = isDay(t) && t > f && t <= addDays(LAST, 1) ? t : null;
-      setStayDates(S.to ? S.from : null, S.to, S.adults + S.children);
+      setStayDates(S.to ? S.from : null, S.to);
       const n = document.activeElement?.id;
       renderBook(); if (n) bookEl.querySelector(`#${n}`)?.focus();
       if (S.to) { renderStay(); say(summary().replace(/<[^>]+>/g, '')); }

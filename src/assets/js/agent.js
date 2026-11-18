@@ -222,8 +222,24 @@ function resProblem(res, sourceName) {
   if (res.error) return MESSAGES.missing.replace('{source}', sourceName);
   return '';
 }
-const staleNote = (res, sourceName) => res && res.stale ? MESSAGES.stale.replace('{source}', sourceName).replace('{read_at}', lisbonTime(res.read_at)) + ' ' : '';
-const sourceIPMA = (res, extra = '') => `Source: IPMA${extra ? ' (' + extra + ')' : ''}, read ${lisbonTime(res && res.read_at)}, via data.promptugal.news.`;
+const staleNote = (res, sourceName, msg = MESSAGES.stale) => res && res.stale ? msg.replace('{source}', sourceName).replace('{read_at}', lisbonTime(res.read_at)) + ' ' : '';
+const CARD = id => `https://data.promptugal.news/api/v1/${id}/card.json`;
+// IPMA's terms in the short form the source card gives (terms.republish), with a link to the card (review M2).
+const ipmaTerms = res => {
+  const r = res && res.card && res.card.terms && res.card.terms.republish;
+  const short = r ? String(r).replace(/^with conditions:\s*/i, '').replace(/\.$/, '') : 'attribution to IPMA; no profit-making purpose';
+  return `IPMA's terms: ${short} ([source card](${CARD((res && res.id) || 'ipma-city-forecasts')})).`;
+};
+const readWords = res => `read ${lisbonTime(res && res.read_at)}${res && res.stale ? ', which is old: it may be out of date' : ''}`;
+const sourceIPMA = (res, extra = '') => `Source: IPMA${extra ? ' (' + extra + ')' : ''}, ${readWords(res)}, via data.promptugal.news. ${ipmaTerms(res)}`;
+const sourceEvents = (res, pubs) => `Source: ${pubs}, ${readWords(res)}, via data.promptugal.news. Reference use only: check details with the organiser.`;
+// Each town's own agenda, for when the events file cannot be read (review S4). Addresses from the
+// "source" field of each place in events-pt latest.json, read 2026-11-18.
+const AGENDA = {
+  lagos: { name: "Câmara Municipal de Lagos's agenda", url: 'https://www.cm-lagos.pt/municipio/eventos' },
+  faro: { name: "Teatro das Figuras's agenda (Faro)", url: 'https://teatrodasfiguras.pt/agenda' },
+  tavira: { name: "Câmara Municipal de Tavira's agenda", url: 'https://cm-tavira.pt/site/evento/' },
+};
 
 // ---------- slots ----------
 // Each slot returns { text, source } (source: a short line put at the end of the answer).
@@ -257,7 +273,8 @@ async function slot(kind, args, ctx) {
       const nights = stay.nights;
       const words = rangeWords(stay.from, stay.leave);
       if (stay.from < todayISO()) return { text: `${words} is in the past.` };
-      if (nightsFree(h.id, stay.from, nights)) return { text: `${h.name} is free for ${words} (${nights} night${nights > 1 ? 's' : ''}). [See its calendar](/homes/${h.id}/#book). ${MESSAGES.simulated}` };
+      const small = ctx.guests && ctx.guests > h.sleeps ? ` Note: ${midName(h)} sleeps ${h.sleeps}, fewer than ${ctx.guests} (invented).` : '';
+      if (nightsFree(h.id, stay.from, nights)) return { text: `${h.name} is free for ${words} (${nights} night${nights > 1 ? 's' : ''}). [See its calendar](/homes/${h.id}/#book). ${MESSAGES.simulated}${small}` };
       let alt = null;
       for (let k = 1; k <= 30 && !alt; k++) {
         for (const s of [addDays(stay.from, k), addDays(stay.from, -k)]) {
@@ -266,7 +283,7 @@ async function slot(kind, args, ctx) {
         }
       }
       const altText = alt ? ` The nearest free ${nights} night${nights > 1 ? 's' : ''}: ${rangeWords(alt, addDays(alt, nights))}.` : ` I found no free run of ${nights} nights within 30 days.`;
-      return { text: `${h.name} is taken on some nights of ${words}.${altText} [See its calendar](/homes/${h.id}/#book). ${MESSAGES.simulated}` };
+      return { text: `${h.name} is taken on some nights of ${words}.${altText} [See its calendar](/homes/${h.id}/#book). ${MESSAGES.simulated}${small}` };
     }
     case 'price': {
       const h = pickHome(args[0]); if (!h) return { needHome: true };
@@ -281,7 +298,7 @@ async function slot(kind, args, ctx) {
       let r; try { r = await D.forecastFor(id, from, to); } catch (e) { r = { res: { error: String(e) } }; }
       const p = resProblem(r && r.res, 'the IPMA forecast'); if (p) return { text: p, live: true };
       const days = (r.days || []).filter(d => d.date >= from && d.date <= to);
-      if (!days.length) return { text: MESSAGES.forecastTooFar.replace('{dates}', rangeWords(from, to)), live: true };
+      if (!days.length) return { text: `${staleNote(r.res, 'the IPMA forecast')}${MESSAGES.forecastTooFar.replace('{dates}', rangeWords(from, to))}${r.last ? ` At the last read it runs to ${dayWords(r.last)}.` : ''}`, source: sourceIPMA(r.res, 'ipma-city-forecasts'), live: true };
       const lines = days.map(d => {
         const w = typeof d.weather === 'number' || /^-?\d+$/.test(String(d.weather)) ? (WEATHER[Number(d.weather)] || 'weather type ' + d.weather) : (d.weather || '');
         const wind = d.wind ? `, wind ${typeof d.wind === 'object' ? [d.wind.dir, WIND[d.wind.class] || d.wind.class].filter(Boolean).join(' ') : d.wind}` : '';
@@ -292,21 +309,43 @@ async function slot(kind, args, ctx) {
       return { text: `${staleNote(r.res, 'the IPMA forecast')}${near}\n${lines.join('\n')}${beyond}`, source: sourceIPMA(r.res, 'ipma-city-forecasts'), live: true };
     }
     case 'warnings': {
-      const useDates = args[1] === 'dates' && dates;
-      const from = useDates ? dates.from : todayISO(), to = useDates ? dates.to : addDays(todayISO(), 10);
-      let r; try { r = await D.warningsFor('FAR', from, to); } catch (e) { r = { res: { error: String(e) } }; }
+      // Only dates asked in this question count (review M3): a bare "Any warnings?" means now and
+      // the days the file covers, never dates carried over from an earlier turn. IPMA issues
+      // warnings up to three days ahead, so no all-clear is given for days the file does not cover.
+      const qd = args[1] === 'dates' ? ctx.qDates : null;
+      const today = todayISO();
+      let r; try { r = await D.warningsFor('FAR', qd ? qd.from : today, qd ? qd.to : addDays(today, 10)); } catch (e) { r = { res: { error: String(e) } }; }
       const p = resProblem(r && r.res, 'the IPMA warnings'); if (p) return { text: p, live: true };
+      const readDay = r.res.read_at ? todayISO(new Date(r.res.read_at)) : today;
+      const coverTo = [r.furthest || '', addDays(readDay, 2)].sort().pop();
+      const coverFrom = readDay < today ? readDay : today;
+      const covers = `The warnings file covers what IPMA had issued at the last read: ${rangeWords(coverFrom, coverTo)} (IPMA issues warnings up to three days ahead).`;
+      const stale = staleNote(r.res, 'the IPMA warnings');
+      const src = sourceIPMA(r.res, 'ipma-warnings');
       const items = r.items || [];
-      if (!items.length) return { text: `${staleNote(r.res, 'the IPMA warnings')}No yellow, orange or red warning for the Faro district${useDates ? ' for ' + rangeWords(from, to) : ''} at the last read.`, source: sourceIPMA(r.res, 'ipma-warnings'), live: true };
       const lines = items.map(w => `- ${String(w.level || '').replace(/^./, c => c.toUpperCase())} warning for ${w.type}, ${localTime(w.start)} to ${localTime(w.end)} (Portugal time).${w.text ? ' IPMA, in Portuguese: "' + w.text + '"' : ''}`);
-      return { text: `${staleNote(r.res, 'the IPMA warnings')}IPMA warnings for the Faro district${useDates ? ' during ' + rangeWords(from, to) : ''}:\n${lines.join('\n')}`, source: sourceIPMA(r.res, 'ipma-warnings'), live: true };
+      if (qd) {
+        const words = rangeWords(qd.from, qd.to);
+        if (qd.to < today) return { text: `${words} is in the past; I only have the warnings IPMA has issued now. ${covers}`, source: src, live: true };
+        const rest = qd.to > coverTo && qd.from <= coverTo ? ` For ${rangeWords(addDays(coverTo, 1), qd.to)} no warnings are issued yet, so I cannot say either way.` : '';
+        if (items.length) return { text: `${stale}IPMA warnings for the Faro district during ${words}:\n${lines.join('\n')}\n${rest.trim()} ${covers}`.replace('\n ', '\n'), source: src, live: true };
+        if (qd.from > coverTo) return { text: `${stale}No warnings issued for ${words} yet: IPMA issues them up to three days ahead, so I cannot say either way. ${covers} Ask again nearer the time.`, source: src, live: true };
+        const a = qd.from > today ? qd.from : today, b = qd.to < coverTo ? qd.to : coverTo;
+        return { text: `${stale}No yellow, orange or red warning for the Faro district for ${rangeWords(a, b)} at the last read.${rest} ${covers}`, source: src, live: true };
+      }
+      if (!items.length) return { text: `${stale}No yellow, orange or red warning for the Faro district now or for ${rangeWords(today, coverTo)}, at the last read. ${covers}`, source: src, live: true };
+      return { text: `${stale}IPMA warnings for the Faro district, now and in the days the file covers:\n${lines.join('\n')}\n${covers}`, source: src, live: true };
     }
     case 'sea': {
       const h = pickHome(args[0]); if (!h) return { needHome: true };
       let r; try { r = await D.seaFor(hd(h, 'sea_id')); } catch (e) { r = { res: { error: String(e) } }; }
       const p = resProblem(r && r.res, 'the IPMA sea forecast'); if (p) return { text: p, live: true };
-      const days = (r.days || []).slice(0, 3);
-      if (!days.length) return { text: MESSAGES.missing.replace('{source}', 'the IPMA sea forecast'), live: true };
+      const all = (r.days || []).slice(0, 3);
+      if (!all.length) return { text: MESSAGES.missing.replace('{source}', 'the IPMA sea forecast'), live: true };
+      // Dates asked in this question ("tomorrow") pick those days (review S5); otherwise the three days.
+      const qd = ctx.qDates;
+      const days = qd ? all.filter(d => d.date >= qd.from && d.date <= qd.to) : all;
+      if (!days.length) return { text: `${staleNote(r.res, 'the IPMA sea forecast')}IPMA's sea forecast covers ${rangeWords(all[0].date, all[all.length - 1].date)}, so there is nothing yet for ${rangeWords(qd.from, qd.to)}.`, source: sourceIPMA(r.res, hd(h, 'sea_name')), live: true };
       const lines = days.map(d => `- ${dayWords(d.date)}: waves ${fmt(d.waves_min_m ?? d.waves_min)} to ${fmt(d.waves_max_m ?? d.waves_max)} m${(d.wave_dir || d.dir) ? ' from the ' + (d.wave_dir || d.dir) : ''}, sea temperature up to ${fmt(d.sea_temp_max_c ?? d.sea_temp_max ?? d.temp_max)} °C`);
       return { text: `${staleNote(r.res, 'the IPMA sea forecast')}The sea near ${midName(h)} (IPMA's ${hd(h, 'sea_name')}):\n${lines.join('\n')}`, source: sourceIPMA(r.res, hd(h, 'sea_name')), live: true };
     }
@@ -332,25 +371,30 @@ async function slot(kind, args, ctx) {
       const from = dates ? dates.from : todayISO(), to = dates ? dates.to : addDays(todayISO(), 7);
       const town = place.charAt(0).toUpperCase() + place.slice(1);
       let r; try { r = await D.eventsFor(place, from, to); } catch (e) { r = { res: { error: String(e) } }; }
-      const p = resProblem(r && r.res, 'the events list'); if (p) return { text: p, live: true };
+      if (resProblem(r && r.res, 'the events list')) {
+        const ag = AGENDA[place];
+        return { text: MESSAGES.missingEvents.replace('{agenda}', ag ? `[${ag.name}](${ag.url})` : `the ${town} agenda`), live: true };
+      }
       const items = r.items || [];
       const note = h && hd(h, 'events_note') ? ' ' + hd(h, 'events_note') : '';
-      if (!items.length) return { text: MESSAGES.noEvents.replace('{place}', town).replace('{dates}', rangeWords(from, to)) + note, source: `Source: events-pt, read ${lisbonTime(r.res.read_at)}, via data.promptugal.news.`, live: true };
+      const stale = staleNote(r.res, 'the events list', MESSAGES.staleEvents);
+      if (!items.length) return { text: stale + MESSAGES.noEvents.replace('{place}', town).replace('{dates}', rangeWords(from, to)) + note, source: sourceEvents(r.res, `events-pt (the ${town} agenda)`), live: true };
       const day = s => String(s || '').slice(0, 10);
       const long = e => e.through || (e.end && diffDays(day(e.start), day(e.end)) > 7);
       const oneOff = items.filter(e => !long(e)).sort((a, b) => String(a.start).localeCompare(String(b.start)));
       const longRun = items.filter(long);
       const line = e => {
-        const when = long(e) ? `until ${dayWords(day(e.end))}` : `${dayWords(day(e.start))}${String(e.start).length > 10 ? ' ' + String(e.start).slice(11, 16) : ''}`;
+        const multi = e.end && day(e.end) > day(e.start);
+        const when = long(e) ? `until ${dayWords(day(e.end))}` : multi ? `${dayWords(day(e.start))} to ${dayWords(day(e.end))}` : `${dayWords(day(e.start))}${String(e.start).length > 10 ? ' ' + String(e.start).slice(11, 16) : ''}`;
         return `- [${e.name}](${e.url}), ${when}${e.venue ? ', ' + e.venue : ''}`;
       };
-      let text = `On in ${town}, ${rangeWords(from, to)}:\n`;
+      let text = `${stale}On in ${town}, ${rangeWords(from, to)}:\n`;
       text += oneOff.slice(0, 5).map(line).join('\n');
       if (oneOff.length > 5) text += `\n(and ${oneOff.length - 5} more)`;
       if (longRun.length) text += `${oneOff.length ? '\n' : ''}Also on all through your stay:\n${longRun.slice(0, 3).map(line).join('\n')}`;
       const pubs = [...new Set(items.map(e => publisherName(e.source_name)).filter(Boolean))];
       text += note;
-      return { text, source: `Source: ${pubs.length ? listWords(pubs) : 'the ' + town + ' agenda'}, read ${lisbonTime(r.res.read_at)}, via data.promptugal.news. Reference use only: check details with the organiser.`, live: true };
+      return { text, source: sourceEvents(r.res, pubs.length ? listWords(pubs) : 'the ' + town + ' agenda'), live: true };
     }
     case 'cameras': {
       let data; try { data = await loadCameras(); } catch { return { text: 'The camera list could not load just now; see [Live from the Algarve](/live/).' }; }
@@ -402,12 +446,19 @@ export function createAgent() {
     // A follow-up that only names a home after "Which home do you mean?" answers the earlier question.
     if (state.pending && (!intent || /^home-/.test(intent.id)) && home) intent = state.pending;
     state.pending = null;
-    if (!intent && guests) {
+    // A number of people filters the homes by "sleeps" first (review S2), for the choosing intents
+    // and when nothing else matched; a group tag (families, couples, ...) then narrows the list.
+    const CHOOSING = { 'for-families': 'families', 'for-couples': 'couples', 'for-surfers': 'surfers', 'no-car': 'no car', compare: null };
+    if (guests && (!intent || intent.id in CHOOSING)) {
       const homes = await loadHomes();
       const fit = homes.filter(h => h.sleeps >= guests);
+      const tag = intent ? CHOOSING[intent.id] : null;
+      const tagged = tag ? fit.filter(h => (h.good_for || []).includes(tag)) : [];
+      const list = tagged.length ? tagged : fit;
+      const largest = homes.reduce((m, h) => (h.sleeps > m.sleeps ? h : m), homes[0]);
       return {
         intent: 'guests',
-        html: render(fit.length ? `Homes that sleep ${guests} or more (all invented):\n${fit.map(h => '- ' + homeLine(h)).join('\n')}` : `None of the five homes sleeps ${guests}; the largest, the Hill House, sleeps 6 (invented).`),
+        html: render(list.length ? `Homes that sleep ${guests} or more (all invented):\n${list.map(h => '- ' + homeLine(h)).join('\n')}` : `None of the five homes sleeps ${guests}; the largest, ${midName(largest)}, sleeps ${largest.sleeps} (invented).`),
         suggestions: ['Compare the homes', 'Which home is best for a family?']
       };
     }
@@ -416,6 +467,8 @@ export function createAgent() {
     const ctx = {
       home: state.home,
       dates: state.dates,
+      qDates: dates, // the dates asked in this question only, not carried over
+      guests,
       stay() {
         const d = state.dates;
         if (!d) return { from: addDays(today, 1), leave: addDays(today, 8), nights: 7 };

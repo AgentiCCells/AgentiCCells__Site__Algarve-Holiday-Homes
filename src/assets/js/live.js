@@ -6,6 +6,8 @@
 import { homes as loadHomes } from './data.js';
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// The camera page's host and path, shown in small text under its link (review S11).
+const hostPath = u => { try { const x = new URL(u); return x.host.replace(/^www\./, '') + x.pathname; } catch { return String(u || ''); } };
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const dateWords = iso => { const d = new Date(`${iso}T12:00:00Z`); return isNaN(d) ? String(iso || 'unknown') : `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
 const shortOp = op => String(op || '').split(' (')[0];
@@ -92,7 +94,7 @@ function listHtml(groups, checkedAll) {
 <td data-label="Camera"><strong>${esc(c.title)}</strong></td>
 <td data-label="Place">${esc(c.place)}</td>
 <td data-label="Operator">${esc(c.operator)}</td>
-<td data-label="Link"><a href="${esc(c.url)}" target="_blank" rel="noopener">Open on ${esc(shortOp(c.operator))}'s site<span class="visually-hidden"> (opens in a new tab)</span></a>${c.terms_url ? `<br><a class="live-terms" href="${esc(c.terms_url)}" target="_blank" rel="noopener">Operator's terms</a>` : ''}</td>
+<td data-label="Link"><a href="${esc(c.url)}" target="_blank" rel="noopener">Open on ${esc(shortOp(c.operator))}'s site<span class="visually-hidden"> (opens in a new tab)</span></a><br><span class="live-url">${esc(hostPath(c.url))}</span>${c.terms_url ? `<br><a class="live-terms" href="${esc(c.terms_url)}" target="_blank" rel="noopener">Operator's terms</a>` : ''}</td>
 <td data-label="Checked">checked ${esc(dateWords(c.checked || checkedAll))}</td>
 <td data-label="Status" class="live-status">${esc(c.status || 'not recorded')}</td>
 <td data-label="Embed">${c.embed === true && c.embed_url ? 'Allowed by the operator; not shown here yet' : 'No: link only'}</td>

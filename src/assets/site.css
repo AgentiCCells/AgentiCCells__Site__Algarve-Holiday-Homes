@@ -240,6 +240,9 @@ table{border-collapse:collapse}
 .page-links.roles{grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr))}
 .page-links.roles a span.addr{color:var(--ink);margin:.1rem 0 .3rem}
 .md{max-width:52rem;min-width:0}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;overflow-x:auto;font-size:.8rem;line-height:1.45;max-width:100%;box-sizing:border-box}
+pre code{overflow-wrap:normal;font-size:inherit}
+p code,li code,td code,th code,dd code{overflow-wrap:anywhere}
 .md pre{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.7rem .8rem;overflow-x:auto;font-size:.8rem;line-height:1.45;max-width:100%}
 .md pre code{overflow-wrap:normal;font-size:inherit}
 .md blockquote,blockquote.md{margin:1rem 0;padding:.2rem 0 .2rem 1rem;border-left:4px solid var(--accent)}

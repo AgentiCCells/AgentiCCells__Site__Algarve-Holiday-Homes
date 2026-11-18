@@ -101,9 +101,11 @@ export const HOME_WORDS = {
 export const MESSAGES = {
   needHome: 'Which home do you mean? The Salt House (Tavira), the Lagoon House (Faro), the Hill House (near Loulé), the Harbour House (Lagos) or the Cape House (Sagres).',
   defaultDates: 'You did not give dates, so I used {dates}. Tell me your dates, for example "21 to 28 November".',
-  forecastTooFar: 'IPMA\'s forecast in our data only goes five days ahead (today and the next four), so there is nothing yet for {dates}. It should appear about five days before. Source: IPMA, via data.promptugal.news.',
+  forecastTooFar: 'IPMA\'s forecast in our data only goes five days ahead (today and the next four), so there is nothing yet for {dates}. It should appear about five days before.',
   missing: 'I could not read {source} just now, so I will not guess. Please try again in a few minutes, or look at [IPMA](https://www.ipma.pt/en/) directly.',
   stale: 'The last copy of {source} I can read is from {read_at}, which is old. Treat it with care, and check [IPMA](https://www.ipma.pt/en/) for the latest.',
+  missingEvents: 'I could not read the events list just now, so I will not guess. Please try again in a few minutes, or look at {agenda} directly; the [events-pt source card](https://data.promptugal.news/sources/events-pt/) lists every agenda we read.',
+  staleEvents: 'The last copy of {source} I can read is from {read_at}, which is old. Treat it with care, and check with the organiser for the latest.',
   noEvents: 'I found no events in the {place} agenda for {dates}. That only means no source we read lists one, not that nothing is on.',
   simulated: '(simulated availability)'
 };
@@ -180,6 +182,28 @@ export const INTENTS = [
     suggestions: ['What is the sea like?', 'Tell me about the billboard idea']
   },
 
+  // ---- Money and messages: the two questions where the answer is "none" (before price and book) ----
+  // Added by the developer for review S1 (payments, confirmation, beaches, greeting-pt and the
+  // messages missingEvents and staleEvents), in the writer's tone, for the writer to reword.
+  {
+    id: 'payments',
+    patterns: [
+      '\\b(pay|paying|payment|payments|paid)\\b', '(credit|debit|bank|my) card', 'card (details|number|payment)', '\\bby card\\b',
+      '\\b(paypal|mb ?way|multibanco|iban|bank transfer|deposit|cash)\\b', '\\bpagar\\b', '\\bpagamento', '\\bcartao\\b'
+    ],
+    answer: 'There are no payments: this is a demonstration, and nothing is charged. The site never asks for card or bank details, and the booking steps have no payment field. A real business would tell you its prices and terms before taking any money.',
+    suggestions: ['How do I book?', 'Is this a real company?', 'How much is the Salt House?']
+  },
+  {
+    id: 'confirmation',
+    patterns: [
+      '\\bconfirmation\\b', '\\b(e-?mail|email|text|sms|message) (me|us)\\b', 'send (me |us )?(an? |the )?(e-?mail|email|confirmation|receipt|invoice|message|text)',
+      '\\b(receipt|invoice|voucher)\\b', '\\bconfirmacao\\b', '\\bemail\\b|\\be-mail\\b'
+    ],
+    answer: 'Nothing is sent: this site has no email, no messages and no accounts, and the booking steps never ask for an email address. The demonstration ends with "This is a demonstration: nothing was booked, nothing was sent, nothing was charged", and that is all there is.',
+    suggestions: ['How do I book?', 'Can I pay by card?', 'Is this a real company?']
+  },
+
   // ---- Booking tasks ----
   {
     id: 'availability',
@@ -250,6 +274,14 @@ export const INTENTS = [
     ],
     answer: '{events:current:dates}',
     suggestions: ['What will the weather be on those dates?', 'Is the home free then?', 'Where do the events come from?']
+  },
+
+  // ---- Beaches near a place: the nearest home and the cameras near it ----
+  {
+    id: 'beaches',
+    patterns: ['\\b(beach|beaches|praia|praias|seaside)\\b'],
+    answer: 'Beaches near {home:current:place}. The nearest of the five homes (all invented): {home:current}\n{cameras:current} Beaches have their own flags and lifeguards in season: follow them, and IPMA\'s warnings.',
+    suggestions: ['What is the sea like?', 'Are there any warnings?', 'Is it free on my dates?']
   },
 
   // ---- Choosing a home (after the tasks, so "is the Hill House free" goes to availability) ----
@@ -341,6 +373,12 @@ export const INTENTS = [
   },
 
   // ---- Small talk (whole-message matches, so they never swallow a real question) ----
+  {
+    id: 'greeting-pt',
+    patterns: ['^\\s*(ola|oi|bom dia|boa tarde|boa noite)\\b[\\s!.,]*((bom dia|boa tarde|boa noite|tudo bem)\\b[\\s!.,?]*)?$'],
+    answer: 'Olá! Sou o agente da Cinco Chaminés, uma simulação com respostas escritas de antemão; percebo algumas perguntas em português, mas respondo em inglês. Hello: I am the Cinco Chaminés agent, a simulation. Ask me about the five homes, their simulated availability, or the live weather, sea and events.',
+    suggestions: ['qual é o tempo amanhã em Faro', 'Show me the homes', 'Is this a real company?']
+  },
   {
     id: 'greeting',
     patterns: ['^\\s*(hi|hello|hey|hiya|good (morning|afternoon|evening)|ola|bom dia|boa tarde|boa noite)\\b[\\s!.,]*(there)?[\\s!.,]*$'],
