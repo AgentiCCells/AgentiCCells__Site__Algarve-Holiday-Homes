@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your stay, the guest's side (made-up example) | Cinco Chaminés</title>
+<meta name="description" content="A made-up example: after a pretend booking the site turns to your stay. A day-by-day timeline with the real IPMA forecast as issued and real local events, a plan you build, getting there from Faro airport, and messages to a simulated host. Kept in your browser only.">
+<meta name="share-image" content="/assets/share/stay.png">
+<!--HEAD-->
+<link rel="stylesheet" href="/assets/stay.css">
+<script type="module" src="/assets/js/stay/stay.js"></script>
+</head>
+<body class="mode-stay" data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
+<!--HEADER-->
+<main id="main" class="stay-main">
+<!-- The guest's stay (round 3, team/rounds/3/design/PROPOSAL.md section 2). Drawn by
+     /assets/js/stay/stay.js from the simulation in this browser (localStorage "cc.sim.v1") and the
+     live files of data.promptugal.news. Code Apache-2.0; text CC BY 4.0. -->
+<p class="mode-note small"><strong>Made-up example: the guest's stay.</strong> Your booking, the host, the check-in details and the suggestions are simulated or invented in your browser; the weather (IPMA, as issued) and the events (the towns' own agendas) are real.</p>
+<div id="stay-app" aria-live="off"><p class="status loading" role="status">Reading your stay from the simulation in this browser...</p>
+<noscript><p class="status fail">Your stay is drawn in your browser from the simulation kept there (localStorage) and from the live files of data.promptugal.news, so it needs JavaScript. Nothing is sent anywhere.</p></noscript></div>
+</main>
+<!--FOOTER-->
+</body>
+</html>
