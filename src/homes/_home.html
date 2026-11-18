@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{title}} | Cinco Chaminés</title>
+<meta name="description" content="{{description}}">
+<meta name="share-image" content="/assets/share/home-{{id}}.png">
+<!--HEAD-->
+<script type="module" src="/assets/js/house.js"></script>
+</head>
+<body data-home="{{id}}" data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
+<!--HEADER-->
+<main id="main">
+<!-- The template for the five home pages: scripts/layout.mjs fills it from src/data/homes.json
+     and writes _site/homes/<id>/index.html. Code Apache-2.0; text CC BY 4.0. -->
+<nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="/homes/">Homes</a></li><li aria-current="page">{{name}}</li></ol></nav>
+<div class="home-grid">
+<div class="g-head">
+<h1>{{name}}, {{place}}</h1>
+<ul class="facts">{{facts}}</ul>
+<p>{{text}} <span class="small">(Invented home; drawing, not a photo.)</span></p>
+</div>
+<aside class="g-side side" aria-label="Drawing, calendar and booking">
+{{drawing}}
+<section class="book" id="book" aria-labelledby="book-h">
+<h2 id="book-h" class="sr-only">Availability and booking (simulated)</h2>
+<div id="book-body"><p class="status loading" role="status">Making up the simulated calendar...</p>
+<noscript><p class="status fail">The simulated calendar and the demonstration booking need JavaScript; they run only in your browser and send nothing.</p></noscript></div>
+</section>
+</aside>
+<section class="g-stay stay" id="stay" aria-labelledby="stay-h">
+<h2 id="stay-h">Your stay</h2>
+<p class="small" id="stay-sub">Real data for this home's places, read live from data.promptugal.news. Each block names its source.</p>
+<div id="stay-blocks"><noscript><p class="status fail">The weather, sea, UV and events are read in your browser from data.promptugal.news and need JavaScript. See <a href="https://www.ipma.pt/en/">ipma.pt</a> directly.</p></noscript></div>
+</section>
+<section class="g-details details" aria-labelledby="details-h">
+<h2 id="details-h">About {{name}} <span class="tag">invented</span></h2>
+<h3>Features</h3>
+<ul>{{features}}</ul>
+<h3>Rules and access</h3>
+<ul>{{rules}}</ul>
+<h3>Where the live data comes from</h3>
+<ul class="small">{{where}}</ul>
+</section>
+</div>
+</main>
+<!--FOOTER-->
+</body>
+</html>

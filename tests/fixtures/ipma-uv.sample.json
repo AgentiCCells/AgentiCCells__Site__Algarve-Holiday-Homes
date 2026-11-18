@@ -1,0 +1,103 @@
+{
+ "fixture_note": "Test fixture: cut from https://data.promptugal.news/api/v1/ipma-uv/latest.json read 2026-11-18, with one duplicate Faro entry (index 4.2 on 2026-11-19) and one id 0 entry ADDED BY HAND to test the quirks DATA.md describes. Source: IPMA. Not for display as current data.",
+ "source": "ipma-uv",
+ "read_at": "2026-11-18T16:32:23Z",
+ "places": [
+  {
+   "id": 1080500,
+   "name": "Faro",
+   "days": [
+    {
+     "date": "2026-11-18",
+     "index": 2.4,
+     "period": 10,
+     "hours": null
+    },
+    {
+     "date": "2026-11-19",
+     "index": 3.1,
+     "period": 10,
+     "hours": null
+    },
+    {
+     "date": "2026-11-20",
+     "index": 2.9,
+     "period": 10,
+     "hours": null
+    },
+    {
+     "date": "2026-11-21",
+     "index": 3,
+     "period": 10,
+     "hours": null
+    },
+    {
+     "date": "2026-11-22",
+     "index": 3,
+     "period": 10,
+     "hours": null
+    }
+   ]
+  },
+  {
+   "id": 1081525,
+   "name": null,
+   "days": [
+    {
+     "date": "2026-11-18",
+     "index": 2.9,
+     "period": 10,
+     "hours": null
+    },
+    {
+     "date": "2026-11-19",
+     "index": 3.1,
+     "period": 10,
+     "hours": null
+    },
+    {
+     "date": "2026-11-20",
+     "index": 2.9,
+     "period": 10,
+     "hours": null
+    },
+    {
+     "date": "2026-11-21",
+     "index": 2.5,
+     "period": 10,
+     "hours": null
+    },
+    {
+     "date": "2026-11-22",
+     "index": 2.9,
+     "period": 10,
+     "hours": null
+    }
+   ]
+  },
+  {
+   "id": 1080500,
+   "name": "Faro",
+   "days": [
+    {
+     "date": "2026-11-19",
+     "index": 4.2,
+     "period": 10,
+     "hours": null
+    }
+   ]
+  },
+  {
+   "id": 0,
+   "name": null,
+   "days": [
+    {
+     "date": "2026-11-19",
+     "index": 9,
+     "period": 10,
+     "hours": null
+    }
+   ]
+  }
+ ]
+}
