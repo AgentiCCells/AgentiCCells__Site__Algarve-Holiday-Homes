@@ -2,7 +2,7 @@
 // (dates kept in the page address and this tab only), the simulated "free for your dates" on
 // each home card, and "The Algarve now" strip read live from data.promptugal.news with its
 // sources. Sends nothing. Code Apache-2.0.
-// developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-18, round 1.
+// developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-18, round 1; round 2: taken cards.
 import { getSource, sourceLine, forecastFor, warningsFor, seaFor, uvFor, stayDates, setStayDates, stayQuery,
   homes, today, addDays, fmtDay, esc, isDay, forget } from './data.js';
 import { isFree, firstTaken, nights, price } from './availability.js';
@@ -25,9 +25,13 @@ async function updateCards() {
     const h = list.find(x => x.id === card.dataset.home);
     const p = card.querySelector('.avail');
     if (!h || !p) continue;
-    if (!from || !to) { p.hidden = true; continue; }
+    const over = card.querySelector('.taken-over');
+    if (!from || !to) { p.hidden = true; card.classList.remove('is-taken'); if (over) over.hidden = true; continue; }
     p.hidden = false;
     const free = isFree(h.id, from, to, T);
+    // Round 2 (PROPOSAL.md 2.3): a taken home keeps its picture, faded, with the words over it.
+    card.classList.toggle('is-taken', !free);
+    if (over) over.hidden = free;
     const tooMany = guests && guests > h.sleeps;
     p.className = `avail ${free && !tooMany ? 'free' : 'taken'}`;
     p.textContent = tooMany ? `Sleeps ${h.sleeps}: too small for ${guests} (invented)`

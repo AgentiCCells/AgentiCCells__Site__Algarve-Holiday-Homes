@@ -146,11 +146,11 @@ export const INTENTS = [
   {
     id: 'who-made-this',
     patterns: ['who (made|built|created|wrote|is behind) (this|the site|you)', 'agenticcells', 'behind the scenes', 'quem fez'],
-    answer: 'A team of AI agents on the AgentiCCells account made this site, in rounds, at Dinis Cruz\'s request, as a demonstration. Each agent had a role (conductor, researcher, designer, developer, writer, reviewer), and you can follow every step on [Behind the scenes](/behind-the-scenes/).',
+    answer: 'A team of AI agents on the AgentiCCells account made this site, in rounds, as a demonstration. Each agent had a role (conductor, researcher, designer, developer, writer, reviewer), and you can follow every step on [Behind the scenes](/behind-the-scenes/).',
     suggestions: ['How do you work?', 'Is this a real company?', 'Use the data']
   },
 
-  // ---- The data, the billboard and the cameras (before the weather words they contain) ----
+  // ---- The data, the billboard question and the cameras (before the weather words they contain) ----
   {
     id: 'events-source',
     patterns: ['where (do|does) (the )?events come from', 'events? source', 'who (lists|publishes) the events'],
@@ -172,14 +172,22 @@ export const INTENTS = [
   {
     id: 'billboard',
     patterns: ['billboard', '\\blondon\\b', '\\badvert', '\\bpublicidade'],
-    answer: 'The billboard is a proposal from Dinis Cruz: a digital billboard in London showing live data and camera views from the Algarve. It is drawn as mock-ups on [A London billboard, live from the Algarve](/billboard/); nothing was bought or booked, and it would need permission from IPMA and the camera operators first.',
+    answer: 'A billboard idea came up while this site was planned, but it is not part of this site: it belongs to a different project. Here you can look at the five invented homes, the live weather and events, and [Live from the Algarve](/live/), a list of public cameras run by their operators.',
     suggestions: ['Show me a live camera', 'Use the data']
+  },
+  {
+    // Added by the developer, round 2 (design proposal 2.6), in the writer's tone, for the writer to reword.
+    // agent.js adds the five pictures under this answer, with their alt text and captions from homes.json.
+    id: 'funny-pictures',
+    patterns: ['funny (picture|photo|image)s?', '(picture|photo|image)s? (of|for) the homes?', 'show me (the )?(picture|photo|image)s?', 'where (they|it) (do|does) not belong', '\\bfotos?\\b', '\\b(pictures?|photos?|images?)\\b'],
+    answer: 'Here are the five homes where they do not belong. Every picture is AI-generated (made with an image model) and every house is invented: none of them exists, on a salt heap or anywhere else. Each home\'s page shows its outside and inside pictures too, also AI-generated.',
+    suggestions: ['Compare the homes', 'Is this a real company?']
   },
   {
     id: 'cameras',
     patterns: ['\\b(camera|cameras|webcam|webcams|live ?cam|livecams?|live view|live stream|stream)\\b', '\\bcamaras?\\b', 'see the beach', 'look like (now|today)'],
     answer: '{cameras:current} We only list public cameras that their operators publish, never police or private CCTV, and we link out rather than show the video, because both operators\' terms ask for permission first. All of them are on [Live from the Algarve](/live/).',
-    suggestions: ['What is the sea like?', 'Tell me about the billboard idea']
+    suggestions: ['What is the sea like?', 'Show me the funny pictures']
   },
 
   // ---- Money and messages: the two questions where the answer is "none" (before price and book) ----

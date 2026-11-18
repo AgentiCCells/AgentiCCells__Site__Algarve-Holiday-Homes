@@ -34,3 +34,8 @@
   .live-table td::before{content:attr(data-label);font-size:.8125rem;color:var(--ink-2);font-weight:600}
 }
 .live-url{font-size:.8rem;color:var(--ink-2);overflow-wrap:anywhere;font-family:var(--mono,monospace)}
+/* round 2: the house drawings beside "Near each home" (the drawings left the cards and home pages) */
+.near-list{list-style:none;padding:0;margin:0}
+.near{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.near .drawing{display:block;width:96px;height:auto;background:var(--surface);border:1px solid var(--line);border-radius:4px}
+@media (max-width:480px){.near{grid-template-columns:72px minmax(0,1fr)}.near .drawing{width:72px}}

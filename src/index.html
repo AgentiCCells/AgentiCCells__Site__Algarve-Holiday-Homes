@@ -11,9 +11,11 @@
 </head>
 <body data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv">
 <!--HEADER-->
-<main id="main">
-<section class="hero" aria-labelledby="hero-h">
-<div>
+<main id="main" class="main-home">
+<section class="hero photo" aria-labelledby="hero-h">
+<!--PIC:algarve-cliffs|100vw|eager-->
+<div class="hero-in">
+<div class="hero-text">
 <h1 id="hero-h">Five homes, five chimneys, one coast.</h1>
 <p class="lead">An invented company with five holiday homes from Tavira to Sagres. Pick your dates to see which homes are free (simulated) and what the weather, sea and local events look like for your stay (real, from IPMA and the towns' own agendas).</p>
 </div>
@@ -28,6 +30,8 @@
 <p class="msg small" id="plan-msg" role="status" aria-live="polite"></p>
 <p class="small">Your dates stay in this tab and the page address; nothing is kept on a server or sent. Availability is simulated.</p>
 </form>
+</div>
+<p class="cap">AI-generated picture of the Algarve coast, not a photograph</p>
 </section>
 
 <section class="now" aria-labelledby="now-h">
@@ -36,11 +40,18 @@
 </section>
 
 <section aria-labelledby="homes-h">
-<h2 id="homes-h">The five homes <span class="tag">drawings, not photos</span></h2>
-<p class="small" id="homes-for">Invented homes with invented prices. Pick dates above to see which are free (simulated).</p>
+<h2 id="homes-h">The five homes <span class="tag">AI pictures of invented homes</span></h2>
+<p class="small">Invented homes with invented prices. The pictures were made with an image model; none of these houses exists (<a href="/behind-the-scenes/#pictures">about the pictures</a>).</p>
+<p class="small" id="homes-for">Pick dates above to see which are free (simulated).</p>
 <ul class="homes" id="homes">
 <!--HOME-CARDS-->
 </ul>
+</section>
+
+<section class="funny" aria-labelledby="funny-h">
+<h2 id="funny-h">The homes where they do not belong</h2>
+<p class="small">We asked the image model to put each invented house somewhere it could never be. A reminder, if one were needed, that none of this is real.</p>
+<!--FUNNY-ROW-->
 </section>
 
 <section class="agent-cta" aria-labelledby="agent-h">

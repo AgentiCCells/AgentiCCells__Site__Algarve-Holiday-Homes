@@ -7,6 +7,8 @@
 // conductor.ipma-data@AgentiCCells.dinis, 2026-11-18, Apache-2.0, same organisation).
 // Changed for this cell by developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-18,
 // round 1: the band, header, footer and navigation of the design proposal (team/rounds/1/design/PROPOSAL.md, section 2).
+// Round 2: the band names the AI-generated pictures, "Five designs" replaces the billboard in the nav,
+// the footer names no person, and picture() writes every <img> of a home (team/rounds/2/design/PROPOSAL.md, 2.1 and 2.4).
 // Code Apache-2.0; text CC BY 4.0.
 import { chimney } from '../src/assets/js/houses.js';
 
@@ -15,15 +17,15 @@ export const REPO = 'https://github.com/AgentiCCells/AgentiCCells__Site__Algarve
 export const SITE_NAME = 'Cinco Chaminés (a made-up example)';
 export const BRAND = 'Cinco Chaminés';
 export const BRAND_LINE = 'holiday homes in the Algarve (a made-up example)';
-// The made-up band, first thing on every page (PROPOSAL.md 2.3), word for word.
-export const BAND_TEXT = 'Cinco Chaminés is an invented company: the homes, prices, availability and bookings are simulated. The weather, sea, UV and events are real, read live from data.promptugal.news.';
+// The made-up band, first thing on every page (round 2 PROPOSAL.md 2.4), word for word.
+export const BAND_TEXT = 'Cinco Chaminés is an invented company: the homes, prices, availability and bookings are simulated, and the pictures are AI-generated. The weather, sea, UV and events are real, read live from data.promptugal.news.';
 // The same in plain text, for the Markdown twins and the share cards.
 export const DISCLAIMER = `Made-up example. ${BAND_TEXT}`;
 export const NAV = [
   ['/homes/', 'Homes'],
   ['/agent/', 'Agent'],
   ['/live/', 'Live cameras'],
-  ['/billboard/', 'Billboard (proposal)'],
+  ['/d/', 'Five designs'],
   ['/use-the-data/', 'Use the data'],
   ['/behind-the-scenes/', 'Behind the scenes'],
 ];
@@ -50,7 +52,7 @@ export function head({ path, title, description, image }) {
     `<meta property="og:image" content="${esc(img)}">`,
     `<meta property="og:image:width" content="1200">`,
     `<meta property="og:image:height" content="630">`,
-    `<meta property="og:image:alt" content="${esc(title)}: a drawing card with the words made-up example">`,
+    `<meta property="og:image:alt" content="${esc(title)}: a share card with the words made-up example">`,
     `<meta name="twitter:card" content="summary_large_image">`,
     `<meta name="twitter:title" content="${esc(title)}">`,
     `<meta name="twitter:description" content="${esc(description)}">`,
@@ -78,7 +80,7 @@ export function footer(path) {
   return `<footer class="site-foot">
 <div class="in">
 <div>
-<p><strong>Cinco Chaminés is a made-up example.</strong> Homes, prices, availability and bookings are invented. The drawings are drawings, not photographs.</p>
+<p><strong>Cinco Chaminés is a made-up example.</strong> Homes, prices, availability and bookings are invented. Every picture of a home is AI-generated (image model: Google Gemini 3.1 Flash Image, through OpenRouter) and shows a house that does not exist; the Algarve pictures are AI-generated too, not photographs (<a href="/behind-the-scenes/#pictures">about the pictures</a>).</p>
 <p>Weather, warnings, sea and UV: <strong>IPMA, Instituto Português do Mar e da Atmosfera</strong>, read live in your browser via <a href="https://data.promptugal.news">data.promptugal.news</a>. IPMA allows use with no profit-making or offensive purpose and asks to be named as the source (<a href="${IPMA_TERMS_URL}">IPMA's terms</a>). This site has no ads, no tracking, no payments and no profit-making purpose.</p>
 <p>Events: each town's own agenda (Câmara Municipal de Lagos, Teatro das Figuras in Faro, Câmara Municipal de Tavira), collected as <code>events-pt</code>; reference use only, with the source named and a link to each event. Check every event with its organiser.</p>
 <p>The data files' structure: CC BY 4.0, PrompTugal.news; every value keeps its source's terms.</p>
@@ -94,10 +96,17 @@ export function footer(path) {
 </ul>
 </div>
 <div>
-<p>Made by the AgentiCCells site factory and its agents, at Dinis Cruz's word. <a href="${REPO}">Source on GitHub</a>. Code Apache-2.0, text and drawings CC BY 4.0.</p>
+<p>Made by the AgentiCCells site factory and its agents. <a href="${REPO}">Source on GitHub</a>. Code Apache-2.0, text, pictures and drawings CC BY 4.0.</p>
 <p>Version <a href="/version.json">__VERSION__</a></p>
 </div>
 </div>
 </footer>
 ${dock}`;
+}
+
+// One picture of the site (round 2, PROPOSAL.md 2.1): both sizes in srcset, width and height set so
+// nothing moves while it loads, lazy unless it is the first thing on screen. name: e.g. "salt-hero".
+export const IMG_W = 800, IMG_H = 537; // every file is 3:2-ish: 800 x 537 and 1264 x 848
+export function picture(name, { alt = '', sizes = '100vw', lazy = true, high = false, cls = '' } = {}) {
+  return `<img${cls ? ` class="${esc(cls)}"` : ''} src="/assets/img/${esc(name)}-800.jpg" srcset="/assets/img/${esc(name)}-800.jpg 800w, /assets/img/${esc(name)}-1264.jpg 1264w" sizes="${esc(sizes)}" width="${IMG_W}" height="${IMG_H}" alt="${esc(alt)}"${lazy ? ' loading="lazy"' : ''} decoding="async"${high ? ' fetchpriority="high"' : ''}>`;
 }

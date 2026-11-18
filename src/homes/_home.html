@@ -19,10 +19,12 @@
 <div class="g-head">
 <h1>{{name}}, {{place}}</h1>
 <ul class="facts">{{facts}}</ul>
-<p>{{text}} <span class="small">(Invented home; drawing, not a photo.)</span></p>
 </div>
-<aside class="g-side side" aria-label="Drawing, calendar and booking">
-{{drawing}}
+{{gallery}}
+<div class="g-text">
+<p>{{text}} <span class="small">(Invented home; the pictures are AI-generated, not photographs.)</span></p>
+</div>
+<aside class="g-side side" aria-label="Calendar and booking">
 <section class="book" id="book" aria-labelledby="book-h">
 <h2 id="book-h" class="sr-only">Availability and booking (simulated)</h2>
 <div id="book-body"><p class="status loading" role="status">Making up the simulated calendar...</p>

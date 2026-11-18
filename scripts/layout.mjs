@@ -8,14 +8,34 @@
 // Adapted from scripts/layout.mjs in AgentiCCells/AgentiCCells__Site__IPMA-Data (written by
 // conductor.ipma-data@AgentiCCells.dinis, 2026-11-18, Apache-2.0, same organisation); step 1
 // and the twins' wording by developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-18, round 1.
+// Round 2 (team/rounds/2/design/PROPOSAL.md 2.1 to 2.7): the cards and the home pages show the
+// AI-generated pictures named in homes.json ("images"), the joke row (<!--FUNNY-ROW-->), any
+// picture by name (<!--PIC:name|sizes|eager-->), and a house drawing where a page asks (<!--DRAW:id-->).
 // Code Apache-2.0; text CC BY 4.0.
 import { readdirSync, readFileSync, writeFileSync, statSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { head, header, footer, SITE, DISCLAIMER, esc } from './lib.mjs';
+import { head, header, footer, picture, SITE, DISCLAIMER, esc } from './lib.mjs';
 import { houseSvg } from '../src/assets/js/houses.js';
 const API = 'https://data.promptugal.news/api/v1';
 const walk = d => readdirSync(d).flatMap(f => { const p = join(d, f); return statSync(p).isDirectory() ? walk(p) : [p]; });
 const un = t => t.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+
+// ---------- pictures (round 2) ----------
+let picData = {};
+try { picData = JSON.parse(readFileSync('src/data/homes.json', 'utf8')).pictures || {}; } catch { /* reported below */ }
+const imgAlt = name => (picData.algarve || {})[name]?.alt || '';
+// The three pictures at the top of a home page: outside large, inside and the joke picture beside it.
+// Each links to its 1264 px file and has a caption saying it is AI-generated.
+function gallery(h) {
+  const im = h.images || {};
+  const fig = (k, cls, sizes, lazy) => im[k] ? `<figure class="${cls}"><a href="/assets/img/${esc(im[k].src)}-1264.jpg">${picture(im[k].src, { alt: im[k].alt, sizes, lazy, high: !lazy })}<span class="sr-only"> (opens the larger picture)</span></a><figcaption>${esc(im[k].caption)}</figcaption></figure>` : '';
+  if (!im.hero) return '';
+  return `<div class="g-gal gal" role="group" aria-label="Pictures of ${esc(h.name)}, AI-generated">
+${fig('hero', 'main', '(min-width:1200px) 760px, (min-width:900px) 64vw, 100vw', false)}
+${fig('inside', 'side', '(min-width:1200px) 380px, (min-width:900px) 32vw, 50vw', true)}
+${fig('funny', 'side', '(min-width:1200px) 380px, (min-width:900px) 32vw, 50vw', true)}
+</div>`;
+}
 
 // ---------- 1. the five home pages ----------
 const TEMPLATE = '_site/homes/_home.html';
@@ -44,7 +64,7 @@ if (existsSync(TEMPLATE)) {
     ].map(r => `<li>${esc(r.trim())}</li>`).join('');
     const fill = {
       id: h.id, name: esc(h.name), place: esc(h.place), title: esc(title), description: esc(description),
-      drawing: houseSvg(h.id, { cls: 'drawing big' }), facts, features, rules, where,
+      gallery: gallery(h), facts, features, rules, where,
       text: esc(h.description || h.short || ''), short: esc(h.short || ''),
     };
     const html = tpl.replace(/\{\{(\w+)\}\}/g, (m, k) => (k in fill ? fill[k] : m));
@@ -52,7 +72,7 @@ if (existsSync(TEMPLATE)) {
     writeFileSync(`_site/homes/${h.id}/index.html`, html);
     homeTwins.set(`_site/homes/${h.id}/index.md`, [
       `# ${title}`, '', `> ${description}`, '', `**${DISCLAIMER}**`, '', `Page: ${SITE}/homes/${h.id}/`, '',
-      h.description || '', '', `- Place: ${h.place} (${h.municipality}); position is the town centre, not a house.`,
+      h.description || '', '', ...(h.images ? ['Pictures (each AI-generated, of an invented house; not photographs):', '', ...['hero', 'inside', 'funny'].filter(k => h.images[k]).map(k => `- ![${h.images[k].alt}](${SITE}/assets/img/${h.images[k].src}-800.jpg) ${h.images[k].caption}`), ''] : []), `- Place: ${h.place} (${h.municipality}); position is the town centre, not a house.`,
       `- Sleeps ${h.sleeps}; ${h.bedrooms} bedrooms; ${h.bathrooms || '?'} bathrooms.`, `- Price: EUR ${h.price_eur_invented} a night (invented).`,
       `- Features: ${(h.features || []).join(', ')}.`, `- Pets: ${h.pets ? 'yes' : 'no'} (invented). Accessibility: ${h.accessibility || 'not stated'}`, '',
       '## Data this page reads, live in the browser', '',
@@ -73,15 +93,30 @@ if (existsSync(TEMPLATE)) {
 let allHomes = [];
 try { allHomes = JSON.parse(readFileSync('src/data/homes.json', 'utf8')).homes || []; } catch { /* reported above */ }
 function cards(wide) {
-  return allHomes.map(h => `<li><article class="card" data-home="${esc(h.id)}">
-${houseSvg(h.id, { cls: 'drawing' })}
+  return allHomes.map(h => {
+    const im = (h.images || {}).hero;
+    const pic = im ? `<div class="ph">${picture(im.src, { alt: im.alt, sizes: wide ? '(min-width:900px) 18rem, (min-width:640px) 12rem, 100vw' : '(min-width:1100px) 14rem, (min-width:640px) 46vw, 100vw' })}<span class="ai" aria-hidden="true">AI picture</span><span class="taken-over" hidden>Taken on some of your dates (simulated)</span></div>`
+      : houseSvg(h.id, { cls: 'drawing' });
+    return `<li><article class="card" data-home="${esc(h.id)}">
+${pic}
+<div class="b">
 <h3><a href="/homes/${esc(h.id)}/" class="home-link">${esc(h.name)}</a></h3>
 <p>${esc(h.place)}. ${esc(h.short || '')}</p>
 ${wide ? `<ul>${(h.features || []).slice(0, 6).map(f => `<li>${esc(f)}</li>`).join('')}</ul>` : ''}
-<p>Sleeps ${esc(h.sleeps)}, ${esc(h.bedrooms)} bedroom${h.bedrooms === 1 ? '' : 's'}</p>
+<p class="meta">Sleeps ${esc(h.sleeps)}, ${esc(h.bedrooms)} bedroom${h.bedrooms === 1 ? '' : 's'}</p>
 <p class="price">EUR ${esc(h.price_eur_invented)} a night <span class="inv">(invented)</span></p>
 <p class="avail" hidden></p>
-</article></li>`).join('\n');
+</div>
+</article></li>`;
+  }).join('\n');
+}
+// The five joke pictures (PROPOSAL.md 2.6): square crops, a strip that scrolls inside itself at 390 px.
+function funnyRow() {
+  const figs = allHomes.filter(h => h.images && h.images.funny).map(h => {
+    const f = h.images.funny;
+    return `<li><figure><a href="/homes/${esc(h.id)}/">${picture(f.src, { alt: f.alt, sizes: '(min-width:1100px) 14rem, (min-width:640px) 30vw, 70vw' })}</a><figcaption>${esc(f.short || h.name)}<small>AI-generated, invented house</small></figcaption></figure></li>`;
+  });
+  return `<ul class="funny-row" tabindex="0" aria-label="Five joke pictures (scrolls sideways on small screens)">${figs.join('')}</ul>`;
 }
 
 // ---------- 2 and 3. layout and twins ----------
@@ -93,7 +128,9 @@ for (const f of walk('_site').filter(f => f.endsWith('.html'))) {
   const title = (s.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
   const description = (s.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
   const image = (s.match(/<meta name="share-image" content="([^"]*)"/) || [])[1];
-  s = s.replace('<!--HOME-CARDS-WIDE-->', () => cards(true)).replace('<!--HOME-CARDS-->', () => cards(false));
+  s = s.replace('<!--HOME-CARDS-WIDE-->', () => cards(true)).replace('<!--HOME-CARDS-->', () => cards(false)).replace('<!--FUNNY-ROW-->', () => funnyRow());
+  s = s.replace(/<!--PIC:([\w-]+)\|([^|>]*)\|(eager|lazy)-->/g, (m, name, sizes, mode) => picture(name, { alt: imgAlt(name), sizes, lazy: mode === 'lazy', high: mode === 'eager', cls: 'pic' }));
+  s = s.replace(/<!--DRAW:(\w+)-->/g, (m, id) => houseSvg(id, { cls: 'drawing small', decorative: true }));
   s = s.replace('<!--HEAD-->', () => head({ path, title: un(title), description: un(description), image }))
        .replace('<!--HEADER-->', () => header(path))
        .replace('<!--FOOTER-->', () => footer(path));

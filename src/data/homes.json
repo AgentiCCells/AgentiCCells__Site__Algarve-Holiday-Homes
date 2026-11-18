@@ -12,6 +12,31 @@
   "currency": "EUR",
   "price_note": "Prices are invented for this made-up example. Nothing can be booked or paid for.",
   "times_note": "Check-in and check-out times are invented for this made-up example.",
+  "pictures": {
+    "about": "Every picture is AI-generated (google/gemini-3.1-flash-image through OpenRouter, 18 November 2026) and shows an invented house or an imagined Algarve scene, not a photograph. Files: /assets/img/<src>-800.jpg and <src>-1264.jpg (3:2). Alt text from team/rounds/2/design/IMAGES.md.",
+    "algarve": {
+      "algarve-cliffs": {
+        "src": "algarve-cliffs",
+        "alt": "AI-generated picture of golden limestone cliffs, sea arches and stacks above a turquoise sea at sunset.",
+        "caption": "AI-generated picture of the Algarve, not a photograph."
+      },
+      "algarve-street": {
+        "src": "algarve-street",
+        "alt": "AI-generated picture of a quiet whitewashed street with blue and ochre trims, cobbles, bougainvillea and one lattice chimney.",
+        "caption": "AI-generated picture of the Algarve, not a photograph."
+      },
+      "algarve-market": {
+        "src": "algarve-market",
+        "alt": "AI-generated picture of a market stall: crates of oranges, sacks of almonds, dried figs and carob pods.",
+        "caption": "AI-generated picture of the Algarve, not a photograph."
+      },
+      "algarve-dawn": {
+        "src": "algarve-dawn",
+        "alt": "AI-generated picture of an empty beach at dawn, pink sky reflected in wet sand, cliffs to one side and a few seabirds.",
+        "caption": "AI-generated picture of the Algarve, not a photograph."
+      }
+    }
+  },
   "homes": [
     {
       "id": "salt",
@@ -33,6 +58,24 @@
       "pets": false,
       "accessibility": "Stairs to the bedrooms and the roof terrace. Not step-free (invented).",
       "car_needed": false,
+      "images": {
+        "hero": {
+          "src": "salt-hero",
+          "alt": "AI-generated picture of the invented Salt House: a low white house with blue trim and one lattice chimney beside pink salt pans at sunset, Tavira's old town behind.",
+          "caption": "Outside. AI-generated picture of an invented house, not a photograph."
+        },
+        "inside": {
+          "src": "salt-inside",
+          "alt": "AI-generated picture of the Salt House roof terrace: two wooden chairs, a jug and a bowl of oranges, the salt pans and the river beyond.",
+          "caption": "The roof terrace. AI-generated picture of an invented house, not a photograph."
+        },
+        "funny": {
+          "src": "salt-funny",
+          "alt": "AI-generated joke picture: the invented Salt House sitting on top of a big heap of salt, flamingos in the pans around it.",
+          "caption": "Where it does not belong: on a salt heap. AI-generated joke picture of an invented house.",
+          "short": "The Salt House on a salt heap"
+        }
+      },
       "data": {
         "forecast_id": 1080500,
         "forecast_name": "Faro",
@@ -67,6 +110,24 @@
       "pets": false,
       "accessibility": "Step-free from the street door to the lift, and a lift to the first floor (invented).",
       "car_needed": false,
+      "images": {
+        "hero": {
+          "src": "lagoon-hero",
+          "alt": "AI-generated picture of the invented Lagoon House: an old white building by the Ria Formosa with a small first-floor balcony and rowing boats at the quay.",
+          "caption": "Outside. AI-generated picture of an invented house, not a photograph."
+        },
+        "inside": {
+          "src": "lagoon-inside",
+          "alt": "AI-generated picture of the Lagoon House bedroom: a white double bed, terracotta floor with a blue tile border, balcony doors open to the lagoon.",
+          "caption": "The bedroom. AI-generated picture of an invented house, not a photograph."
+        },
+        "funny": {
+          "src": "lagoon-funny",
+          "alt": "AI-generated joke picture: the invented Lagoon House riding on a painted fishing boat in the lagoon, gulls around it.",
+          "caption": "Where it does not belong: on a fishing boat. AI-generated joke picture of an invented house.",
+          "short": "The Lagoon House goes fishing"
+        }
+      },
       "data": {
         "forecast_id": 1080500,
         "forecast_name": "Faro",
@@ -101,6 +162,24 @@
       "pets": true,
       "accessibility": "Ground-floor bedroom and bathroom; gravel paths outside (invented).",
       "car_needed": true,
+      "images": {
+        "hero": {
+          "src": "hill-hero",
+          "alt": "AI-generated picture of the invented Hill House: a white country house with a tiled roof, a stone-edged pool and a pergola among carob trees in the hills.",
+          "caption": "Outside. AI-generated picture of an invented house, not a photograph."
+        },
+        "inside": {
+          "src": "hill-inside",
+          "alt": "AI-generated picture of the Hill House sitting room: a white fireplace, wooden beams, a long table with almonds and carob pods, the pool through the window.",
+          "caption": "The sitting room. AI-generated picture of an invented house, not a photograph."
+        },
+        "funny": {
+          "src": "hill-funny",
+          "alt": "AI-generated joke picture: the invented Hill House built high in a huge carob tree, with a small pool on a branch and almond blossom below.",
+          "caption": "Where it does not belong: up a carob tree. AI-generated joke picture of an invented house.",
+          "short": "The Hill House up a carob tree"
+        }
+      },
       "data": {
         "forecast_id": 1080800,
         "forecast_name": "Loulé",
@@ -136,6 +215,24 @@
       "pets": false,
       "accessibility": "One step at the front door; bedrooms upstairs (invented).",
       "car_needed": false,
+      "images": {
+        "hero": {
+          "src": "harbour-hero",
+          "alt": "AI-generated picture of the invented Harbour House: a white town house with a blue cornice and a walled courtyard on a cobbled street, old walls and marina masts behind.",
+          "caption": "Outside. AI-generated picture of an invented house, not a photograph."
+        },
+        "inside": {
+          "src": "harbour-inside",
+          "alt": "AI-generated picture of the Harbour House courtyard: a blue door, bougainvillea, a lemon tree in a pot and a tiled table with two coffees.",
+          "caption": "The courtyard. AI-generated picture of an invented house, not a photograph."
+        },
+        "funny": {
+          "src": "harbour-funny",
+          "alt": "AI-generated joke picture: the invented Harbour House surfing a wave on a giant surfboard below golden cliffs.",
+          "caption": "Where it does not belong: surfing a wave. AI-generated joke picture of an invented house.",
+          "short": "The Harbour House catches a wave"
+        }
+      },
       "data": {
         "forecast_id": 1081100,
         "forecast_name": "Portimão",
@@ -171,6 +268,24 @@
       "pets": true,
       "accessibility": "Single storey with one low step at the door (invented).",
       "car_needed": true,
+      "images": {
+        "hero": {
+          "src": "cape-hero",
+          "alt": "AI-generated picture of the invented Cape House: a long, low white house with thick walls on a windy clifftop, a surfboard by the outdoor shower, big Atlantic waves behind.",
+          "caption": "Outside. AI-generated picture of an invented house, not a photograph."
+        },
+        "inside": {
+          "src": "cape-inside",
+          "alt": "AI-generated picture of the Cape House inside: a wood stove alight, two surfboards and wetsuits on a rack, a deep window onto the cliffs.",
+          "caption": "Inside, by the wood stove. AI-generated picture of an invented house, not a photograph."
+        },
+        "funny": {
+          "src": "cape-funny",
+          "alt": "AI-generated joke picture: the invented Cape House balanced on top of a tall sea stack, waves breaking round its foot.",
+          "caption": "Where it does not belong: on a sea stack. AI-generated joke picture of an invented house.",
+          "short": "The Cape House on a sea stack"
+        }
+      },
       "data": {
         "forecast_id": 1081505,
         "forecast_name": "Sagres",

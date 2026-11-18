@@ -11,6 +11,7 @@
 import { LABEL, HOME_WORDS, MESSAGES, SUGGESTED, FALLBACK, INTENTS } from './agent-script.js';
 import * as D from './data.js';
 import { isTaken } from './availability.js';
+import { houseSvg } from './houses.js';
 
 // ---------- small helpers ----------
 
@@ -487,10 +488,27 @@ export function createAgent() {
       const defWords = isWeather ? rangeWords(today, addDays(today, 4)) : /\{events:/.test(intent.answer) ? rangeWords(today, addDays(today, 7)) : rangeWords(ctx.stay().from, ctx.stay().leave);
       body += '\n' + MESSAGES.defaultDates.replace('{dates}', defWords);
     }
-    return { intent: intent.id, html: render(body, filled.sources), suggestions: intent.suggestions || [] };
+    let html = render(body, filled.sources);
+    // Round 2 (design proposal 2.6 and 2.7): the joke pictures under their answer, and a small
+    // drawing (64 px) beside a home's own answer, where a picture would be heavy.
+    if (intent.id === 'funny-pictures') html += await funnyPictures();
+    const hm = /^home-(\w+)$/.exec(intent.id);
+    if (hm) html = `<div class="agent-draw">${houseSvg(hm[1], { cls: 'drawing' })}</div>` + html;
+    return { intent: intent.id, html, suggestions: intent.suggestions || [] };
   }
   function reset() { state.home = null; state.dates = null; state.pending = null; }
   return { answer, reset, state };
+}
+
+// The five joke pictures, from homes.json (alt text and captions there), each labelled AI-generated.
+async function funnyPictures() {
+  let list = [];
+  try { list = await loadHomes(); } catch { return ''; }
+  const figs = list.filter(h => h.images && h.images.funny).map(h => {
+    const f = h.images.funny;
+    return `<figure><a href="/homes/${esc(h.id)}/"><img src="/assets/img/${esc(f.src)}-800.jpg" width="800" height="533" loading="lazy" decoding="async" alt="${esc(f.alt)}"></a><figcaption>${esc(f.short || h.name)}. <span>AI-generated, invented house.</span></figcaption></figure>`;
+  });
+  return figs.length ? `<div class="agent-pics">${figs.join('')}</div><p class="agent-source">Pictures: AI-generated with an image model, of invented houses (<a href="/behind-the-scenes/#pictures">about the pictures</a>).</p>` : '';
 }
 
 // Plain text with [text](url) links and "- " lists, to safe HTML.

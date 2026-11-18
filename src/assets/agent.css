@@ -43,3 +43,14 @@
 .agent-how{border-top:1px solid var(--line);padding-top:var(--s4,16px)}
 .agent-how li{margin-bottom:8px}
 @media (max-width:480px){.agent-log{height:60vh}.agent-msg{max-width:100%}.agent-send,.agent-reset{flex:1 1 auto}}
+/* round 2: a home's drawing (64 px) and the joke pictures in answers */
+.agent-draw{float:right;margin:0 0 6px 10px}
+.agent-draw svg{display:block;width:64px;height:auto;background:var(--bg);border:1px solid var(--line);border-radius:4px}
+.agent-pics{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,7rem),1fr));gap:8px;margin:8px 0 0;clear:both}
+.agent-pics figure{margin:0}
+.agent-pics img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:4px;background:var(--taken)}
+.agent-pics figcaption{font-size:.75rem;line-height:1.35;margin-top:4px}
+.agent-pics figcaption span{display:block;color:var(--ink-2)}
+/* round 2: reserve the chat's height before the script builds it, so the text below does not jump (layout shift) */
+#agent{min-height:calc(min(60vh,520px) + 335px)}
+@media (max-width:480px){#agent{min-height:calc(60vh + 580px)}}

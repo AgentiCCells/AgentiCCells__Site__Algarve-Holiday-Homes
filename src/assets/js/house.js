@@ -344,6 +344,16 @@ async function warningsBlock(r) {
   const h = '<h3>Warnings, Faro district <small>(IPMA area FAR, the whole Algarve)</small></h3>';
   if (res.error) return h + failure("IPMA's warnings", res, res.card?.reader_page || 'https://www.ipma.pt/en/otempo/prev-sam/');
   const coast = COAST[id] || 'south';
+  // What period the file covers (round 1 FIXES, open item 2): from the read day to the latest
+  // warning end in the file, or the read day plus two days when that is later (IPMA issues
+  // warnings up to three days ahead). No all-clear is given for days after that.
+  const readDay = res.read_at ? today(new Date(res.read_at)) : T;
+  const coverFrom = readDay < T ? readDay : T;
+  const coverTo = [furthest || '', addDays(readDay, 2)].sort().pop();
+  const span = (a, b) => (a === b ? fmtDay(a) : `${fmtDay(a)} to ${fmtDay(b)}`);
+  const covers = `<p class="small">The warnings file covers what IPMA had issued at the time read: ${esc(span(coverFrom, coverTo))}. IPMA issues warnings up to three days ahead.</p>`;
+  const later = r.to > coverTo && r.from <= coverTo
+    ? `<p class="status empty">For ${esc(span(addDays(coverTo, 1) > r.from ? addDays(coverTo, 1) : r.from, r.to))} no warnings are issued yet, so this page cannot say either way. Look again nearer the time.</p>` : '';
   let body;
   if (items.length) {
     body = items.map(w => {
@@ -353,12 +363,14 @@ async function warningsBlock(r) {
       return `<div class="warn ${esc(w.level)}"><p class="lvl">${esc(w.level)}: ${esc(w.type)}</p>
 <p>${esc(fmtLocal(w.start))} to ${esc(fmtLocal(w.end))} (Portugal time).${other ? ` ${esc(other)}` : ''}</p>
 ${w.text ? `<p><span class="pt" lang="pt">"${esc(w.text)}"</span> <span class="small">(IPMA, in Portuguese)</span></p>` : ''}</div>`;
-    }).join('');
-  } else if ((furthest && r.from > furthest) || (!furthest && r.from > addDays(T, 3))) {
-    body = '<p class="status empty">No warnings issued for these dates yet; IPMA issues them up to three days ahead.</p>';
+    }).join('') + later;
+  } else if (r.from > coverTo) {
+    body = `<p class="status empty">No warnings issued for these dates yet, so this page cannot say either way: IPMA issues them up to three days ahead. Look again nearer the time.</p>`;
   } else {
-    body = '<p class="status empty">No warning for the Algarve (Faro district) for these dates at the time read. IPMA lists yellow, orange and red; green (no warning) is not listed.</p>';
+    const a = r.from > T ? r.from : T, b = r.to < coverTo ? r.to : coverTo;
+    body = `<p class="status empty">No yellow, orange or red warning for the Algarve (Faro district) for ${esc(span(a, b))} at the time read. IPMA lists yellow, orange and red; green (no warning) is not listed.</p>` + later;
   }
+  body += covers;
   return h + body + sourceLine(res);
 }
 
