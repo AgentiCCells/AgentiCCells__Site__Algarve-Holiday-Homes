@@ -1,0 +1,45 @@
+{
+ "fixture_note": "Synthetic test fixture in the shape of https://data.promptugal.news/api/v1/events-pt/latest.json. The two events are INVENTED (events-pt terms allow reference use only, so no real records are copied).",
+ "source": "events-pt",
+ "read_at": "2026-11-18T16:11:33Z",
+ "places": {
+  "lagos": [
+   {
+    "@type": "Event",
+    "name": "Invented exhibition (test)",
+    "startDate": "2026-11-01",
+    "endDate": "2026-12-30",
+    "location": {
+     "@type": "Place",
+     "name": "Invented venue",
+     "address": null,
+     "geo": null
+    },
+    "organizer": null,
+    "url": "https://example.org/event/1",
+    "source": "https://example.org/events (test)",
+    "read_at": "2026-11-18T16:11:42Z",
+    "place": "lagos"
+   }
+  ],
+  "tavira": [
+   {
+    "@type": "Event",
+    "name": "Invented concert (test)",
+    "startDate": "2026-11-20T21:00",
+    "endDate": null,
+    "location": {
+     "@type": "Place",
+     "name": "Invented hall",
+     "address": null,
+     "geo": null
+    },
+    "organizer": null,
+    "url": "https://example.org/event/2",
+    "source": "https://example.org/events (test)",
+    "read_at": "2026-11-18T16:11:52Z",
+    "place": "tavira"
+   }
+  ]
+ }
+}
