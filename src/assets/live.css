@@ -1,0 +1,35 @@
+/* /live/: Live from the Algarve. Uses the tokens in site.css. Code Apache-2.0. */
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.live-page{max-width:72rem;margin:0 auto;padding:var(--s5,24px) 16px var(--s7,48px)}
+.live-page *{min-width:0}
+.live-lead{font-size:1.0625rem;max-width:48rem}
+.live-rules li,.live-page section>ul li{margin-bottom:8px;max-width:52rem}
+.live-map-fig{margin:var(--s4,16px) 0 var(--s5,24px)}
+.live-map-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.live-map-scroll:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+.live-map{display:block;width:100%;min-width:720px;height:auto}
+.live-map figcaption,.live-map-fig figcaption{font-size:.8125rem;color:var(--ink-2);margin-top:8px}
+.live-town{font:600 15px system-ui,sans-serif;fill:var(--ink-2)}
+.live-sea-label{font:italic 18px system-ui,sans-serif;fill:var(--sea);letter-spacing:.2em}
+.live-num{font:700 14px system-ui,sans-serif;fill:var(--bg);pointer-events:none}
+.live-marker:focus-visible circle,.live-marker:hover circle{stroke:var(--ink);stroke-width:4}
+.live-marker:focus{outline:none}
+.live-loading,.live-error{padding:16px;margin:0}
+.live-error{color:var(--ink);background:var(--warn-o)}
+.live-count{color:var(--ink-2)}
+.live-list h3{margin:var(--s5,24px) 0 8px}
+.live-table{width:100%;border-collapse:collapse;font-size:.9375rem;background:var(--surface)}
+.live-table th,.live-table td{text-align:left;vertical-align:top;padding:8px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.live-table th{font-size:.8125rem;color:var(--ink-2);background:var(--bg)}
+.live-table a{color:var(--accent)}
+.live-terms{font-size:.8125rem}
+.live-status{font-size:.8125rem;color:var(--ink-2)}
+.live-badge{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--sea);color:var(--bg);font-weight:700;font-size:.875rem}
+.live-credit{font-size:.875rem;color:var(--ink-2);overflow-wrap:anywhere}
+@media (max-width:760px){
+  .live-table,.live-table tbody,.live-table tr,.live-table td{display:block;width:100%}
+  .live-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .live-table tr{border:1px solid var(--line);border-radius:6px;margin-bottom:12px;padding:8px 12px}
+  .live-table td{border:0;padding:4px 0;display:grid;grid-template-columns:6.5rem 1fr;gap:8px}
+  .live-table td::before{content:attr(data-label);font-size:.8125rem;color:var(--ink-2);font-weight:600}
+}

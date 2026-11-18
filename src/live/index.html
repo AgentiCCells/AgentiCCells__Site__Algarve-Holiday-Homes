@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live from the Algarve | Cinco Chaminés (made-up example)</title>
+<meta name="description" content="Public live cameras in the Algarve, listed with their operators and linked to the operators' own pages: beaches, marinas and towns near the five made-up homes.">
+<meta name="share-image" content="/assets/share/live.png">
+<link rel="stylesheet" href="/assets/live.css">
+<!--HEAD-->
+</head>
+<body data-sources="">
+<!--HEADER-->
+<main id="main" class="live-page">
+  <h1>Live from the Algarve</h1>
+  <p class="live-lead">See the Algarve as it is right now: beaches, marinas and towns near the five homes of this made-up example, through public live cameras. Each camera is published by its operator on the operator's own website; we list them and link to them.</p>
+
+  <section aria-labelledby="chose-h">
+    <h2 id="chose-h">How we chose them</h2>
+    <ul class="live-rules">
+      <li><strong>Public cameras only,</strong> published for anyone to watch by the operator that runs them: beach, marina and town views.</li>
+      <li><strong>Never police, traffic-enforcement or private CCTV.</strong> We did not consider any.</li>
+      <li><strong>Operators named as their own pages name them.</strong> At the time of checking, the cameras here come from two operators: Beachcam (MEO Beachcam) and SkylineWebcams.</li>
+      <li><strong>Link out, do not embed.</strong> Both operators' terms need their permission before their live streams are shown on another site: Beachcam's terms ask for prior, express permission to relay its streams, and SkylineWebcams' terms allow embedding only through its own embed code and rule out commercial or advertising use without written permission. So each link opens the camera on the operator's own page, and this site shows no video and no screenshots.</li>
+      <li><strong>Each camera with its address and the date we checked it.</strong> Pages change and cameras go offline; if a link does not work, the operator may have moved or stopped that camera.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="cams-h">
+    <h2 id="cams-h">The cameras</h2>
+    <figure class="live-map-fig">
+      <div class="live-map-scroll" id="live-map" tabindex="0" aria-label="Map of the cameras (scrolls sideways on small screens)">
+        <p class="live-loading">Reading the camera list...</p>
+      </div>
+      <figcaption>Each numbered circle is a camera's place (the beach or town, not the camera itself); each small house is one of the five made-up homes. Coast drawn from rough points, not to survey accuracy. Numbers match the list below; each circle links to the operator's page.</figcaption>
+    </figure>
+    <div id="live-list" class="live-list">
+      <noscript><p>The list needs JavaScript to draw. The same list is at <a href="/data/cameras.json">/data/cameras.json</a>.</p></noscript>
+    </div>
+  </section>
+
+  <section aria-labelledby="near-h">
+    <h2 id="near-h">Near each home</h2>
+    <ul>
+      <li><strong>The Salt House, Tavira:</strong> we found no camera in Tavira; the nearest are at Praia Verde and Alagoa (Altura), in Castro Marim to the east, and Faro to the west.</li>
+      <li><strong>The Lagoon House, Faro:</strong> Praia de Faro and Ilha do Farol (Culatra).</li>
+      <li><strong>The Hill House, near Loulé:</strong> Quarteira and Vilamoura, on Loulé's coast.</li>
+      <li><strong>The Harbour House, Lagos:</strong> Meia Praia, Praia da Luz and Porto de Mós.</li>
+      <li><strong>The Cape House, Sagres:</strong> Sagres, with Praia do Amado and Arrifana further up the west coast.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="data-h">
+    <h2 id="data-h">The same list as data</h2>
+    <p>The list is also published as JSON at <a href="/data/cameras.json">/data/cameras.json</a>: each camera's operator, address, place, rounded position, terms and the date checked. Use it under the same rules: link to the operator's page, and ask the operator before you show a stream anywhere else.</p>
+    <p class="live-credit"><em>Researched by researcher.algarve-holiday-homes@AgentiCCells.dinis on 18 November 2026 (team/rounds/1/research/CAMERAS.md). Operators' terms: <a href="https://beachcam.meo.pt/termos-e-condicoes/" rel="noopener">https://beachcam.meo.pt/termos-e-condicoes/</a> and <a href="https://www.skylinewebcams.com/en/terms-of-use.html" rel="noopener">https://www.skylinewebcams.com/en/terms-of-use.html</a>, read on 18 November 2026. The camera pages loaded when checked; the streams themselves were not played.</em></p>
+    <p>This page is part of a made-up example: the homes are invented, the cameras and their operators are real.</p>
+  </section>
+</main>
+<!--FOOTER-->
+<script type="module" src="/assets/js/live.js"></script>
+</body>
+</html>

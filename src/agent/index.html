@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ask the agent (a simulation) | Cinco Chaminés (made-up example)</title>
+<meta name="description" content="A scripted agent for the five made-up Cinco Chaminés homes: pre-written answers matched in your browser, with live IPMA weather, sea, UV and warnings and town events for your dates. No live model, nothing sent.">
+<meta name="share-image" content="/assets/share/agent.png">
+<link rel="stylesheet" href="/assets/agent.css">
+<!--HEAD-->
+</head>
+<body data-sources="ipma-city-forecasts ipma-warnings ipma-sea ipma-uv events-pt">
+<!--HEADER-->
+<main id="main" class="agent-page">
+  <header class="agent-intro">
+    <h1>Ask the agent</h1>
+    <p>This agent is a simulation, part of a made-up example. It matches your words, in your browser, against a list of pre-written questions and answers, then fills in the homes' details, their simulated availability and invented prices, and the live forecast, warnings, sea, UV and events for the dates you give. There is no live model behind it.</p>
+  </header>
+
+  <section id="agent" class="agent" aria-label="The scripted agent">
+    <noscript><p class="agent-noscript">The agent needs JavaScript, which is turned off. The same answers are on each home's page and on <a href="/use-the-data/">Use the data</a>.</p></noscript>
+  </section>
+
+  <section class="agent-how" aria-labelledby="how-h">
+    <h2 id="how-h">How it works</h2>
+    <ul>
+      <li><strong>Matching.</strong> Your question is turned to plain lower-case letters (accents removed), then compared with each pre-written question's patterns in a fixed order; the first that matches answers. Home names, towns and dates such as "tomorrow", "this weekend", "next week" or "21 to 28 November" are picked out first, and kept for your next question.</li>
+      <li><strong>Live figures.</strong> Forecasts, warnings, sea and UV are IPMA's, and events come from each town's agenda, read in your browser from <a href="https://data.promptugal.news/">data.promptugal.news</a>. Every live answer ends with its source and the time it was read.</li>
+      <li><strong>Invented things.</strong> The company, the homes, their prices and their availability are made up for this example. Nothing can be booked.</li>
+      <li><strong>Nothing kept.</strong> What you type stays in this page's memory and is gone when you leave. You can link to a question: <a href="/agent/?q=What%20is%20the%20weather%20in%20Sagres%20this%20week%3F">/agent/?q=What is the weather in Sagres this week?</a></li>
+    </ul>
+    <p>The pre-written answers were written by the team's writer and are in <a href="/assets/js/agent-script.js">agent-script.js</a>; the matching is in <a href="/assets/js/agent.js">agent.js</a>.</p>
+  </section>
+</main>
+<!--FOOTER-->
+<script type="module" src="/assets/js/agent.js"></script>
+</body>
+</html>
