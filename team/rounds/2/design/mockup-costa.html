@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Costa design (mock-up, made-up example) | Cinco Chaminés</title>
+<!-- Design 4 of 5, /d/costa/. Mock-up by designer.algarve-holiday-homes@AgentiCCells.dinis, round 2. The coast is drawn here from about 30
+     rounded points (a sketch, not a survey; CC BY 4.0). Forecast figures are the values of ipma-city-forecasts latest.json read at
+     2026-11-18 16:30 UTC (day 18 Nov), sea, UV and warning from the live site at the same time; they are examples in this static file. -->
+<style>
+:root{--land:#F5EBD6;--land-2:#EADBB9;--sea:#CFE8EE;--sea-2:#A9D3DE;--ink:#10252D;--ink-2:#3F5961;--pin:#A63D17;--on-pin:#fff;--panel:#FFFFFF;--deep:#0B4F63;--band:#FBE7A1;--line:#C9D9DD;
+--head:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold","Segoe UI",Inter,system-ui,sans-serif;--text:system-ui,-apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif;
+--fig:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,"JetBrains Mono",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--panel);color:var(--ink);font:16px/1.5 var(--text)}a{color:var(--deep)}img{display:block;width:100%;height:auto}
+.band{background:var(--band);color:var(--ink);font-size:14px;text-align:center;padding:8px 16px}
+header{max-width:76rem;margin:0 auto;padding:14px 28px;display:flex;justify-content:space-between;align-items:center}
+.logo{font:700 22px var(--head);color:var(--ink);text-decoration:none}.logo small{display:block;font:400 13px var(--text);color:var(--ink-2)}
+nav a{margin-left:22px;color:var(--ink);text-decoration:none;font:600 15px var(--head)}
+.wrap{max-width:76rem;margin:0 auto;padding:0 28px}
+.intro{display:flex;justify-content:space-between;align-items:end;gap:30px;margin:6px 0 14px}
+.intro h1{font:700 38px/1.1 var(--head);margin:0}.intro p{margin:6px 0 0;color:var(--ink-2);max-width:40rem}
+.legend{font-size:13px;color:var(--ink-2);text-align:right}.legend b{color:var(--pin)}
+.map{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.map svg{display:block;width:100%;height:auto}
+.call{position:absolute;width:16.5%;background:var(--panel);border-radius:10px;box-shadow:0 4px 14px rgba(16,37,45,.18);overflow:hidden;font-size:13px}
+.call .t{display:block;position:relative}.call .t span{position:absolute;left:5px;bottom:5px;background:rgba(16,37,45,.78);color:#fff;font-size:10.5px;padding:1px 5px;border-radius:3px}
+.call .b{padding:7px 9px 8px}.call h3{margin:0;font:700 14.5px var(--head)}.call h3 i{font-style:normal;display:inline-block;width:19px;height:19px;border-radius:50%;background:var(--pin);color:var(--on-pin);font-size:11.5px;text-align:center;line-height:19px;margin-right:5px}
+.call .w{font-family:var(--fig);font-size:11.5px;margin-top:3px;white-space:nowrap}.call .w b{font-size:12.5px}.call .s{color:var(--ink-2);font-size:11.5px}
+.warn{position:absolute;left:30%;bottom:3.5%;background:#FFF0B3;border-left:5px solid var(--ink);padding:6px 12px;font-size:13.5px;border-radius:4px}
+.src{font-size:12.5px;color:var(--ink-2);margin:8px 0 0}
+.ex{font-size:12px;background:#FFF0B3;padding:1px 6px;border-radius:3px}
+h2{font:700 26px var(--head);margin:36px 0 10px}
+table{width:100%;border-collapse:collapse}th{text-align:left;font:600 12.5px var(--text);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);border-bottom:2px solid var(--ink);padding:8px}
+td{border-bottom:1px solid var(--line);padding:10px 8px;vertical-align:middle}td.f{font-family:var(--fig);font-variant-numeric:tabular-nums}
+td img{width:96px;border-radius:6px}td a{font:700 16px var(--head)}
+</style>
+</head>
+<body>
+<div class="band" role="note"><b>Made-up example.</b> Cinco Chaminés is an invented company: homes, prices and bookings are simulated, and the pictures are AI-generated. The weather, sea, UV and events are real, read live from data.promptugal.news. <a href="#">What is this site?</a></div>
+<header><a class="logo" href="#">Cinco Chaminés<small>five invented homes along the Algarve coast</small></a><nav><a href="#">Homes</a><a href="#">Cameras</a><a href="#">Agent</a><a href="#">Other designs</a></nav></header>
+<div class="wrap">
+ <div class="intro"><div><h1>The coast today, home by home</h1><p>Five invented homes from Sagres in the west to Tavira in the east, each with the forecast for its nearest IPMA place. Positions are town centres, not houses.</p></div>
+ <p class="legend"><b>●</b> invented home (town centre)<br><span class="ex">forecast values as read 18 Nov, 16:30 UTC</span></p></div>
+ <div class="map">
+  <svg viewBox="0 0 1100 520" role="img" aria-label="Drawn map of the Algarve coast from Sagres to Tavira with the five invented homes marked at their town centres.">
+   <defs><linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFE8EE"/><stop offset="1" stop-color="#A9D3DE"/></linearGradient>
+   <pattern id="waves" width="60" height="22" patternUnits="userSpaceOnUse"><path d="M0 11q15-8 30 0t30 0" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.5"/></pattern></defs>
+   <rect width="1100" height="520" fill="url(#sea)"/><rect width="1100" height="520" fill="url(#waves)"/>
+   <path d="M77.6,0.0 L84.1,55.7 L64.7,130.0 L42.1,222.9 L34.3,312.9 L51.8,325.0 L66.0,338.9 L77.6,325.0 L110.0,306.4 L148.8,273.9 L207.1,255.4 L245.9,241.4 L249.1,260.0 L265.3,241.4 L297.6,222.9 L336.5,222.9 L375.3,246.1 L446.5,241.4 L517.6,255.4 L601.8,269.3 L660.0,297.1 L724.7,334.3 L763.5,366.8 L808.8,334.3 L847.6,297.1 L905.9,241.4 L938.2,213.6 L1035.3,176.4 L1067.6,167.1 L1080.6,0.0 L1100,0 L0,0 L77.6,0 Z" fill="#F5EBD6" stroke="#10252D" stroke-width="2" stroke-linejoin="round"/>
+   <path d="M1067.6,167.1 L1100,160 L1100,0 L1080.6,0 Z" fill="#EADBB9"/>
+   <path d="M660,297 Q720,322 763,352 Q800,330 848,297" fill="none" stroke="#A9D3DE" stroke-width="5" stroke-dasharray="2 7" stroke-linecap="round"/>
+   <g fill="none" stroke="#3F5961" stroke-width="1" stroke-opacity=".35"><path d="M150 130q120-40 260-10t300-30 330-20"/><path d="M200 70q150-30 300 0t300-20 250 0"/></g>
+   <g font-family="system-ui,Segoe UI,Arial,sans-serif" font-size="13" fill="#3F5961"><text x="96" y="200">Vila do Bispo</text><text x="318" y="212">Portimão</text><text x="470" y="232">Albufeira</text><text x="628" y="190">Loulé</text><text x="694" y="300">Faro</text><text x="872" y="236">Tavira</text><text x="20" y="500" font-size="12">Atlantic</text><text x="1062" y="200" font-size="11">Spain</text></g>
+   <g stroke="#10252D" stroke-width="1.5"><line x1="71" y1="326" x2="100" y2="352"/><line x1="243" y1="240" x2="243" y2="290"/><line x1="666" y1="206" x2="666" y2="190"/><line x1="721" y1="318" x2="712" y2="343"/><line x1="906" y1="216" x2="906" y2="180"/></g>
+   <g fill="#A63D17" stroke="#fff" stroke-width="2.5"><circle cx="71" cy="326" r="8"/><circle cx="243" cy="240" r="8"/><circle cx="666" cy="206" r="8"/><circle cx="721" cy="318" r="8"/><circle cx="906" cy="216" r="8"/></g>
+  </svg>
+  <div class="call" style="left:1%;top:66%"><span class="t"><img src="/assets/img/cape-hero-800.jpg" alt="AI-generated picture of the invented Cape House on a windy clifftop." style="aspect-ratio:2.6/1;object-fit:cover"><span>AI picture</span></span><div class="b"><h3><i>5</i>The Cape House</h3><div class="w">Sagres <b>19.2 to 22.3 °C</b></div><div class="s">rain 100 %, wind W</div></div></div>
+  <div class="call" style="left:17.5%;top:55%"><span class="t"><img src="/assets/img/harbour-hero-800.jpg" alt="AI-generated picture of the invented Harbour House in Lagos." style="aspect-ratio:2.6/1;object-fit:cover"><span>AI picture</span></span><div class="b"><h3><i>4</i>The Harbour House</h3><div class="w">Portimão <b>18.8 to 22.7 °C</b></div><div class="s">nearest IPMA place, 15 km</div></div></div>
+  <div class="call" style="left:52%;top:6%"><span class="t"><img src="/assets/img/hill-hero-800.jpg" alt="AI-generated picture of the invented Hill House among carob trees." style="aspect-ratio:2.6/1;object-fit:cover"><span>AI picture</span></span><div class="b"><h3><i>3</i>The Hill House</h3><div class="w">Loulé <b>17.7 to 20.5 °C</b></div><div class="s">rain 100 %, wind SW</div></div></div>
+  <div class="call" style="left:48%;top:66%"><span class="t"><img src="/assets/img/lagoon-hero-800.jpg" alt="AI-generated picture of the invented Lagoon House by the Ria Formosa." style="aspect-ratio:2.6/1;object-fit:cover"><span>AI picture</span></span><div class="b"><h3><i>2</i>The Lagoon House</h3><div class="w">Faro <b>19.8 to 22.4 °C</b></div><div class="s">sea 19.5 to 19.8 °C</div></div></div>
+  <div class="call" style="left:76%;top:4%"><span class="t"><img src="/assets/img/salt-hero-800.jpg" alt="AI-generated picture of the invented Salt House by the salt pans." style="aspect-ratio:2.6/1;object-fit:cover"><span>AI picture</span></span><div class="b"><h3><i>1</i>The Salt House</h3><div class="w">Faro <b>19.8 to 22.4 °C</b></div><div class="s">nearest IPMA place, 28 km</div></div></div>
+  <p class="warn" style="left:70%;bottom:6%;margin:0"><b>Yellow warning</b>, Faro district: rough sea, to Fri 20 Nov 09:00</p>
+ </div>
+ <p class="src">Source: IPMA, Instituto Português do Mar e da Atmosfera (<code>ipma-city-forecasts</code>, <code>ipma-sea</code>, <code>ipma-warnings</code>), via data.promptugal.news. IPMA issued 15:31 (Portugal time); read 16:30 UTC. Map drawn by the team from rounded points; not for navigation.</p>
+ <h2>Along the coast, west to east</h2>
+ <table>
+  <tr><th>Home</th><th></th><th>Forecast place</th><th>Today</th><th>Sea</th><th>A night (invented)</th></tr>
+  <tr><td><img src="/assets/img/cape-hero-800.jpg" alt=""></td><td><a href="#">The Cape House</a><br><small>Sagres, sleeps 5</small></td><td>Sagres</td><td class="f">19.2 to 22.3 °C</td><td class="f">Sagres coast</td><td class="f">EUR 145</td></tr>
+  <tr><td><img src="/assets/img/harbour-hero-800.jpg" alt=""></td><td><a href="#">The Harbour House</a><br><small>Lagos, sleeps 4</small></td><td>Portimão (15 km)</td><td class="f">18.8 to 22.7 °C</td><td class="f">Sagres coast</td><td class="f">EUR 130</td></tr>
+ </table>
+ <div style="height:30px"></div>
+</div>
+</body>
+</html>

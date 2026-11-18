@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Main design with photos (mock-up, made-up example) | Cinco Chaminés</title>
+<!-- Mock-up by designer.algarve-holiday-homes@AgentiCCells.dinis, round 2. Static: figures are example values read from the live site
+     on 18 Nov 2026 at about 16:30 UTC and are marked so. Images are served from /assets/img/ (the proposed place; see PROPOSAL.md 2.1).
+     Code Apache-2.0, text CC BY 4.0. -->
+<style>
+:root{--bg:#FBF7F0;--surface:#FFFFFF;--ink:#1F2328;--ink-2:#545A62;--line:#D9D2C5;--accent:#A13D1A;--on-accent:#fff;--sea:#0E5A72;
+--band-bg:#FBE7A1;--band-ink:#3A2E00;--scrim:rgba(20,16,12,.62);--r:10px;--wrap:76rem;
+--sans:system-ui,-apple-system,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,"JetBrains Mono",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans)}
+a{color:var(--accent)}img{display:block;max-width:100%;height:auto}
+.band{background:var(--band-bg);color:var(--band-ink);font-size:14px;text-align:center;padding:8px 16px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:var(--wrap);margin:0 auto}
+.brand{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--ink)}.brand b{font-size:19px;display:block}.brand small{color:var(--ink-2);font-size:12px}
+nav a{color:var(--ink);text-decoration:none;margin-left:22px;font-size:15px}nav a[aria-current]{border-bottom:2px solid var(--accent);padding-bottom:4px}
+.hero{position:relative;min-height:560px;display:flex;align-items:flex-end;color:#fff;overflow:hidden}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,16,12,.72) 0%,rgba(20,16,12,.72) 50%,rgba(20,16,12,.62) 60%,rgba(20,16,12,0) 85%)}
+.hero .wrap{position:relative;z-index:1;width:100%;display:grid;grid-template-columns:1.2fr .9fr;gap:40px;align-items:end;padding-bottom:56px}
+.hero h1{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.08;margin:0 0 14px;letter-spacing:-.01em}
+.hero p{font-size:19px;max-width:34rem;margin:0}
+.cap{position:absolute;z-index:1;right:16px;bottom:12px;font-size:12px;background:var(--scrim);color:#fff;padding:4px 8px;border-radius:4px}
+.plan{background:var(--surface);color:var(--ink);border-radius:var(--r);padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.plan h2{margin:0 0 12px;font-size:20px}.plan .f{display:grid;grid-template-columns:1fr 1fr 80px;gap:10px}
+.plan label{font-size:13px;font-weight:600;display:block}.plan .in{border:1px solid #8b8478;border-radius:6px;padding:10px;font-size:15px;margin-top:4px;background:#fff}
+.btn{display:inline-block;background:var(--accent);color:var(--on-accent);padding:11px 18px;border-radius:6px;font-weight:600;text-decoration:none;margin-top:14px}
+.plan small{display:block;color:var(--ink-2);font-size:12.5px;margin-top:10px}
+.now{border-bottom:1px solid var(--line);padding:22px 0}
+.now .row{display:flex;flex-wrap:wrap;gap:8px 30px;align-items:baseline}.now b{font-size:20px}
+.chip{display:inline-block;border:1px solid var(--ink-2);border-radius:99px;font-size:12px;padding:1px 8px;color:var(--ink-2);vertical-align:middle;margin-left:6px}
+.src{font-size:12px;color:var(--ink-2);margin:8px 0 0}.src code{font:11px var(--mono)}
+.ex{font-size:12px;background:#FFF0B3;padding:1px 6px;border-radius:3px}
+h2.sec{font-size:28px;margin:44px 0 6px}.lead2{color:var(--ink-2);margin:0 0 20px}
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.ph{position:relative}.ph .ai{position:absolute;left:8px;bottom:8px;background:var(--scrim);color:#fff;font-size:11px;padding:2px 7px;border-radius:4px}
+.card .b{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}.card h3{margin:0;font-size:18px}.card h3 a{color:var(--accent)}
+.card p{margin:0;font-size:14.5px}.card .meta{color:var(--ink-2);font-size:13.5px}.card .price{margin-top:auto;font-weight:700;font-size:14.5px}.card .price span{font-weight:400;color:var(--ink-2);font-size:12.5px}
+.funny{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.funny figure{margin:0}.funny img{border-radius:8px;aspect-ratio:1/1;object-fit:cover}
+.funny figcaption{font-size:13px;margin-top:6px}.funny figcaption small{display:block;color:var(--ink-2);font-size:11.5px}
+.agent{margin:44px 0;border:1px solid var(--line);border-left:5px solid var(--sea);border-radius:var(--r);background:var(--surface);padding:20px 24px;display:flex;justify-content:space-between;align-items:center}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13.5px;color:var(--ink-2)}
+.divider{margin:60px 0 0;padding:14px 24px;background:#1F2328;color:#fff;font:600 14px var(--sans);text-align:center}
+/* home page gallery */
+.crumbs{font-size:14px;margin:18px 0 6px}.hp h1{font-size:40px;margin:0 0 4px}.hp .meta{color:var(--ink-2);margin:0 0 18px}
+.gal{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:auto auto;gap:12px}
+.gal figure{margin:0;position:relative;display:flex;flex-direction:column}.gal .main{grid-row:1/3}.gal img{border-radius:var(--r);width:100%;object-fit:cover}.gal .main img{flex:1;min-height:0}
+.gal figcaption{font-size:12.5px;color:var(--ink-2);margin-top:5px}
+.gal .side img{aspect-ratio:3/2}
+.hp .desc{max-width:44rem;margin:18px 0 40px}
+</style>
+</head>
+<body>
+<div class="band" role="note"><b>Made-up example.</b> Cinco Chaminés is an invented company: the homes, prices, availability and bookings are simulated, and the pictures are AI-generated. The weather, sea, UV and events are real, read live from data.promptugal.news. <a href="#">What is this site?</a></div>
+<header class="top">
+ <a class="brand" href="#"><svg width="22" height="36" viewBox="0 0 24 40" aria-hidden="true"><rect x="8" y="20" width="8" height="20" fill="#fff" stroke="#1F2328" stroke-width="1.5"/><rect x="4" y="10" width="16" height="10" fill="#fff" stroke="#1F2328" stroke-width="1.5"/><path d="M7 15l2-2.5 2 2.5-2 2.5zM11 15l2-2.5 2 2.5-2 2.5zM15 15l2-2.5 2 2.5-2 2.5z" fill="#1F2328"/><path d="M3 10L12 2l9 8z" fill="#C2643D" stroke="#1F2328" stroke-width="1.5"/></svg><span><b>Cinco Chaminés</b><small>holiday homes in the Algarve (a made-up example)</small></span></a>
+ <nav><a href="#" aria-current="page">Homes</a><a href="#">Agent</a><a href="#">Live cameras</a><a href="#">Five designs</a><a href="#">Use the data</a><a href="#">Behind the scenes</a></nav>
+</header>
+<section class="hero">
+ <img src="/assets/img/algarve-cliffs-1600.jpg" srcset="/assets/img/algarve-cliffs-800.jpg 800w,/assets/img/algarve-cliffs-1600.jpg 1600w" sizes="100vw" width="1600" height="1067" alt="AI-generated picture of golden limestone cliffs, sea arches and stacks above a turquoise sea at sunset." fetchpriority="high">
+ <div class="wrap">
+  <div><h1>Five homes, five chimneys, one coast.</h1><p>An invented company with five holiday homes from Tavira to Sagres. Pick your dates to see which homes are free (simulated) and what the weather, sea and local events look like for your stay (real, from IPMA and the towns' own agendas).</p></div>
+  <form class="plan" onsubmit="return false"><h2>Plan your stay</h2><div class="f"><div><label>Arrive<div class="in">20/11/2026</div></label></div><div><label>Leave<div class="in">25/11/2026</div></label></div><div><label>Guests<div class="in">2</div></label></div></div><a class="btn" href="#">Show free homes and the weather</a><small>Your dates stay in this tab and the page address; nothing is kept on a server or sent. Availability is simulated.</small></form>
+ </div>
+ <span class="cap">AI-generated picture of the Algarve coast, not a photograph</span>
+</section>
+<div class="wrap">
+ <section class="now" aria-label="The Algarve now">
+  <div class="row"><strong>The Algarve now <span class="chip">real, read live</span></strong> <span class="ex">example values in this mock-up</span></div>
+  <div class="row" style="margin-top:8px"><span>Faro today: <b>19.8 to 22.4 °C</b>, light rain</span><span>Sea, Faro coast: <b>19.5 to 19.8 °C</b>, waves 0.6 to 1 m</span><span>UV, Faro: <b>2.4</b> low</span><span>Warning, Faro district: <b>yellow, rough sea</b></span></div>
+  <p class="src">Source: IPMA, Instituto Português do Mar e da Atmosfera (<code>ipma-city-forecasts</code>, <code>ipma-sea</code>, <code>ipma-uv</code>, <code>ipma-warnings</code>), via data.promptugal.news. Read 16:30 UTC, 47 min ago. <a href="#">Source cards</a></p>
+ </section>
+ <h2 class="sec">The five homes <span class="chip">AI pictures of invented homes</span></h2>
+ <p class="lead2">Invented homes with invented prices. The pictures were made with an image model; none of these houses exists.</p>
+ <div class="cards">
+  <article class="card"><div class="ph"><img src="/assets/img/salt-hero-800.jpg" width="800" height="533" loading="lazy" alt="AI-generated picture of the invented Salt House: a low white house with blue trim and one lattice chimney beside pink salt pans at sunset."><span class="ai">AI picture</span></div><div class="b"><h3><a href="#">The Salt House</a></h3><p>Tavira. A low white house with a roof terrace over the salt pans.</p><p class="meta">Sleeps 4, 2 bedrooms</p><p class="price">EUR 120 a night <span>(invented)</span></p></div></article>
+  <article class="card"><div class="ph"><img src="/assets/img/lagoon-hero-800.jpg" width="800" height="533" loading="lazy" alt="AI-generated picture of the invented Lagoon House by the Ria Formosa."><span class="ai">AI picture</span></div><div class="b"><h3><a href="#">The Lagoon House</a></h3><p>Faro. A small first-floor flat for two near the lagoon.</p><p class="meta">Sleeps 2, 1 bedroom</p><p class="price">EUR 85 a night <span>(invented)</span></p></div></article>
+  <article class="card"><div class="ph"><img src="/assets/img/hill-hero-800.jpg" width="800" height="533" loading="lazy" alt="AI-generated picture of the invented Hill House with its pool among carob trees."><span class="ai">AI picture</span></div><div class="b"><h3><a href="#">The Hill House</a></h3><p>near Loulé. A country house with a pool among carob and almond trees.</p><p class="meta">Sleeps 6, 3 bedrooms</p><p class="price">EUR 160 a night <span>(invented)</span></p></div></article>
+  <article class="card"><div class="ph"><img src="/assets/img/harbour-hero-800.jpg" width="800" height="533" loading="lazy" alt="AI-generated picture of the invented Harbour House on a cobbled street in Lagos."><span class="ai">AI picture</span></div><div class="b"><h3><a href="#">The Harbour House</a></h3><p>Lagos. A town house with a courtyard near the marina and old walls.</p><p class="meta">Sleeps 4, 2 bedrooms</p><p class="price">EUR 130 a night <span>(invented)</span></p></div></article>
+  <article class="card"><div class="ph"><img src="/assets/img/cape-hero-800.jpg" width="800" height="533" loading="lazy" alt="AI-generated picture of the invented Cape House on a windy clifftop."><span class="ai">AI picture</span></div><div class="b"><h3><a href="#">The Cape House</a></h3><p>Sagres. A plain, wind-proof house for surfers and walkers.</p><p class="meta">Sleeps 5, 3 bedrooms</p><p class="price">EUR 145 a night <span>(invented)</span></p></div></article>
+ </div>
+ <h2 class="sec">The homes where they do not belong</h2>
+ <p class="lead2">We asked the image model to put each invented house somewhere it could never be. A reminder, if one were needed, that none of this is real.</p>
+ <div class="funny">
+  <figure><img src="/assets/img/salt-funny-800.jpg" loading="lazy" alt="AI-generated joke picture: the invented Salt House on top of a heap of salt."><figcaption>The Salt House on a salt heap<small>AI-generated, invented house</small></figcaption></figure>
+  <figure><img src="/assets/img/lagoon-funny-800.jpg" loading="lazy" alt="AI-generated joke picture: the invented Lagoon House riding on a fishing boat."><figcaption>The Lagoon House goes fishing<small>AI-generated, invented house</small></figcaption></figure>
+  <figure><img src="/assets/img/hill-funny-800.jpg" loading="lazy" alt="AI-generated joke picture: the invented Hill House high in a carob tree."><figcaption>The Hill House up a carob tree<small>AI-generated, invented house</small></figcaption></figure>
+  <figure><img src="/assets/img/harbour-funny-800.jpg" loading="lazy" alt="AI-generated joke picture: the invented Harbour House surfing a wave."><figcaption>The Harbour House catches a wave<small>AI-generated, invented house</small></figcaption></figure>
+  <figure><img src="/assets/img/cape-funny-800.jpg" loading="lazy" alt="AI-generated joke picture: the invented Cape House on a sea stack."><figcaption>The Cape House on a sea stack<small>AI-generated, invented house</small></figcaption></figure>
+ </div>
+ <section class="agent"><div><strong style="font-size:19px">Ask the agent</strong> <span class="chip">simulation</span><br><span style="color:var(--ink-2)">Pre-written answers matched in your browser, no live model. It can still read today's weather and events for you.</span></div><a class="btn" style="margin:0" href="#">Open the agent</a></section>
+</div>
+<footer><div class="wrap">Cinco Chaminés is a made-up example. Homes, prices, availability and bookings are invented; every picture of a home is AI-generated. Weather, warnings, sea and UV: IPMA, via data.promptugal.news. Made by the AgentiCCells site factory. Code Apache-2.0, text and pictures CC BY 4.0.</div></footer>
+
+<div class="divider" id="home-salt">Mock-up 2: the top of a home page (/homes/salt/) with the gallery</div>
+<div class="wrap hp">
+ <p class="crumbs"><a href="#">Homes</a> / The Salt House</p>
+ <h1>The Salt House, Tavira</h1>
+ <p class="meta">Sleeps 4 · 2 bedrooms · 2 bathrooms · <b style="color:var(--ink)">EUR 120 a night</b> (invented)</p>
+ <div class="gal">
+  <figure class="main"><img src="/assets/img/salt-hero-1600.jpg" srcset="/assets/img/salt-hero-800.jpg 800w,/assets/img/salt-hero-1600.jpg 1600w" sizes="(min-width:900px) 66vw,100vw" alt="AI-generated picture of the invented Salt House: a low white house with blue trim and one lattice chimney beside pink salt pans at sunset, Tavira's old town behind."><figcaption>Outside. AI-generated picture of an invented house, not a photograph.</figcaption></figure>
+  <figure class="side"><img src="/assets/img/salt-inside-800.jpg" alt="AI-generated picture of the Salt House roof terrace: two wooden chairs, a jug and a bowl of oranges, the salt pans beyond."><figcaption>The roof terrace. AI-generated.</figcaption></figure>
+  <figure class="side"><img src="/assets/img/salt-funny-800.jpg" alt="AI-generated joke picture: the invented Salt House on top of a heap of salt."><figcaption>Where it does not belong: on a salt heap. AI-generated joke.</figcaption></figure>
+ </div>
+ <p class="desc">A low white house with a roof terrace looking towards the salt pans and the river. The old town is a short walk away, and the island beach is a ferry ride. This home is invented for a made-up example.</p>
+</div>
+</body>
+</html>

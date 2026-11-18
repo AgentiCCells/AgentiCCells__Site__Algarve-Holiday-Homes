@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Revista design (mock-up, made-up example) | Cinco Chaminés</title>
+<!-- Design 1 of 5, /d/revista/. Mock-up by designer.algarve-holiday-homes@AgentiCCells.dinis, round 2. Example figures from the live site,
+     18 Nov 2026 about 16:30 UTC, marked so. Code Apache-2.0, text CC BY 4.0. -->
+<style>
+:root{--paper:#FAF8F3;--ink:#1C1B19;--ink-2:#5C5850;--accent:#8E3A1E;--column:#F0ECE3;--rule:#1C1B19;--band:#EFE3C2;
+--display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua","URW Palladio L",Caladea,Georgia,serif;
+--text:Charter,"Bitstream Charter","Sitka Text",Cambria,Caladea,Georgia,serif;
+--label:"Avenir Next","Segoe UI",Inter,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 var(--text)}
+a{color:var(--accent)}img{display:block;width:100%;height:auto}
+.wrap{max-width:74rem;margin:0 auto;padding:0 28px}
+.notice{border-bottom:1px solid var(--rule);background:var(--band);font:13px/1.4 var(--label);text-align:center;padding:7px 16px;letter-spacing:.01em}
+.notice b{text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;margin-right:6px}
+.mast{text-align:center;padding:26px 0 0}
+.mast .name{font:400 64px/1 var(--display);letter-spacing:.02em;margin:0}
+.mast .sub{font:italic 17px var(--display);color:var(--ink-2);margin:6px 0 16px}
+.dateline{display:flex;justify-content:space-between;border-top:3px double var(--rule);border-bottom:1px solid var(--rule);padding:7px 0;font:12.5px var(--label);text-transform:uppercase;letter-spacing:.1em}
+.navline{display:flex;justify-content:center;gap:28px;font:13px var(--label);text-transform:uppercase;letter-spacing:.12em;padding:10px 0;border-bottom:1px solid var(--rule)}
+.navline a{color:var(--ink);text-decoration:none}
+.cover{display:grid;grid-template-columns:minmax(0,8fr) minmax(0,4fr);gap:32px;padding:30px 0;border-bottom:1px solid var(--rule)}
+.kicker{font:600 12px var(--label);text-transform:uppercase;letter-spacing:.14em;color:var(--accent);margin:0 0 6px}
+.cover h1{font:400 52px/1.05 var(--display);margin:14px 0 10px;letter-spacing:-.01em}
+.stand{font:italic 21px/1.45 var(--display);color:var(--ink-2);margin:0 0 6px}
+figure{margin:0}figcaption{font:12.5px/1.4 var(--label);color:var(--ink-2);margin-top:6px}
+.cond{background:var(--column);padding:18px 18px 14px;border-top:3px solid var(--rule)}
+.cond h2{font:600 13px var(--label);text-transform:uppercase;letter-spacing:.14em;margin:0 0 10px}
+.cond table{width:100%;border-collapse:collapse;font:14px/1.35 var(--label)}
+.cond td{padding:7px 0;border-bottom:1px solid #CFC7B8;vertical-align:top}.cond td:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.cond .warn{margin:10px 0 0;padding:8px 10px;border-left:4px solid var(--ink);background:#FFF1B8;font:14px var(--label)}
+.cond .src{font:italic 12.5px/1.45 var(--text);color:var(--ink-2);margin:10px 0 0}
+.ex{font:11.5px var(--label);background:#FFF1B8;padding:1px 5px}
+.toc{margin-top:22px}.toc h2{font:600 13px var(--label);text-transform:uppercase;letter-spacing:.14em;margin:0 0 8px;border-bottom:1px solid var(--rule);padding-bottom:6px}
+.toc ol{list-style:none;margin:0;padding:0;font:17px/1.35 var(--display)}.toc li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dotted #B9B1A2}.toc li span{font:13px var(--label);color:var(--ink-2)}
+.feature{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:36px;padding:38px 0;border-bottom:1px solid var(--rule);align-items:start}
+.feature.flip{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}.feature.flip figure{order:2}
+.feature h2{font:400 40px/1.08 var(--display);margin:4px 0 10px}
+.feature p.body:first-letter{float:left;font:400 58px/0.85 var(--display);padding:6px 8px 0 0;color:var(--accent)}
+.facts{display:flex;gap:18px;font:13px var(--label);text-transform:uppercase;letter-spacing:.08em;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:8px 0;margin:14px 0}
+.facts b{font-weight:700}
+.read{font:600 13px var(--label);text-transform:uppercase;letter-spacing:.12em;text-decoration:none;border-bottom:2px solid var(--accent);padding-bottom:2px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="notice" role="note"><b>Made-up example</b>Cinco Chaminés is an invented company. Homes, prices and bookings are simulated and every picture is AI-generated. The weather, sea, UV and events are real, read live from data.promptugal.news. <a href="#">What is this site?</a></div>
+<div class="wrap">
+ <header class="mast">
+  <p class="name">Cinco Chaminés</p>
+  <p class="sub">Five invented holiday homes on the Algarve coast, written up like a travel magazine</p>
+  <div class="dateline"><span>Wednesday 18 November 2026</span><span>Faro 19.8 to 22.4 °C, light rain <span class="ex">example</span></span><span>A made-up example</span></div>
+  <nav class="navline"><a href="#">The homes</a><a href="#">This week's weather</a><a href="#">What's on</a><a href="#">Ask the agent</a><a href="#">Other designs</a></nav>
+ </header>
+ <section class="cover">
+  <div>
+   <figure><img src="/assets/img/algarve-street-1600.jpg" width="1600" height="1067" alt="AI-generated picture of a quiet whitewashed street with blue and ochre trims, cobbles, bougainvillea and one lattice chimney."><figcaption>A whitewashed street with one lattice chimney. AI-generated picture, not a photograph.</figcaption></figure>
+   <p class="kicker" style="margin-top:18px">The cover story</p>
+   <h1>Five houses, five chimneys, and the weather on the coast this week</h1>
+   <p class="stand">From the salt pans at Tavira to the cliffs at Sagres: five invented homes, and what the sea, the sun and the town agendas say about the days ahead.</p>
+  </div>
+  <aside>
+   <div class="cond">
+    <h2>Conditions today <span class="ex">example values</span></h2>
+    <table>
+     <tr><td>Faro, air</td><td>19.8 to 22.4 °C</td></tr>
+     <tr><td>Faro, sky</td><td>light rain, 100 %</td></tr>
+     <tr><td>Sea, Faro coast</td><td>19.5 to 19.8 °C</td></tr>
+     <tr><td>Waves</td><td>0.6 to 1 m</td></tr>
+     <tr><td>UV, Faro</td><td>2.4 low</td></tr>
+    </table>
+    <p class="warn"><b>Yellow warning:</b> rough sea, Faro district, to Fri 20 Nov 09:00.</p>
+    <p class="src">Source: IPMA, Instituto Português do Mar e da Atmosfera (ipma-city-forecasts, ipma-sea, ipma-uv, ipma-warnings), via data.promptugal.news. Read 16:30 UTC, 47 min ago. If a file cannot be read: "IPMA's figures could not be read just now", and no number.</p>
+   </div>
+   <div class="toc"><h2>In this issue</h2><ol>
+    <li>The Salt House, Tavira <span>sleeps 4</span></li><li>The Lagoon House, Faro <span>sleeps 2</span></li><li>The Hill House, near Loulé <span>sleeps 6</span></li><li>The Harbour House, Lagos <span>sleeps 4</span></li><li>The Cape House, Sagres <span>sleeps 5</span></li></ol></div>
+  </aside>
+ </section>
+ <article class="feature">
+  <figure><img src="/assets/img/salt-hero-1600.jpg" alt="AI-generated picture of the invented Salt House beside pink salt pans at sunset."><figcaption>The Salt House at the salt pans. AI-generated picture of an invented house.</figcaption>
+   <div class="pair"><img src="/assets/img/salt-inside-800.jpg" alt="AI-generated picture of the Salt House roof terrace with oranges on the table."><img src="/assets/img/salt-funny-800.jpg" alt="AI-generated joke picture: the Salt House on a salt heap."></div><figcaption>Left: the roof terrace. Right: the house where it does not belong, on a salt heap. Both AI-generated.</figcaption></figure>
+  <div>
+   <p class="kicker">Tavira · the east</p>
+   <h2>The Salt House</h2>
+   <p class="stand" style="font-size:19px">A low white house with a roof terrace over the salt pans, a short walk from the old town.</p>
+   <div class="facts"><span><b>4</b> guests</span><span><b>2</b> bedrooms</span><span><b>EUR 120</b> a night (invented)</span></div>
+   <p class="body">A low white house with a roof terrace looking towards the salt pans and the river. The old town is a short walk away, and the island beach is a ferry ride. Two bedrooms and two bathrooms, so it suits a family or two friends travelling together. This home is invented for a made-up example.</p>
+   <p style="font:14px var(--label);color:var(--ink-2)">This week near Tavira: forecast for Faro, the nearest IPMA place (28 km). Source line under every figure on the home's page.</p>
+   <a class="read" href="#">Read on, see the dates</a>
+  </div>
+ </article>
+ <article class="feature flip">
+  <figure><img src="/assets/img/hill-hero-1600.jpg" alt="AI-generated picture of the invented Hill House with its pool among carob trees."><figcaption>The Hill House among the carob trees. AI-generated picture of an invented house.</figcaption></figure>
+  <div>
+   <p class="kicker">Loulé · the hills</p>
+   <h2>The Hill House</h2>
+   <p class="stand" style="font-size:19px">A country house with a pool among carob and almond trees in the hills behind Loulé.</p>
+   <div class="facts"><span><b>6</b> guests</span><span><b>3</b> bedrooms</span><span><b>EUR 160</b> a night (invented)</span></div>
+   <p class="body">Ten minutes by car from the town market, with space for a family or two couples, a private pool, a shaded garden and a fireplace for winter. A car is needed. This home is invented for a made-up example.</p>
+   <a class="read" href="#">Read on, see the dates</a>
+  </div>
+ </article>
+</div>
+</body>
+</html>
