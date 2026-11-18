@@ -1,6 +1,6 @@
 # Agent Behaviour Policy: conductor.algarve-holiday-homes@AgentiCCells.dinis
 
-**Status: proposal** (written by conductor.algarve-holiday-homes@AgentiCCells.dinis on 18 November 2026; it binds from now and becomes approved only when Dinis Cruz says so).
+**Status: approved** (written by conductor.algarve-holiday-homes@AgentiCCells.dinis on 18 November 2026; accepted by Dinis Cruz on 18 November 2026 about 17:10 UTC: "I'm happy with those team policies", see team/rounds/2.md).
 **Phase: mixed** (most rules observe and record; the platform approval prompt already blocks credential and environment changes).
 
 Deny by default: anything this policy does not list, this agent does not do. Where this policy and `CLAUDE.md` disagree, the stricter one holds. Format: the AgentiCCells ABP format (https://specialist-abp.agenticcells.site/pack/format.html), checked by `node scripts/abp-check.mjs`.
@@ -87,12 +87,12 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
   "format": "agenticcells-abp/0.1",
   "id": "conductor.algarve-holiday-homes@AgentiCCells.dinis",
   "kind": "agent",
-  "version": "0.1.0",
-  "status": "proposal",
+  "version": "0.1.1",
+  "status": "approved",
   "phase": "mixed",
   "default": "deny",
   "owner": "Dinis Cruz",
-  "keeper": "conductor.algarve-holiday-homes@AgentiCCells.dinis",
+  "keeper": "Dinis Cruz",
   "reviewer": "Dinis Cruz",
   "updated": "2026-11-18",
   "mandate": {
@@ -409,11 +409,14 @@ Deny by default: anything this policy does not list, this agent does not do. Whe
     "conditions": "this policy, team/conductor/ROLE.md, team/WORKFLOW.md and CLAUDE.md",
     "validity": "from 2026-11-18, for at most five full rounds (the budget Dinis set), or fewer if the reviewer passes the site earlier",
     "review": "Dinis on any change; the conductor at each round report",
-    "stop": "anyone writes board/HOLD.md; only Dinis restarts"
+    "stop": "anyone writes board/HOLD.md; only Dinis restarts",
+    "approved_by": "Dinis Cruz",
+    "approved": "2026-11-18T17:10Z (about), in the conductor.algarve-holiday-homes session: \"I'm happy with those team policies\" (team/rounds/2.md)"
   }
 }
 ```
 
 ## Record
 
-- 0.1.0, 18 November 2026: first version, written by conductor.algarve-holiday-homes@AgentiCCells.dinis from the brief (requests/2026-11-18__algarve-holiday-homes/brief.md in AgentiCCells/AgentiCCells__Site__Factory), team/WORKFLOW.md, team/scopes.json and the IPMA data cell's policies. Proposal until Dinis approves it.
+- 0.1.0, 18 November 2026: first version, written by conductor.algarve-holiday-homes@AgentiCCells.dinis from the brief (requests/2026-11-18__algarve-holiday-homes/brief.md in AgentiCCells/AgentiCCells__Site__Factory), team/WORKFLOW.md, team/scopes.json and the IPMA data cell's policies. Proposal until Dinis approved it.
+- 0.1.1, 18 November 2026: approved by Dinis Cruz, about 17:10 UTC ("I'm happy with those team policies", team/rounds/2.md); licence.approved_by added, keeper set to Dinis Cruz (an approved policy is not kept by the agent it binds).
