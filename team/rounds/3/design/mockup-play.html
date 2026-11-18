@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Side by side (mock-up, made-up example) | Cinco Chaminés</title>
+<!-- Mock-up of /play/ by designer.algarve-holiday-homes@AgentiCCells.dinis, round 3, 18 Nov 2026. Static. The two frames load the
+     /stay/ and /admin/ mock-ups with ?embed (their own chrome hidden). Slider bounds from team/rounds/2/research/REAL-DATES.md:
+     weather as issued 17 to 22 Nov 2026, events 18 Nov to 31 Dec 2026. Events in the ticker are simulated. Code Apache-2.0, text CC BY 4.0. -->
+<link rel="stylesheet" href="mock-chrome.css">
+<style>
+body{overflow:hidden}
+.time{display:grid;grid-template-columns:auto auto 1fr auto;gap:14px;align-items:center;padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--line)}
+.ctl{display:flex;gap:4px;align-items:center}
+.ctl button{border:1px solid var(--ink-2);background:var(--surface);border-radius:6px;padding:3px 9px;font-size:13px;min-width:34px}
+.ctl button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.now{font-family:var(--mono);font-size:13px;line-height:1.25}
+.now b{display:block;font-size:15px;font-family:var(--sans)}
+.track{position:relative;height:46px}
+.rail{position:absolute;left:0;right:0;top:18px;height:8px;border-radius:4px;background:#E4DED3}
+.rw{position:absolute;top:14px;height:16px;border-radius:4px;background:repeating-linear-gradient(135deg,#BFE3CB 0 5px,#9ED3B1 5px 10px);border:1px solid #14532D}
+.ev{position:absolute;top:30px;height:3px;background:#0E5A72}
+.thumb{position:absolute;top:8px;width:4px;height:28px;background:var(--ink);border-radius:2px;transform:translateX(-2px)}
+.thumb:after{content:"";position:absolute;left:-7px;top:-6px;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 0 0 1px var(--ink)}
+.ticks{position:absolute;left:0;right:0;top:34px;font-size:10.5px;color:var(--ink-2)}
+.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap;top:2px}
+.tl-leg{font-size:11.5px;color:var(--ink-2);line-height:1.35;max-width:210px}
+.tl-leg i{display:inline-block;width:18px;height:9px;vertical-align:middle;margin-right:4px;border-radius:2px}
+.stage{display:grid;grid-template-columns:1fr 290px 1fr;gap:0;height:calc(100vh - 190px)}
+.pane{display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--line)}
+.pane .lab{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;font-size:12.5px;background:#EFE9DF;border-bottom:1px solid var(--line)}
+.pane .lab b{font-size:13px}
+.pane iframe{flex:1;border:0;width:100%;background:#fff}
+.ticker{background:#FFFDF8;display:flex;flex-direction:column;border-right:1px solid var(--line);min-height:0}
+.ticker h2{font-size:13px;margin:0;padding:8px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.ticker ol{list-style:none;margin:0;padding:0 0 60px;overflow:auto;flex:1}
+.ticker li{padding:8px 12px;border-bottom:1px solid var(--line);font-size:12.5px;line-height:1.4}
+.ticker li.new{background:#FFF6D6;box-shadow:inset 3px 0 0 #8A6D00}
+.ticker time{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);display:block}
+.ticker .dir{font-family:var(--mono);font-size:11px;color:var(--ink-2)}
+.ticker .pol{display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap}
+.ticker .rule{font-family:var(--mono);font-size:11px;color:var(--ink-2)}
+@media (max-width:900px){body{overflow:auto}.time{grid-template-columns:1fr;gap:6px}.tl-leg{max-width:none}
+ .stage{grid-template-columns:1fr;height:auto}.pane iframe{height:640px;flex:none}.ticker ol{max-height:260px}}
+</style>
+</head>
+<body>
+<p class="band" role="note"><b>Made-up example.</b> Visitor site and admin side by side, sharing one simulation in your browser. Weather and events are real; everything else is simulated or invented. <a href="#">About this demo</a></p>
+<header class="apphead">
+ <a class="brand" href="#"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="3" y="10" width="20" height="13" fill="#fff" stroke="#1F2328" stroke-width="2"/><path d="M1 11 13 3l12 8" fill="none" stroke="#C2643D" stroke-width="2.5"/><rect x="17" y="3" width="4" height="6" fill="#1F2328"/></svg><span>Cinco Chaminés<small>a made-up example</small></span></a>
+ <nav class="modes" aria-label="Modes"><a href="#">Visitor</a><a href="#">Guest's stay</a><a href="#">Admin</a><a href="#" aria-current="page">Side by side</a><a href="#">World <span class="soon">round 4</span></a><a href="#">Agents <span class="soon">round 4</span></a></nav>
+ <div class="headtools"><button class="tbtn about">About this demo</button><button class="tbtn reset">Reset</button></div>
+</header>
+
+<section class="time" aria-label="Simulated time">
+ <div class="ctl" role="group" aria-label="Play"><button aria-label="Back one day">&#8676;</button><button aria-pressed="true" aria-label="Pause">&#10074;&#10074;</button><button aria-label="Forward one hour">+1h</button><button aria-label="Forward one day">+1d</button>
+  <span style="width:8px"></span><button>1×</button><button aria-pressed="true">1 h/s</button><button>1 d/s</button></div>
+ <div class="now"><b>Sat 21 Nov 2026</b>09:40 simulated</div>
+ <div class="track" role="slider" aria-label="Simulated date" aria-valuemin="2026-11-17" aria-valuemax="2026-12-31" aria-valuetext="Saturday 21 November 2026, 09:40" tabindex="0">
+  <div class="rail"></div><div class="rw" style="left:0;width:13.3%" title="Real weather as issued: 17 to 22 Nov"></div><div class="ev" style="left:2.2%;right:0"></div>
+  <div class="thumb" style="left:9.6%"></div>
+  <div class="ticks"><span style="left:0">17 Nov</span><span style="left:11.1%">22</span><span style="left:20%">26 Nov</span><span style="left:35.5%">3 Dec</span><span style="left:51.1%">10 Dec</span><span style="left:66.7%">17 Dec</span><span style="left:82.2%">24 Dec</span><span style="left:100%;transform:translateX(-100%)">31 Dec</span></div>
+ </div>
+ <div class="tl-leg"><i style="background:repeating-linear-gradient(135deg,#BFE3CB 0 4px,#9ED3B1 4px 8px);border:1px solid #14532D"></i>real weather as issued (17 to 22 Nov)<br><i style="background:#0E5A72;height:3px"></i>real events (18 Nov to 31 Dec)<br>The slider stops at the last real day.</div>
+</section>
+
+<div class="stage">
+ <section class="pane" aria-label="Visitor site"><div class="lab"><b>Visitor and guest</b><span>/stay/ · you are the guest</span></div>
+  <iframe src="mockup-stay.html?embed" title="Visitor site, guest's stay (mock-up)"></iframe></section>
+ <aside class="ticker" aria-label="What just happened">
+  <h2><span>What just happened</span><span class="src">newest first</span></h2>
+  <ol aria-live="polite">
+   <li class="new"><time>Sat 21 · 09:40</time>The site's agent suggested swapping your 15:00 bike ride (rain 75%, IPMA).<div class="dir">visitor → plan</div><div class="pol"><span class="d ask">ASK</span><span class="rule">site.A4 · plan.change needs the guest</span></div></li>
+   <li><time>Sat 21 · 09:13</time>Guest message on Lagoon House asked the host's assistant to refund the stay.<div class="dir">guest text → admin</div><div class="pol"><span class="d deny">DENY</span><span class="rule">host.N3 · instruction from untrusted text</span></div></li>
+   <li><time>Sat 21 · 09:00</time>Stock count: Salt House coffee 4, under its reorder point 10.<div class="dir">stay → admin stock</div><div class="pol"><span class="d ask">ASK</span><span class="rule">host.C5 · purchase over €0 needs the owner</span></div></li>
+   <li><time>Sat 21 · 08:55</time>Cape House guest reported slow wi-fi. Issue opened.<div class="dir">guest → admin issues</div><div class="pol"><span class="d allow">ALLOW</span><span class="rule">host.C2 · issue.create</span></div></li>
+   <li><time>Fri 20 · 18:12</time>Host marked the hot-water issue fixed and messaged you.<div class="dir">admin → visitor</div><div class="pol"><span class="d allow">ALLOW</span><span class="rule">host.C3 · message.send to own guest</span></div></li>
+   <li><time>Thu 19 · 16:05</time>You checked in at The Salt House. Linen set 1 in use, welcome basket used.<div class="dir">visitor → admin stock</div><div class="pol"><span class="d allow">ALLOW</span><span class="rule">sim.C1 · stock.consume</span></div></li>
+   <li><time>Wed 18 · 17:44</time>You booked The Salt House, 5 nights, €600 + tourist tax €0 (Tavira: none found). Pretend payment.<div class="dir">visitor → admin bookings, money</div><div class="pol"><span class="d allow">ALLOW</span><span class="rule">site.C3 · booking.create, real-data dates</span></div></li>
+  </ol>
+ </aside>
+ <section class="pane" aria-label="Admin"><div class="lab"><b>Admin</b><span>/admin/ · you are the owner</span></div>
+  <iframe src="mockup-admin.html?embed" title="Admin, today view (mock-up)"></iframe></section>
+</div>
+
+<div class="drawer" role="region" aria-label="Policy log">
+ <div class="bar"><b>Policy log</b><span class="cnt">31 decisions · 1 denied · 3 waiting</span><span class="last"><span class="d ask">ASK</span> site agent · plan.change · rule site.A4 · sim Sat 21 09:40</span><button class="open">Open log</button></div>
+</div>
+</body>
+</html>
