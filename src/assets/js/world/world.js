@@ -150,6 +150,7 @@ function changeRate(id, change) {
   store.dispatch({ type: 'home.rate', actor: 'owner', data: { homeId: id, rate: { base, minNights, manual: true }, by: 'you', why: 'set by you' } });
   bubble({ x: HOME_X[id], y: HOME_Y - 6 }, `New rate ${eur(base)}${minNights !== h.rate.minNights ? `, minimum ${minNights}` : ''} (you)`, 'info', performance.now(), 2400);
   note(`${homeName(id)}: base ${eur(base)} a night, minimum ${minNights} night${minNights === 1 ? '' : 's'}, from the next simulated hour (set by you; invented prices).`);
+  dirty = true; renderRates(store.getState());
 }
 // The level of bookings from elsewhere (PROPOSAL.md 2.4): one setting for the whole site.
 function setLevel(level, why = 'you') {
@@ -161,7 +162,9 @@ function setLevel(level, why = 'you') {
 function newRun(seed) {
   setSpeed(0);
   clearActors();
-  store.reset(seed);
+  // The six cost settings (cleaning, laundry, utilities, insurance, commission, IRS rate) carry over
+  // to a new seed (review S5), as the other cost assumptions do; only Reset sets them back.
+  store.reset(seed, { settings: A.settingCosts(store.getState().settings) });
   shadow.stop(); shadowFrom = null; savedRun = null; vfShadowMs = 0;
   setLevel(levelOfSeed(seed), 'seed');
   selected = null;
@@ -484,8 +487,12 @@ function renderRates(s) {
     return `<tr><th scope="row">${esc(homeName(id))}</th><td><button type="button" data-rate="down" data-home="${id}" aria-label="${esc(homeName(id))}: base 10 percent lower"${dis}>-10%</button> <input type="number" min="20" max="2000" step="1" value="${esc(r.base)}" data-base="${id}" aria-label="${esc(homeName(id))}: base a night, EUR"${dis}> <button type="button" data-rate="up" data-home="${id}" aria-label="${esc(homeName(id))}: base 10 percent higher"${dis}>+10%</button></td><td><button type="button" data-rate="min-" data-home="${id}" aria-label="${esc(homeName(id))}: one minimum night fewer"${dis || (r.minNights <= 1 ? ' disabled' : '')}>-</button> <b>${esc(r.minNights)}</b> <button type="button" data-rate="min+" data-home="${id}" aria-label="${esc(homeName(id))}: one minimum night more"${dis || (r.minNights >= 14 ? ' disabled' : '')}>+</button></td><td class="mini">${r.manual ? 'set by you' : 'set by Helena (synthetic owner)'}</td></tr>`;
   }).join('');
   const html = `${p ? `<p class="w-played">${esc(playedNote(p))} <button type="button" data-rate="go" data-home="salt">Go there</button></p>` : ''}<div class="w-tscroll"><table class="w-rates"><thead><tr><th scope="col">Home</th><th scope="col">Base a night (EUR)</th><th scope="col">Minimum nights</th><th scope="col">Set by</th></tr></thead><tbody>${rows}</tbody></table></div><p class="mini">Invented prices. A change takes effect from the next simulated hour, as the owner (rule O4). ${esc(DEMAND_WORDS)} <span class="k assum">Assumption</span></p>`;
-  const box = $('rates');
-  if (box.dataset.html !== html && !box.contains(document.activeElement)) { box.innerHTML = html; box.dataset.html = html; }
+  // Redraw unless the viewer is typing in a field of the panel (review S4); a focused button keeps its focus.
+  const box = $('rates'), a = document.activeElement;
+  if (box.dataset.html === html || (box.contains(a) && a.tagName === 'INPUT')) return;
+  const keep = box.contains(a) && a.dataset?.rate ? `button[data-rate="${a.dataset.rate}"][data-home="${a.dataset.home}"]` : null;
+  box.innerHTML = html; box.dataset.html = html;
+  if (keep) box.querySelector(keep)?.focus();
 }
 const words = (a, b, unit, { pct = false, money = false } = {}) => {
   if (a === null || b === null || a === undefined || b === undefined) return 'not yet';

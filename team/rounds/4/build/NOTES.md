@@ -60,3 +60,40 @@ Changed: `tests/sim-money.test.mjs`, two assertions now expect the S4 sentence e
 - **Commission and other commercial sources** are shown by type, date read and how sure; no web address of a commercial or platform source is shown anywhere (re-check item 1). Official addresses (Portal das Finanças) are named in words in the notes, not linked.
 - **Not walked in the browser:** the backup-not-writable dialog, the frame-failure fallback (ticker) and the slow-shadow drop (Very fast stayed under 8 s); the code paths are there and the words are as the proposal.
 - `node scripts/shots.mjs` screenshots for the round report were not made; the walk's own screenshots stay in the session scratchpad.
+
+## Fixes after review
+
+Brief: the conductor's message asking for M1 and the twelve should-fix items of team/rounds/4/review/BUILD.md (verdict DO NOT RELEASE YET), on top of commit 33f1eb6. No commit, no push, nobody contacted. board/HOLD.md: absent.
+
+| Item | What changed | Files |
+|---|---|---|
+| M1 | `chooseDates` counts only the days in the live forecast ranges (`kind: 'live'`), the days /stay/ can show; not even those when the live file could not be read. Fallbacks as before, both with `forecast: false`: the stored copy's days, then the events window. | `play/tour.js` |
+| S1 | Escape stops the tour from inside either frame: the same capture listener is added to each frame's document when it loads. | `play/tour.js` |
+| S2 | Tab and Shift+Tab stay inside the start and end dialogs. | `play/tour.js` |
+| S3 | When the visitor had a booking before the tour, the end dialog adds "Keeping it replaces your own simulation, including your booking." | `play/tour.js` |
+| S4 | /world/ Your rates redraws at once after a change, paused or not; a focused button keeps its focus; only a field being typed in holds the redraw. | `world/world.js` |
+| S5 | The six cost settings (cleaning, laundry, utilities, insurance, commission, IRS rate) carry over to a new seed in World and into the tour's simulation; the tour's put-back restores the visitor's own document as before. The panel's foot now says where each row is kept and that Reset sets all of them back. | `world/world.js`, `play/tour.js`, `admin/biz.js` |
+| S6 | Gross and net yield count only the homes with a house value (their revenue, profit and value) and say "(4 of 5 homes)" when one is left out. | `admin/history.js`, `admin/biz.js` |
+| S7 | The assumption fields are labelled in words, for example "House value (EUR), The Salt House". | `admin/biz.js` |
+| S8 | A refusal whose target is "message b-..." reads "(a message on booking b-...)". | `admin/ops.js` |
+| S9 | The engine checks guests in at each home's own check-in time (The Lagoon House and The Cape House 15:00, the others 16:00); the tour moves the clock to that time and reads the time from the event, with no fixed 16:00. | `sim/personas.js`, `play/tour.js` |
+| S10 | /play/: "Let synthetic visitors book too (invented people, scripted; the full game is in World)", and the same in the note when it is ticked. | `src/play/index.html`, `play/play.js` |
+| S11 | The Reset dialog opens with "Keep" focused. | `modes/chrome.js` |
+| S12 | Room above the buttons in the tour's dialogs and sheet; the sheet scrolls at 390 px. | `assets/play.css` |
+
+Tests: `tests/round4.test.mjs` gains two tests (22 in all). The reviewer's M1 test: stored copy 17 to 21 and live 25 to 29 November gives a stay inside 25 to 29 November with `forecast: true`; today's shape (live 19 to 23) stays inside 19 to 23; no live range, or a live file not read, gives `forecast: false`. A second test covers S5 (a changed cleaning cost survives a new seed and is not "default costs"), S6 (the four valued homes' profit over EUR 1,610,000, and "(4 of 5 homes)" on the page), S7, S8 and S9 (Lagoon checks in at 15:00). The tour test's stub ranges are now `kind: 'live'` and its check-in time 15:00.
+
+How it was checked:
+
+- `node scripts/build.mjs`: built. `validate.mjs`: OK. `leak-scan.mjs`: OK (410 files). `abp-check.mjs`: OK (6 policies).
+- `node --test tests/*.test.mjs`: 84 tests, 83 pass, 1 skipped (the live test), 0 fail.
+- The brief's grep of `_site/` for the four booking-platform brand names: nothing found.
+- Playwright (`chromium.launch()`, no options) at 1366 and 390 px. The live forecast file was routed and every date moved six days later, so the window read "Tue 17 Nov to Sun 29 Nov".
+  - The tour chose Thu 26 to Sun 29 November. 25 November is taken at The Lagoon House under seed `tour`.
+  - Step 5 read "Time moves to Thu 26 Nov, 15:00, the home's check-in time ... checked in at 15:00".
+  - Step 6's day card on /stay/ showed "REAL FORECAST" for Thursday 26 November, with IPMA's issue time.
+  - Escape pressed inside the visitor frame opened the end dialog. Tab stayed in the end dialog six times out of six.
+  - On /world/, Lagoon +10% while paused redrew at once: 85 to 94, "set by you", focus kept on the button.
+  - Reset opened with "Keep" focused. The 390 px start sheet has every line clear of the buttons.
+  - No console or page errors.
+- Not walked in the browser this time: the S3 sentence, the S5 carry-over (covered by the unit test) and S7 with a screen reader. Each was checked in code and in the tests.

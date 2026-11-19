@@ -15,6 +15,7 @@ import { realDataFor } from '../sim/clock.js';
 import { availability } from '../sim/booking.js';
 import { untrusted } from '../sim/abp.js';
 import { keepRefused, TOUR_KEY } from '../stay/sim-page.js';
+import { settingCosts } from '../sim/assumptions.js';
 
 export const TOUR_SEED = 'tour';
 export const HOME = 'lagoon';
@@ -31,21 +32,32 @@ export function chooseDates({ bounds, state, minNights = 1 }) {
   for (let d = bounds.from; d <= bounds.to; d = addDays(d, 1)) days.push(d);
   const free = (a, n) => availability(state, HOME, a, addDays(a, n), {}).free;
   const fits = (a, n) => addDays(a, -1) >= bounds.from && addDays(a, n) <= bounds.to;
-  const weather = days.filter(d => realDataFor(d, bounds).weather === 'issued');
-  const runs = [];
-  for (const d of weather) { const r = runs[runs.length - 1]; if (r && addDays(r[r.length - 1], 1) === d) r.push(d); else runs.push([d]); }
-  let best = null;
-  for (const run of runs) {
-    for (const a of run) {
-      if (!fits(a, minNights)) continue;
-      let n = 0;
-      for (let k = 1; k <= 3; k++) { const nights = nightsOf(a, addDays(a, k)); if (nights.every(x => run.includes(x)) && fits(a, k) && free(a, k)) n = k; else break; }
-      if (n < minNights) continue;
-      if (n === 3) return pack(a, 3, true);
-      if (!best || n > best.n) best = { a, n };
+  // Review M1 (round 4 BUILD.md): /stay/ shows only the live forecast file, so the tour counts only
+  // the days in the live ranges (kind 'live'). Fallbacks, with forecast: false so step 6 uses its
+  // "no forecast yet" words: the other weather ranges (the stored copy), then the events window.
+  const inRanges = rs => days.filter(d => rs.some(r => d >= r.from && d <= r.to));
+  const pickIn = weather => {
+    const runs = [];
+    for (const d of weather) { const r = runs[runs.length - 1]; if (r && addDays(r[r.length - 1], 1) === d) r.push(d); else runs.push([d]); }
+    let best = null;
+    for (const run of runs) {
+      for (const a of run) {
+        if (!fits(a, minNights)) continue;
+        let n = 0;
+        for (let k = 1; k <= 3; k++) { const nights = nightsOf(a, addDays(a, k)); if (nights.every(x => run.includes(x)) && fits(a, k) && free(a, k)) n = k; else break; }
+        if (n < minNights) continue;
+        if (n === 3) return { a, n: 3 };
+        if (!best || n > best.n) best = { a, n };
+      }
     }
-  }
-  if (best) return pack(best.a, best.n, true);
+    return best;
+  };
+  // When the live file could not be read, the researched stand-in range is not shown on /stay/ either.
+  const liveRead = !(bounds.live && bounds.live.weather === false);
+  const live = liveRead ? pickIn(inRanges((bounds.weather || []).filter(r => r.kind === 'live'))) : null;
+  if (live) return pack(live.a, live.n, true);
+  const other = pickIn(inRanges((bounds.weather || []).filter(r => r.kind !== 'live')));
+  if (other) return pack(other.a, other.n, false);
   // No stay with a forecast: the first free 3 nights inside the events window, and step 6 says so.
   for (const a of days) {
     if (a < bounds.events.from || addDays(a, 3) > addDays(bounds.events.to, 1)) continue;
@@ -115,7 +127,26 @@ export function mountTour(api) {
   doc.body.append(shade, ring, card, dlg, live);
   // Escape closes the start dialog ("Not now"); the end dialog waits for a choice, so the put-back
   // choice is never skipped.
-  dlg.addEventListener('keydown', e => { if (e.key === 'Escape' && !T.on) { e.preventDefault(); e.stopPropagation(); closeDialog(); } });
+  dlg.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && !T.on) { e.preventDefault(); e.stopPropagation(); closeDialog(); return; }
+    // The dialogs are modal (review S2): Tab and Shift+Tab stay inside.
+    if (e.key === 'Tab') {
+      const f = [...dlg.querySelectorAll('button, a[href]')].filter(x => !x.disabled && x.offsetParent !== null);
+      if (!f.length) return;
+      const i = f.indexOf(doc.activeElement);
+      if (e.shiftKey && (i <= 0)) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && (i === f.length - 1 || i < 0)) { e.preventDefault(); f[0].focus(); }
+    }
+  });
+  // Escape stops the tour from anywhere, inside the two frames too (review S1): the frames are this
+  // site, so each frame's document gets the same listener when it loads.
+  const hooked = new WeakSet();
+  const hookFrame = f => {
+    if (!f) return;
+    const attach = () => { try { const d = f.contentDocument; if (d && !hooked.has(d)) { hooked.add(d); d.addEventListener('keydown', onDocKey, true); } } catch { /* not ready */ } };
+    if (!f.dataset.tourHook) { f.dataset.tourHook = '1'; f.addEventListener('load', attach); }
+    attach();
+  };
 
   // ---------- dialogs ----------
   let dlgReturn = null;
@@ -158,12 +189,14 @@ export function mountTour(api) {
   // ---------- start, steps, end ----------
   function start() {
     closeDialog();
+    T.hadOwn = ownBookingsCount() > 0;
     T.on = true; globalThis.__ccTourRunning = true;
     doc.documentElement.classList.add('tour-on');
     T.backup = null;
     if (T.backupOk) { try { const t = SIM.store.exportJSON(); globalThis.localStorage.setItem(TOUR_KEY, t); T.backup = t; } catch { T.backupOk = false; } }
     SIM.clock.pause(); api.setSynth(false);
-    SIM.store.reset(TOUR_SEED, { now: T.dates.start });
+    // The owner's six cost settings carry over (review S5), so the tour's money uses their costs.
+    SIM.store.reset(TOUR_SEED, { now: T.dates.start, settings: settingCosts(SIM.store.getState().settings) });
     T.events = []; T.bookingId = null;
     T.unsub = SIM.store.subscribe((st, info) => { if (info?.events) T.events.push(...info.events); });
     api.goVisitor('/');
@@ -175,7 +208,7 @@ export function mountTour(api) {
   function end() {
     clearTimers();
     card.hidden = true; ring.hidden = true;
-    const words = T.backup ? '<p>Your simulation is set aside. Put it back as it was, or keep the tour\'s booking to play with (it stays marked as the tour\'s).</p><div class="tour-acts"><button type="button" class="pri" data-tact="back">Put my simulation back</button><button type="button" data-tact="keep">Keep what the tour did</button></div>'
+    const words = T.backup ? `<p>Your simulation is set aside. Put it back as it was, or keep the tour's booking to play with (it stays marked as the tour's).</p>${T.hadOwn ? '<p><b>Keeping it replaces your own simulation, including your booking.</b></p>' : ''}<div class="tour-acts"><button type="button" class="pri" data-tact="back">Put my simulation back</button><button type="button" data-tact="keep">Keep what the tour did</button></div>`
       : '<p>This browser could not set your simulation aside, so the tour\'s simulation stays. Its booking stays marked as the tour\'s. Reset starts a new one.</p><div class="tour-acts"><button type="button" class="pri" data-tact="keep">Close</button></div>';
     dialog(`<h2 id="tour-dh">That was the tour.</h2>${words}<p class="tour-small"><a href="/play/" data-tact="mine">Play with it yourself</a> · <a href="/world/">Watch the world</a></p>`, (a, e) => {
       if (a === 'mine') e.preventDefault();
@@ -197,9 +230,11 @@ export function mountTour(api) {
   function onDocKey(e) {
     if (e.key === 'Escape' && T.on && dlg.hidden) { e.preventDefault(); stop(); }
   }
+  setInterval(() => { if (T.on) { hookFrame(api.visitorFrame()); hookFrame(api.adminFrame()); } }, 500);
 
   // ---------- the step table (PROPOSAL.md 1.4) ----------
   const D = () => T.dates;
+  const checkInTime = () => SIM.store.getState().homes[HOME]?.check_in || '16:00';
   const F = () => facts(SIM.store.getState(), T.bookingId, T.events);
   const STEPS = {
     1: { where: 'page', target: '#tb-now', title: 'The simulated clock', text: () => `This is the simulated clock: ${dd(dayOf(SIM.store.clock().now))} ${dayOf(SIM.store.clock().now).slice(0, 4)}, ${hm(SIM.store.clock().now)}. It moves only through dates with real data: IPMA's forecast as issued, and the towns' own event agendas.` },
@@ -213,8 +248,8 @@ export function mountTour(api) {
       },
       text: () => `Booked (pretend) for the tour. The visitor's policy allowed each step (ALLOW V4 enquire, V5 hold, V6 pay): real-data dates, listed price. ${DEMO}` },
     4: { where: 'admin', hash: '#today', target: '[data-tour="occ-lagoon"]', title: 'The owner sees it at once', text: () => 'The owner\'s side sees it at once: same browser, same simulation. The dark bar is the tour\'s booking; the others are invented.' },
-    5: { where: 'page', run: () => { SIM.clock.setTime(`${D().arrival}T16:00`); }, target: '#thumb', title: 'Time moves on',
-      text: () => `Time moves to ${dd(D().arrival)}, 16:00. The simulation does each hour's work: the guests checked in at ${hm(F()?.checkIn) || '16:00'}. What they use leaves the stock when they check out (step 7).` },
+    5: { where: 'page', run: () => { SIM.clock.setTime(`${D().arrival}T${checkInTime()}`); }, target: '#thumb', title: 'Time moves on',
+      text: () => { const c = hm(F()?.checkIn); return `Time moves to ${dd(D().arrival)}, ${checkInTime()}, the home's check-in time. The simulation does each hour's work: ${c ? `the guests checked in at ${c}` : 'the check-in is not in the log yet'}. What they use leaves the stock when they check out (step 7).`; } },
     6: { where: 'visitor', target: '[data-tour="stay-today"]', title: 'The guest\'s page',
       text: () => (D().forecast ? 'The guest\'s page shows the real forecast for Faro where IPMA gave one, as issued, with its source and when it was read. Where no forecast exists it says so and invents nothing.' : 'The guest\'s page shows the real forecast for Faro where IPMA gave one. IPMA has no forecast for these days yet, and the page says so; nothing is invented.') },
     7: { where: 'admin', run: () => { SIM.clock.setTime(`${D().departure}T12:00`); }, hash: '#stock', target: '[data-tour="stock-lagoon"]', title: 'Check-out, cleaning, stock',

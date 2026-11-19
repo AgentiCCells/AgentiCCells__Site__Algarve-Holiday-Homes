@@ -105,3 +105,7 @@ html.tour-on .band{position:relative;z-index:9500}
 .tour-dlg{max-height:80vh}
 }
 @media (prefers-reduced-motion:reduce){.tour-prog{display:none}}
+/* review S12: room above the buttons in the dialogs and the sheet; the sheet scrolls */
+.tour-card .tour-acts{margin-top:12px}
+.tour-dlg p.tour-small{margin:8px 0 12px!important}
+@media (max-width:700px){.tour-dlg{overflow-y:auto;padding-bottom:16px}}

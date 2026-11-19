@@ -12,7 +12,7 @@ import { SEASON } from '../sim/booking.js';
 import { taxRow } from '../sim/legal.js';
 import { irs } from '../sim/legal.js';
 import { bookingsList } from '../sim/store.js';
-import { costLines, blankLines, LINE_KEYS, linesTotal, documentedDefault, normalise, defaults, houseValueOf, yieldOf } from '../sim/assumptions.js';
+import { costLines, blankLines, LINE_KEYS, linesTotal, documentedDefault, normalise, defaults, yieldOf } from '../sim/assumptions.js';
 
 export const HISTORY_END = '2026-11-16';
 export const SESSION_FROM = '2026-11-17';
@@ -88,19 +88,26 @@ export function lines(S, { homeId = null, month = null, to = '2026-12-31', assum
   const a = assumptions ? normalise(assumptions) : defaults();
   const days = periodDays({ month, to });
   const t = blank(), extra = blankLines();
+  // The yields count only homes with a house value (review S6): their revenue, profit and value.
+  const y = { net: 0, profit: 0, value: 0, homes: 0 };
   for (const id of ids) {
     const one = blank();
     for (const m of months) if (m <= 11) addInto(one, historyMonth(S, id, m));
     addInto(one, sessionLines(S, { homeId: id, month, to }));
-    const l = costLines(a, id, days, round2(one.revenue - one.vat));
+    const net = round2(one.revenue - one.vat);
+    const l = costLines(a, id, days, net);
     for (const k of LINE_KEYS) extra[k] = round2(extra[k] + l[k]);
+    const value = a.homes[id]?.houseValue || 0;
+    if (value > 0) { y.net += net; y.profit += net - (one.commission + one.cleaning + one.supplies + one.running) - linesTotal(l); y.value += value; y.homes++; }
     addInto(t, one);
   }
   // Session lines without a home (none today) still count in the total.
   if (!homeId) { const all = sessionLines(S, { month, to }), per = blank(); for (const id of ids) addInto(per, sessionLines(S, { homeId: id, month, to })); for (const k of Object.keys(t)) t[k] = round2(t[k] + (all[k] - per[k])); }
   t.extra = extra;
   t.days = days;
-  t.houseValue = houseValueOf(a, ids);
+  t.houseValue = y.value;
+  t.valuedHomes = y.homes; t.homesCount = ids.length;
+  t.yieldNet = round2(y.net); t.yieldProfit = round2(y.profit);
   return finish(t, S.settings, a);
 }
 export function finish(t, settings, assumptions = null) {
@@ -113,7 +120,7 @@ export function finish(t, settings, assumptions = null) {
   t.documentedDefault = documentedDefault(t.costs, t.extra);
   t.documented = Number.isFinite(a.business.documented) ? a.business.documented : t.documentedDefault;
   t.irs = irs({ gross: Math.max(0, t.netRevenue), coef: settings.irsCoef, startYear: settings.irsStartYear, expenses: t.documented, marginalRate: settings.marginalRate });
-  if (t.days && t.houseValue !== undefined) { t.grossYield = yieldOf(t.netRevenue, t.days, t.houseValue); t.netYield = yieldOf(t.profit, t.days, t.houseValue); }
+  if (t.days && t.houseValue !== undefined) { t.grossYield = yieldOf(t.yieldNet ?? t.netRevenue, t.days, t.houseValue); t.netYield = yieldOf(t.yieldProfit ?? t.profit, t.days, t.houseValue); }
   return t;
 }
 // The months that have figures up to the simulated today (1..12).

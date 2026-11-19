@@ -158,8 +158,8 @@ export function step(state, now, opts = {}) {
       emit({ type: 'issue.resolved', at: at(25), actor: d.actor, data: { id: i.id, cost: i.cost, by: d.actor }, ledger: i.cost ? [{ kind: 'repairs', homeId: i.homeId, bookingId: i.bookingId, amount: -i.cost, note: `${i.type} (invented cost)` }] : [] });
     }
   }
-  // 16:00 check-ins
-  if (hour === 16) for (const b of bookingsList(s).filter(x => x.status === 'paid' && x.from === day)) emit(buildCheckIn(s, b.id, { now: at(0), actor: 'visitor' }).events);
+  // Check-ins at each home's own check-in time (round 4 review S9; 16:00 for a home without one).
+  for (const b of bookingsList(s).filter(x => x.status === 'paid' && x.from === day && hour === Number(String(s.homes[x.homeId]?.check_in || '16:00').slice(0, 2)))) emit(buildCheckIn(s, b.id, { now: at(0), actor: 'visitor' }).events);
   // 18:00 the bookkeeper sends guest bulletins (simulated, nothing sent)
   if (hour === 18) {
     for (const b of bookingsList(s).filter(x => x.status === 'checked-in' && x.registrationDue && !x.registeredAt)) {

@@ -183,7 +183,8 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
   doc.body.appendChild(dlg);
   const doReset = () => { clock.pause(); resetAll(store); };
   tools.querySelector('.reset').addEventListener('click', () => {
-    if (typeof dlg.showModal === 'function') dlg.showModal();
+    // "Keep" has the focus, so Enter at once deletes nothing (review S11).
+    if (typeof dlg.showModal === 'function') { dlg.showModal(); dlg.querySelector('[data-do="keep"]')?.focus(); }
     else if (globalThis.confirm(`Reset the simulation? ${RESET_WORDS}`)) doReset();
   });
   dlg.addEventListener('click', e => { const d = e.target.closest('button')?.dataset.do; if (!d) return; dlg.close(); if (d === 'reset') doReset(); tools.querySelector('.reset').focus(); });

@@ -176,7 +176,8 @@ const ACTOR_WORDS = { 'agent.cinco-chamines': 'The site\'s agent', 'guest-assist
 export function triedWords(e) {
   const who = ACTOR_WORDS[e.policy] || ACTOR_WORDS[e.actor] || 'An actor';
   const amt = e.amount != null && e.amount !== '' ? ` EUR ${Number(e.amount).toLocaleString('en-GB')}` : '';
-  const tg = e.target ? ` (${e.target})` : '';
+  // "message b-..." targets name the booking the message belongs to (review S8).
+  const tg = e.target ? ` (${String(e.target).replace(/^message (b-\S+)$/, 'a message on booking $1')})` : '';
   switch (e.action) {
     case 'message.send': return e.actor === 'visitor' || e.policy === 'visitor' ? 'The guest\'s message was not passed on as an instruction' : `${who} tried to send a message${tg}`;
     case 'refund.issue': return `${who} tried to refund${amt}${tg}`;

@@ -48,7 +48,7 @@ function sim({ seed = 'r4', now, settings, storage = S.memoryStorage() } = {}) {
   const booking = B.createBooking({ store, guard });
   return { store, clock, guard, booking, storage };
 }
-const bounds = (wf, wt) => ({ from: '2026-11-17', to: '2026-12-31', weather: wf ? [{ from: wf, to: wt, how: 'stub', kind: 'stub' }] : [], sea: [], events: { from: '2026-11-18', to: '2026-12-31', how: 'stub' }, live: {} });
+const bounds = (wf, wt) => ({ from: '2026-11-17', to: '2026-12-31', weather: wf ? [{ from: wf, to: wt, how: 'stub', kind: 'live' }] : [], sea: [], events: { from: '2026-11-18', to: '2026-12-31', how: 'stub' }, live: {} });
 
 // ---------- 1.7: the tour ----------
 test('tour 1.7: dates from the weather window at start, two stubbed windows and one with none', () => {
@@ -83,13 +83,13 @@ test('tour 1.7: the step actions on a memory store: the tour\'s booking, check-i
   assert.ok(events.filter(e => e.type.startsWith('booking.')).every(e => e.data.by === 'tour'), 'every booking event is by: tour');
   assert.ok(st.policyLog.filter(e => e.action.startsWith('booking.')).every(e => e.by === 'tour' && e.decision === 'allow'));
   assert.deepEqual(st.policyLog.filter(e => e.action.startsWith('booking.')).map(e => e.rule), ['V4', 'V5', 'V6']);
-  X.clock.setTime(`${dates.arrival}T16:00`);
+  X.clock.setTime(`${dates.arrival}T15:00`);
   assert.equal(X.store.getState().bookings[r.booking.id].status, 'checked-in');
   X.clock.setTime(`${dates.departure}T12:00`);
   st = X.store.getState();
   const f = T.facts(st, r.booking.id, events);
   assert.equal(st.bookings[r.booking.id].status, 'checked-out');
-  assert.equal(f.checkIn, `${dates.arrival}T16:00`);
+  assert.equal(f.checkIn, `${dates.arrival}T15:00`, 'at The Lagoon House\'s own check-in time (review S9)');
   assert.equal(f.checkOut, `${dates.departure}T10:00`);
   assert.equal(f.cleaned, `${dates.departure}T11:30`);
   assert.ok(f.used.includes('linen sets') && f.used.includes('towels'), f.used.join());
@@ -441,4 +441,55 @@ test('re-check item 1: no source shown names a booking platform, in its words or
   const walk = d => readdirSync(d).flatMap(f => { const p = join(d, f); return statSync(p).isDirectory() ? walk(p) : [p]; });
   const site = new URL('_site/', root).pathname;
   if (existsSync(site)) for (const f of walk(site).filter(f => /\.(html|js|css|json|md|txt)$/.test(f))) assert.doesNotMatch(readFileSync(f, 'utf8'), brand, f);
+});
+
+// ---------- fixes after the build review (team/rounds/4/review/BUILD.md) ----------
+test('M1: the tour counts only the live forecast days /stay/ can show: stored copy 17 to 21, live 25 to 29 November', () => {
+  const st = sim({ seed: T.TOUR_SEED }).store.getState();
+  const real = { from: '2026-11-17', to: '2026-12-31', live: { weather: true, events: true },
+    weather: [{ from: '2026-11-17', to: '2026-11-21', how: 'vault', kind: 'vault' }, { from: '2026-11-25', to: '2026-11-29', how: 'live file', kind: 'live' }],
+    sea: [], events: { from: '2026-11-18', to: '2026-12-31', how: 'events' } };
+  const d = T.chooseDates({ bounds: real, state: st });
+  assert.ok(d.arrival >= '2026-11-25' && d.departure <= '2026-11-30', JSON.stringify(d));
+  for (let x = d.arrival; x < d.departure; x = add(x, 1)) assert.ok(x >= '2026-11-25' && x <= '2026-11-29', `night ${x} in the live range`);
+  assert.equal(d.forecast, true);
+  // Today's shape: stored copy 17 to 21, live 19 to 23: inside 19 to 23.
+  const now = T.chooseDates({ bounds: { ...real, weather: [real.weather[0], { from: '2026-11-19', to: '2026-11-23', kind: 'live' }] }, state: st });
+  assert.ok(now.arrival >= '2026-11-19' && now.forecast, JSON.stringify(now));
+  // No live range: the stored copy, with forecast false (step 6 uses its "no forecast yet" words).
+  const vault = T.chooseDates({ bounds: { ...real, weather: [real.weather[0]] }, state: st });
+  assert.equal(vault.forecast, false); assert.ok(vault.arrival <= '2026-11-21');
+  // The live file not read: its stand-in range is not counted either.
+  assert.equal(T.chooseDates({ bounds: { ...real, live: { weather: false } }, state: st }).forecast, false);
+});
+
+test('S5, S6, S8, S9: costs carried to a new seed, yields over valued homes, booking words, check-in at the home\'s time', () => {
+  const ww = read('src/assets/js/world/world.js'), tw = read('src/assets/js/play/tour.js');
+  assert.match(ww, /store\.reset\(seed, \{ settings: A\.settingCosts\(store\.getState\(\)\.settings\) \}\)/);
+  assert.match(tw, /settings: settingCosts\(SIM\.store\.getState\(\)\.settings\)/);
+  const X = sim(); X.store.dispatch({ type: 'setting.set', data: { key: 'cleaningCost', value: 45 } });
+  X.store.reset('next-seed', { settings: A.settingCosts(X.store.getState().settings) });
+  assert.equal(X.store.getState().settings.cleaningCost, 45, 'the cleaning cost carried over');
+  assert.notEqual(A.costsWord(A.fingerprint(A.defaults(), X.store.getState().settings)), 'default costs');
+  // S6
+  const st = sim({ seed: 'cinco-chamines-1' }).store.getState();
+  const a = A.set(A.defaults(), 'homes.lagoon.houseValue', 0);
+  const all = H.lines(st, { to: '2026-11-16', assumptions: a });
+  const four = ['salt', 'hill', 'harbour', 'cape'].map(id => H.lines(st, { homeId: id, to: '2026-11-16', assumptions: a }));
+  assert.equal(all.valuedHomes, 4); assert.equal(all.houseValue, 1610000);
+  const p4 = four.reduce((t, l) => t + l.profit, 0);
+  assert.ok(Math.abs(all.netYield - p4 * 365 / 320 / 1610000) < 1e-6, 'profit of the four valued homes over their value');
+  assert.match(biz.money(st, { today: '2026-11-16', home: 'all', keep: {}, moneyView: 'ytd', assumptions: a, clock: sim().clock }), /\(4 of 5 homes\)/);
+  // S7
+  assert.match(biz.money(st, { today: '2026-11-16', home: 'all', keep: {}, moneyView: 'ytd', assumptions: A.defaults(), clock: sim().clock }), /aria-label="House value \(EUR\), The Salt House"/);
+  // S8
+  assert.equal(ops.triedWords({ actor: 'host-assistant', policy: 'host-assistant', action: 'share.guest-data', target: 'message b-o3dghf' }), 'The host\'s assistant tried to share the guest list (a message on booking b-o3dghf)');
+  // S9
+  const Y = sim({ now: '2026-11-18T09:00' });
+  P.createWorld({ store: Y.store, clock: Y.clock, cast: { ...cast, visitors: [] } }).attach();
+  const b = Y.booking.book({ homeId: 'lagoon', from: '2026-11-19', to: '2026-11-21', guests: 2, guest: { name: 'A (invented)' } });
+  assert.equal(b.ok, true, b.error);
+  Y.clock.setTime('2026-11-19T15:00');
+  assert.equal(Y.store.getState().bookings[b.booking.id].status, 'checked-in', 'Lagoon checks in at 15:00');
+  assert.doesNotMatch(tw, /\|\| '16:00'\}\./, 'no fixed 16:00 in the card');
 });

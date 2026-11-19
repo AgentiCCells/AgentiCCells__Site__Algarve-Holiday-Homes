@@ -109,7 +109,7 @@ function pnlTable(S, opts) {
 ${row('Revenue, VAT incl.', l => eur(l.revenue))}${row('- VAT 6%', l => eur(l.vat))}${row('= revenue net of VAT', l => eur(l.netRevenue), 'sub')}${row('- platform fees', l => eur(l.commission))}${row('- cleaning and laundry', l => eur(l.cleaning))}${row('- consumables', l => eur(l.supplies))}${row('- utilities, insurance, upkeep', l => eur(l.running))}
 ${ex('management', 'management', 'assumption')}${ex('reserve', 'maintenance reserve (set aside)', 'assumption')}${ex('imi', 'IMI', 'invented')}${all.aimi > 0 ? ex('aimi', 'AIMI', 'assumption') : ''}${ex('accountant', 'accountant', 'assumption')}${all.depreciation > 0 ? ex('depreciation', 'depreciation', 'assumption') : ''}${all.interest > 0 ? ex('interest', 'mortgage interest', 'assumption') : ''}
 ${row('= profit before income tax', l => `<b>${eur(l.profit)}</b>`, 'sum')}${row(`IRS estimate (${S.settings.irsCoef} x net${S.settings.irsCoef === 0.35 ? ' + 15% expenses shortfall' : ''}) x ${pct(S.settings.marginalRate)}, assumption`, l => eur(l.irs.irs))}${row('Tourist tax collected (passed on)', l => eur(l.touristTax))}${row('Nights sold', l => esc(l.nights))}
-${row('Net yield a year on your house value', l => (l.netYield === null || l.netYield === undefined ? '<span class="small">type a house value</span>' : `${pct1(l.netYield)} <span class="small">on ${eur(l.houseValue)}</span>`))}
+${row('Net yield a year on your house value', l => (l.netYield === null || l.netYield === undefined ? '<span class="small">type a house value</span>' : `${pct1(l.netYield)} <span class="small">on ${eur(l.houseValue)}${l.valuedHomes < l.homesCount ? ` (${l.valuedHomes} of ${l.homesCount} homes)` : ''}</span>`))}
 </tbody></table></div>`;
 }
 const pct1 = n => `${(Number(n) * 100).toFixed(2)}%`;
@@ -118,9 +118,12 @@ const srcNote = key => { const x = A.SOURCES[key]; return x ? `<details class="s
 const kindOf = key => A.SOURCES[key]?.badge || 'assumption';
 function assumptionsPanel(S, ctx) {
   const a = A.normalise(ctx.assumptions), H = HOME_IDS;
-  const inp = (path, v, { step = 1, min = 0, max = 10000000, w = '' } = {}) => `<input type="number" inputmode="decimal" class="an${w}" data-assum="${esc(path)}" value="${esc(v)}" min="${min}" max="${max}" step="${step}" aria-label="${esc(path)}">`;
-  const chk = (path, v) => `<input type="checkbox" data-assum="${esc(path)}"${v ? ' checked' : ''} aria-label="${esc(path)}">`;
-  const rowH = (label, key, cell, unit) => `<tr><th scope="row">${label} ${badge(kindOf(key))} <span class="small">${esc(unit)}</span>${srcNote(key)}</th>${H.map(id => `<td>${cell(id, a.homes[id])}</td>`).join('')}</tr>`;
+  // Labels in words for screen readers (review S7): "House value, The Salt House".
+  let rowLabel = '';
+  const lab = path => { const [g, id] = String(path).split('.'); return g === 'homes' ? `${rowLabel}, ${S.homes[id]?.name || id}` : rowLabel; };
+  const inp = (path, v, { step = 1, min = 0, max = 10000000, w = '' } = {}) => `<input type="number" inputmode="decimal" class="an${w}" data-assum="${esc(path)}" value="${esc(v)}" min="${min}" max="${max}" step="${step}" aria-label="${esc(lab(path))}">`;
+  const chk = (path, v) => `<input type="checkbox" data-assum="${esc(path)}"${v ? ' checked' : ''} aria-label="${esc(lab(path))}">`;
+  const rowH = (label, key, cell, unit) => { rowLabel = `${label} (${unit})`; return `<tr><th scope="row">${label} ${badge(kindOf(key))} <span class="small">${esc(unit)}</span>${srcNote(key)}</th>${H.map(id => `<td>${cell(id, a.homes[id])}</td>`).join('')}</tr>`; };
   const homes = `<div class="tscroll" tabindex="0" role="region" aria-label="Cost assumptions per home"><table class="tbl wide assum"><thead><tr><th scope="col">Per home</th>${H.map(id => `<th scope="col">${esc(SHORT[id])}</th>`).join('')}</tr></thead><tbody>
 ${rowH('House value', 'houseValue', (id, h) => inp(`homes.${id}.houseValue`, h.houseValue, { step: 1000, w: ' wide' }), 'EUR')}
 ${rowH('Management fee', 'managementPct', (id, h) => inp(`homes.${id}.managementPct`, h.managementPct, { step: 0.5, max: 100 }), '% of revenue net of VAT')}
@@ -142,15 +145,15 @@ ${set('utilitiesMonthly', 'Utilities', 'EUR a month, per home', st.utilitiesMont
 ${set('insuranceMonthly', 'Insurance', 'EUR a month, per home', st.insuranceMonthly)}
 ${set('platformCommission', 'Booking-platform commission', '% of the price, platform bookings', st.platformCommission, { scale: 0.01, step: 0.5 })}
 ${set('marginalRate', 'IRS marginal rate', '%, the owner', st.marginalRate, { scale: 0.01, step: 0.1 })}
-<tr><th scope="row">Accountant ${badge('assumption')} <span class="small">EUR a month, the business (shared equally by the five homes)</span>${srcNote('accountantMonth')}</th><td>${inp('business.accountantMonth', a.business.accountantMonth, { step: 5 })}</td></tr>
-<tr><th scope="row">Documented expenses for the IRS 15% rule ${badge('assumption')} <span class="small">EUR, the owner; empty = the simulated spending</span>${srcNote('documented')}</th><td>${inp('business.documented', Number.isFinite(a.business.documented) ? a.business.documented : '', { step: 1, w: ' wide' })}</td></tr>
-<tr><th scope="row">AIMI (additional IMI) ${badge('assumption')} <span class="small">EUR a year, the business; optional</span>${srcNote('aimiYear')}</th><td>${inp('business.aimiYear', a.business.aimiYear, { step: 10 })}</td></tr>
+<tr><th scope="row">Accountant ${badge('assumption')} <span class="small">EUR a month, the business (shared equally by the five homes)</span>${srcNote('accountantMonth')}</th><td>${(rowLabel = 'Accountant (EUR a month)', '')}${inp('business.accountantMonth', a.business.accountantMonth, { step: 5 })}</td></tr>
+<tr><th scope="row">Documented expenses for the IRS 15% rule ${badge('assumption')} <span class="small">EUR, the owner; empty = the simulated spending</span>${srcNote('documented')}</th><td>${(rowLabel = 'Documented expenses for the IRS 15% rule (EUR; empty for the simulated spending)', '')}${inp('business.documented', Number.isFinite(a.business.documented) ? a.business.documented : '', { step: 1, w: ' wide' })}</td></tr>
+<tr><th scope="row">AIMI (additional IMI) ${badge('assumption')} <span class="small">EUR a year, the business; optional</span>${srcNote('aimiYear')}</th><td>${(rowLabel = 'AIMI (EUR a year)', '')}${inp('business.aimiYear', a.business.aimiYear, { step: 10 })}</td></tr>
 </tbody></table></div>`;
   const kept = ctx.assumptionsKept === null ? '<p class="note-box">This browser is not keeping your assumptions (storage is blocked): the defaults are used, and a change lasts for this page only.</p>' : '';
   return `<details class="panel assum-p" id="assumptions"${ctx.assumOpen ? ' open' : ''}><summary><b>Assumptions behind these figures (yours to change)</b> ${badge('assumption')}</summary>
 <div class="acts"><button type="button" class="btn-s" data-act="assum-self">I run it myself (0 percent)</button><button type="button" class="btn-s" data-act="assum-defaults">Back to the defaults</button></div>
 <p class="small">The management fee: a full-service manager at 25% to 30% often includes cleaning and laundry; if yours does, set those to 0 so they are not counted twice. Depreciation and mortgage interest are two separate switches; you can have both. The maintenance reserve is set aside, not spent: not a tax expense.</p>
-${kept}${homes}${biz}<p class="small">Kept in this browser only (localStorage "cc.assumptions.v1"); Reset clears it. ${esc(A.FOOT)}</p></details>`;
+${kept}${homes}${biz}<p class="small">Kept in this browser only: the rows per home, the accountant, AIMI and documented expenses in localStorage "cc.assumptions.v1"; cleaning, laundry, utilities, insurance, commission and the IRS rate in the simulation's settings, which a new seed in World and the tour carry over. Reset sets all of them back. ${esc(A.FOOT)}</p></details>`;
 }
 export function money(S, ctx) {
   AS = ctx.assumptions || null;
@@ -162,7 +165,8 @@ export function money(S, ctx) {
   const Y = byMonth ? lines(S, { to: today, homeId, assumptions: AS }) : L;
   const v53 = vat53Check(lines(S, { to: today, assumptions: AS }).netRevenue);
   const tile = (label, big, small, hi) => `<div class="kpi${hi ? ' hi' : ''}"><p class="kl">${label}</p><p class="kv">${big}</p><p class="ks">${small}</p></div>`;
-  const yTile = (label, v) => tile(label, v === null || v === undefined ? '-' : pct1(v), `${v === null || v === undefined ? 'Type a house value to see the yield. ' : ''}a year, on the house value you typed (${eur(Y.houseValue)}): year to date scaled to a year (x 365 / ${Y.days} days). <b>Simulated, not financial advice.</b>`);
+  const part = Y.valuedHomes < Y.homesCount ? ` (${Y.valuedHomes} of ${Y.homesCount} homes)` : '';
+  const yTile = (label, v) => tile(label, v === null || v === undefined ? '-' : pct1(v), `${v === null || v === undefined ? 'Type a house value to see the yield. ' : ''}a year, on the house value you typed (${eur(Y.houseValue)}${part}): year to date scaled to a year (x 365 / ${Y.days} days). <b>Simulated, not financial advice.</b>`);
   const kpis = `<div class="kpis k9">${[
     tile('Revenue, VAT included', eur(L.revenue), 'paid by guests'),
     tile(`VAT ${S.settings.vatExempt53 ? '(article 53 exemption on)' : '6%'}`, eur(L.vat), 'to the tax office'),

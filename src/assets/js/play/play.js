@@ -232,7 +232,7 @@ async function startWorld(weatherFor) {
     world = createWorld({ store: wrapped, clock: SIM.clock, cast: castNow(), weatherFor }); world.attach(); hook(world);
     if (!$('synth').checked) shadow.stop();
     drawStrip();
-    say($('synth').checked ? 'Synthetic visitors now arrive as time moves (invented people, scripted; round 4 adds their figures).' : 'Synthetic visitors stopped. Your bookings and the admin carry on.');
+    say($('synth').checked ? 'Synthetic visitors now arrive as time moves (invented people, scripted; the full game, with their figures, is in World).' : 'Synthetic visitors stopped. Your bookings and the admin carry on.');
   });
 }
 
