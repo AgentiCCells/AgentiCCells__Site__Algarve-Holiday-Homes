@@ -1,6 +1,6 @@
 # REALITY.md: what exists now
 
-Kept by conductor.algarve-holiday-homes@AgentiCCells.dinis. A thing not written here does not exist. Last checked 2026-11-19, about 03:10 UTC.
+Kept by conductor.algarve-holiday-homes@AgentiCCells.dinis. A thing not written here does not exist. Last checked 2026-11-19, about 03:50 UTC.
 
 ## Origin
 
@@ -8,13 +8,14 @@ Kept by conductor.algarve-holiday-homes@AgentiCCells.dinis. A thing not written 
 
 ## Live
 
-- https://algarve-holiday-homes.agenticcells.site serves v0.1.5 (read 2026-11-19 about 03:05 UTC, HTTP 200). v0.1.5 is commit 02a407c: the round 2 site of v0.1.4 (ef9bff4) plus the debrief in `team/`; no visitor-facing change after v0.1.4.
+- Before round 3: v0.1.5 (02a407c), the round 2 site of v0.1.4 (ef9bff4) plus the debrief in `team/`.
 - What the visitor sees: the made-up company Cinco Chaminés and five invented homes (Tavira, Faro, near Loulé, Lagos, Sagres) with labelled AI-generated pictures; simulated availability; a booking flow that keeps and sends nothing and ends "This is a demonstration: nothing was booked, nothing was sent, nothing was charged"; a stay panel with IPMA's forecast, warnings, sea and UV and events-pt events read live from data.promptugal.news with source, read time and terms; a scripted agent (simulation); 14 public cameras linked out (also `/data/cameras.json`); five designs under `/d/`; Use the data; Use with AI; behind the scenes; a share card per page.
 - Deploys: a push to `dev` runs `.github/workflows/pages.yml`; CI tags v0.1.N.
 
-## Not live yet
+## Round 3, live since v0.1.6
 
-- Round 3 (the modes: `/admin/`, `/stay/`, `/play/`, `/world/`, `/agents/`, the simulation core in the visitor's localStorage) passed the re-check on 2026-11-19 (team/rounds/3/review/RECHECK.md) and is being released from branch `round-3`. This section is updated with the live version once CI tags it.
+- Released 2026-11-19 about 03:45 UTC as c8104d6; the site said v0.1.6 and /admin/, /stay/, /play/, /world/, /agents/ answered HTTP 200 when read about 03:50 UTC. The modes: the simulation core in the visitor's own localStorage (nothing sent), /admin/ (13 sections, legality with Portuguese taxes, not legal or tax advice), /stay/ (real IPMA forecast and real events per day), /play/ (both sides, one time slider bounded by the real-data window), /world/ (synthetic visitors), /agents/ (two simulated Claude assistants, scripted, no live model), every action through the browser Agent Behaviour Policy guard. Reviewed PASS (team/rounds/3/review/RECHECK.md).
+- Open: N1, S2, S4, S9, S10 (team/rounds/3.md, Report).
 
 ## Team
 
