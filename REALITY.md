@@ -1,6 +1,6 @@
 # REALITY.md: what exists now
 
-Kept by conductor.algarve-holiday-homes@AgentiCCells.dinis. A thing not written here does not exist. Last checked 2026-11-19, about 03:50 UTC.
+Kept by conductor.algarve-holiday-homes@AgentiCCells.dinis. A thing not written here does not exist. Last checked 2026-11-19, about 06:45 UTC.
 
 ## Origin
 
@@ -15,7 +15,13 @@ Kept by conductor.algarve-holiday-homes@AgentiCCells.dinis. A thing not written 
 ## Round 3, live since v0.1.6
 
 - Released 2026-11-19 about 03:45 UTC as c8104d6; the site said v0.1.6 and /admin/, /stay/, /play/, /world/, /agents/ answered HTTP 200 when read about 03:50 UTC. The modes: the simulation core in the visitor's own localStorage (nothing sent), /admin/ (13 sections, legality with Portuguese taxes, not legal or tax advice), /stay/ (real IPMA forecast and real events per day), /play/ (both sides, one time slider bounded by the real-data window), /world/ (synthetic visitors), /agents/ (two simulated Claude assistants, scripted, no live model), every action through the browser Agent Behaviour Policy guard. Reviewed PASS (team/rounds/3/review/RECHECK.md).
-- Open: N1, S2, S4, S9, S10 (team/rounds/3.md, Report).
+- N1, S2, S4, S9 and S10 were closed in round 4; S10 in part (see below).
+
+## Round 4, live since v0.1.8
+
+- Released 2026-11-19 about 06:35 UTC as 2697231; the site said v0.1.8 when read about 06:45 UTC. Added: a guided tour on `/` and `/play/` (books on dates with a real IPMA forecast, puts the visitor's simulation back); /world/ answers the owner's rates, with a "what if" comparison and a run score; /admin/ Money with 16 editable assumptions, sourced (team/rounds/4/research/PNL-DEFAULTS.md) or labelled, and yield (simulated, not financial advice; margin about 13 percent on the seeded history); /admin/ Today "what the agents were stopped from doing today"; Legality with all 35 researched rows. Reviewed PASS (team/rounds/4/review/RECHECK.md).
+- Open: four should-fix items in team/rounds/4/review/RECHECK.md, and the score's occupancy part is nearly always full (team/rounds/4/review/BUILD.md).
+- Since this release, every commit must carry a good git SSH signature by an active key in its parent's `team/keys.json` (scripts/check-signatures.mjs, run by release.sh and CI).
 
 ## Team
 
