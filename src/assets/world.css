@@ -167,3 +167,6 @@ body.has-ccf .dock{bottom:44px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .k.assum{background:#134652;color:#DDF0F4}:root:not([data-theme="light"]) .w-played{background:#5A4410;color:#FFF0C7}}
 :root[data-theme="dark"] .k.assum{background:#134652;color:#DDF0F4}
 :root[data-theme="dark"] .w-played{background:#5A4410;color:#FFF0C7}
+/* Round 5 study, finding 15: a seed stays on one line (it wrapped letter by letter); the table scrolls instead. */
+.w-best code.seed{white-space:nowrap}
+#best{overflow-x:auto}

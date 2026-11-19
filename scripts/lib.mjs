@@ -66,8 +66,10 @@ export function head({ path, title, description, image }) {
 export function header(path) {
   const here = p => path.startsWith(p) || (p === '/homes/' && path === '/');
   const links = NAV.map(([p, t]) => `<li><a href="${p}"${here(p) ? ' aria-current="page"' : ''}>${esc(t)}</a></li>`).join('');
+  // Round 5 study, finding 13: on a home's page the calendar is far down the tab order; a second skip link goes there.
+  const bookSkip = /^\/homes\/[a-z0-9-]+\/$/.test(path) ? '<a class="skip" href="#book">Skip to the booking calendar</a>\n' : '';
   return `<a class="skip" href="#main">Skip to the content</a>
-<p class="band" role="note"><strong>Made-up example.</strong> ${esc(BAND_TEXT)} <a href="/behind-the-scenes/#what">What is this site?</a></p>
+${bookSkip}<p class="band" role="note"><strong>Made-up example.</strong> ${esc(BAND_TEXT)} <a href="/behind-the-scenes/#what">What is this site?</a></p>
 <header class="site-head">
 <div class="bar">
 <a class="brand" href="/">${chimney({ width: 22, height: 36 })}<span>${esc(BRAND)}<small>${esc(BRAND_LINE)}</small></span></a>

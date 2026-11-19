@@ -47,6 +47,7 @@ html.mode-app .dock{display:none}
 .about-panel{position:absolute;right:16px;top:100%;margin-top:4px;width:min(440px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1px solid var(--ink-2);border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.2);padding:16px 18px;z-index:45;font-size:.875rem;line-height:1.45}
 .about-panel[hidden]{display:none}
 .about-panel h2{margin:0 0 6px;font-size:1rem}
+.about-panel h3{margin:10px 0 4px;font-size:.9375rem} /* round 5 study, finding 7 */
 .about-panel ul{margin:8px 0 10px;padding:0;list-style:none}
 .about-panel li{display:grid;grid-template-columns:7rem 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--line);align-items:start}
 .about-panel .foot{font-size:.78rem;color:var(--ink-2)}
@@ -110,6 +111,10 @@ a.d:hover{text-decoration:underline}
 /* round 4: the bar that offers to put a simulation back after a tour was stopped (PROPOSAL.md 1.2) */
 .tour-left{background:#FFF6D6;color:#1F2328;border-bottom:1px solid #C9A400;padding:6px 16px;font-size:.875rem}
 .tour-left[hidden]{display:none}
+/* Round 5 study, finding 1: the simulation was moved on (visitor pages). */
+.sim-moved{background:#FFF6D6;color:#1F2328;border-bottom:1px solid #C9A400;padding:6px 16px;font-size:.875rem}
+.sim-moved[hidden]{display:none}
+.sim-moved p{margin:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .tour-left p{margin:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .k.assum{background:#DDF0F4;color:#0E4A5C}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .k.assum{background:#134652;color:#DDF0F4}}

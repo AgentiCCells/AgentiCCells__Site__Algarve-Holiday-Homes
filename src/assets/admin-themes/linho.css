@@ -51,5 +51,5 @@
 @media (max-width:900px){:root[data-design="linho"] .adm{grid-template-columns:minmax(0,1fr)}:root[data-design="linho"] .adm-main{padding:14px 16px 28px}:root[data-design="linho"] .adm-title h1{font-size:1.9rem}:root[data-design="linho"] .adm-side a{padding:10px 12px}}
 @media (max-width:1200px){:root[data-design="linho"] .kpis.k8,:root[data-design="linho"] .kpis.k9{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (max-width:640px){:root[data-design="linho"] .kpis,:root[data-design="linho"] .kpis.k8,:root[data-design="linho"] .kpis.k9{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}}
-/* Round 5 build: the 8- and 9-tile rows are narrow above 1200 px; a smaller figure keeps each number on one line, inside its tile. */
-@media (min-width:1201px){:root[data-design="linho"] .kpis.k8 .kv,:root[data-design="linho"] .kpis.k9 .kv{font-size:1.15rem}}
+/* Round 5 build: from 1600 px the 8- and 9-tile rows are one narrow row (admin.css puts them in two rows from 1201 to 1599 px); a smaller figure keeps each number on one line, inside its tile. */
+@media (min-width:1600px){:root[data-design="linho"] .kpis.k8 .kv,:root[data-design="linho"] .kpis.k9 .kv{font-size:1.15rem}}

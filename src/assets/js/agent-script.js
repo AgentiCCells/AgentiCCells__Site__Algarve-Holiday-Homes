@@ -128,6 +128,19 @@ export const FALLBACK = 'Sorry, I do not have a pre-written answer for that. I a
 
 export const INTENTS = [
   // ---- About the site and the agent (asked first, so "are you real" is never mistaken for a home) ----
+  // Round 5 study, finding 11: the reviews, and who the agent is, answered plainly.
+  {
+    id: 'reviews-real',
+    patterns: ['\\breviews?\\b.*\\b(real|genuine|fake|true|honest|invented)\\b', '\\b(real|genuine|fake)\\b.*\\breviews?\\b', 'who (wrote|writes) the reviews', '\\bavaliac'],
+    answer: 'No, the reviews are not real. They are invented: written by the simulation in your browser for this made-up example, about stays that never happened. The admin marks each one SIMULATED REVIEW and INVENTED, and World marks them SIMULATED. No real guest wrote any of them.',
+    suggestions: ['Is this a real company?', 'How do you work?', 'Show me the homes']
+  },
+  {
+    id: 'who-are-you',
+    patterns: ['\\bwho are you\\b', '\\byour name\\b', '\\bwho is (this|chamine)\\b', '\\bquem es\\b|\\bquem e voce\\b'],
+    answer: 'I am Chaminé, the site\'s agent for this made-up example: a script with pre-written answers that runs in your browser, not a live model and not a person. I can tell you about the five invented homes, their simulated availability and invented prices, and the real weather and events for your dates. I cannot book for real, take money, refund or give discounts.',
+    suggestions: ['How do you work?', 'Is this a real company?', 'Show me the homes']
+  },
   {
     id: 'what-is-this',
     patterns: [

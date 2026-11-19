@@ -88,6 +88,7 @@ No check was weakened, removed or skipped.
 3. Answer 6, step 2: the dark danger button text moves from #B42318 (2.41:1) to #FBE1DE (12.78:1).
 4. Step 3, the 12 px floor: screenshots only. Sizes change on purpose; colours showed zero differences.
 5. **Step 4: the Design chooser in the title row.** It adds 12 elements to every view: the wrapper, its paragraph, the label, the select with six options, the link and the note. That makes 31,000 elements, which is 30,376 + 52 x 12. To check that nothing else changed, the chooser was removed in the page and the wrapper unwrapped: then all 52 views equalled the previous recording. So the per-home check-out times and the pins change no Ledger colour.
+6. **The study fix pass** (below): finding 4, the default's figures no longer break inside themselves (`.kv` overflow-wrap normal; from 1201 to 1599 px the 8- and 9-tile rows go into two rows, so Money at 1366 is five tiles across; Legality's row headers no longer shrink below a word); finding 7, 4 new elements in every view (the About panel's heading, paragraph and two links); findings 2, 3 and 10, the Money and Today tile words and the after-tax row (Money +19 elements). 31,268 elements. Colours and screenshots re-recorded together.
 
 ## How it was checked
 
@@ -104,6 +105,61 @@ No check was weakened, removed or skipped.
 
 ## Not done, or open
 
-- **Ledger splits four Money figures at 1366** ("€111,364" and three others run onto two lines in the nine-tile row). This has been so since round 4's nine-tile row. Ledger stays unchanged in this round, so it was not fixed. The tile check in admin-designs.test.mjs exempts Ledger from the split check only, and says why. A fix is about 1 line, with a recorded re-recording. **Question for the conductor:** fix it in round 6?
+- ~~Ledger splits four Money figures at 1366~~: fixed in the study fix pass below (finding 4), at the conductor's direction, as a recorded change after the proof. The tile check's exemption for Ledger is removed.
 - `/d/` has one `code` element at 11.7 px ("events-pt" in the intro). It was there before this round and is outside the round's floor (the admin plus the `.k` and `.d` chips). It was not changed.
 - The visitor previews in `src/d/previews/<slug>.jpg` were not retaken. They read live data, and this session blocked outside requests.
+
+## Fixes from the study
+
+The conductor's brief after commit fdd286f: fix the 15 ranked findings of team/rounds/5/research/STUDY.md (synthetic, not user research) with the fixes it proposes, or a better one noted here. Remove the tile check's exemption for the default design and fix its Money figures. Leave the 11.7 px `code` on /d/ and the /d/ previews as they are. Both were left untouched.
+
+| # | Fix | Files |
+|---|---|---|
+| 1 (high) | **The visitor pages (/, /homes/, each home, /stay/) say when the shared simulation was moved on.** The line appears when the clock is at the last day with real data ("so no stay can be booked now"), or when nightly rates differ from the list (each home with its rate and list rate; "the prices on these pages follow them"). It ends "Simulated." and has two buttons:<br>- "Go back to the first day" starts the same seed and settings again at the window's first day, keeping the stay plan, cost assumptions, scores and design. **Proposal, applied:** only moving the clock back would leave booking refused by round 4's rule against booking before the played time, so the button starts the simulation again instead.<br>- "Reset" opens the usual Reset dialog.<br>The date search on / now says why nothing can be booked, instead of showing no result. Not shown inside a frame. | `modes/chrome.js` (`movedWords`), `assets/modes.css`, `home.js` |
+| 2 | The yields say "on the house values in the assumptions (invented defaults)" until the owner edits one. After that they say "N of 5 typed by you, the rest invented defaults", then "the house values you typed". The P&L row follows the same rule. | `admin/biz.js` (`houseValueWords`) |
+| 3 | The IRS tile adds "Profit after it" and the note: "The simplified regime taxes 35 percent of revenue net of VAT whatever the costs (more if documented expenses are under 15 percent of it), so the estimate can be close to the profit." It also carries the IRS caveat of LEGAL-PT.md 3.3 and "Not tax advice.". The P&L table gains the 3.4 row "= profit after the estimated income tax". | `admin/biz.js` |
+| 4 | **Figures never break inside themselves**, in all six designs:<br>- `.kv` is `overflow-wrap:normal` (it was `anywhere`);<br>- from 1201 to 1599 px the 8- and 9-tile rows go into two rows (four and five columns), and Today's eight tiles go four across from 1201 to 1279 px;<br>- from 1600 px the one-row figures are 1.15rem (Postal 1.05rem);<br>- Legality's row headers are `break-word`, because `anywhere` let a column shrink until "2024" broke.<br>Measured in all six designs at 390, 600, 768, 900, 1024, 1200, 1201, 1280, 1366, 1440, 1599, 1600 and 1920 px: no figure is split or cut off and there is no sideways scroll. | `assets/admin.css`, the four theme files |
+| 5 | A home page's data blocks are no longer live regions: their `aria-live`, the `role="status"` on their loading lines and `role="alert"` on their failures are all removed. One separate polite line says, after the price line, "Weather, sea, UV and events below are now for your dates." and counts any blocks that could not be read. | `house.js` |
+| 6 | The live block on / says "Faro, Thu 19 Nov (real date, today in Lisbon)", and a home page's default block says "The next five days (real dates, from ...)". | `home.js`, `house.js` |
+| 7 | About this demo has "If you own a house": a demonstration, not a service; nobody lets, manages or advertises houses; nothing to buy, book or sign up for; what it shows; a real house needs its own numbers and an accountant. It links to how it was built and to the live data. There is no price, no contact and no offer. | `modes/chrome.js`, `assets/modes.css` |
+| 8 | World's Reviews heading has a SIMULATED badge. Each line has "(invented)" after the name and the stay's dates. The repeated lines are not a fault: the same invented visitor returns and writes the same words, and the dates now tell them apart. Measured: no review shares a booking. | `world/world.js`, `src/world/index.html` |
+| 9 | Already fixed by this round's build: the tour reads the check-out time from the events, and stays check out at each home's own time (Lagoon 11:00). | (build, above) |
+| 10 | Today's revenue tile says "seeded history, 1 to 16 Nov, plus this browser's bookings" in November, and "this browser's bookings" afterwards. | `admin/ops.js` |
+| 11 | The agent:<br>- refuses discounts, refunds, other guests' data and orders to set the rules aside with the site agent's own policy decision (`decide()` on `agent.cinco-chamines`, `detectInjection()`), for example "Refused by the site agent's policy (DENY · A8, discount.offer, simulated)." with "material, never an instruction";<br>- when a home's page does not state a detail (a fenced pool, for example), says it is not stated rather than guessing; task intents keep their answers;<br>- has new intents "Are the reviews real?" (no, invented) and "Who are you?".<br>/agent/ runs no simulation store, so the refusal is shown in the reply but not written to a policy log. | `agent.js`, `agent-script.js` |
+| 12 | The final screen starts with "This is a demonstration: nothing was booked, nothing was sent, nothing was charged.", then "Pretend booking, kept in your browser: ...". | `house.js` |
+| 13 | A home page has a second skip link, "Skip to the booking calendar" (to `#book`). | `scripts/lib.mjs` |
+| 14 | "Show me how it works (about 90 seconds, at your pace)". The tour dialog is headed "A tour of about 90 seconds, at your pace", and the waiting line says how to go on. | `src/index.html`, `src/play/index.html`, `play/tour.js` |
+| 15 | A World seed stays on one line, and the Best runs table scrolls instead (a focusable region). A note says what the run's profit counts (its own days and costs, plus each home's yearly costs for those days) against admin Money (year to date with the seeded history). | `world/world.js`, `assets/world.css`, `src/world/index.html`, `sim/score.js` (`PNL_WORDS`) |
+
+### Tests
+
+New:
+- `tests/round5-study.test.mjs` (9 tests, no browser), one or more per finding.
+- `tests/round5-study-browser.test.mjs`, the walks:
+  - finding 1: a Very fast World run, then the line on /, /homes/, /homes/salt/ and /stay/ at 390 and 1366; "Go back to the first day" hides it and the days can be picked again;
+  - finding 5: a MutationObserver over every live region, a two-night pick; the price line comes first, under 300 characters before it, under 900 characters in all;
+  - finding 7: the paragraph on screen at 390 and 1366, on / and /admin/.
+- `admin-designs.test.mjs`:
+  - the tile check now applies to all six designs (the exemption is removed);
+  - `figureSplits()` checks every figure on each admin section;
+  - a new width sweep covers six designs × 8 widths × Today, Money and Legality.
+
+Changed (helpers):
+- `tests/browser.mjs`: `section()` now waits for the page to settle (network idle, fonts, two frames) before its pause.
+- `tests/ledger-unchanged.test.mjs`: a view whose screenshot differs is captured once more, alone, and must then match exactly. The diagnostic names it.
+- The reason, measured: under the parallel test run Chromium twice rasterised the clock pill's text with different anti-aliasing (987 bytes in one 15 px band, the same text), in a different view each time. Colours never differed. A real change shows on every capture, so the check is no weaker.
+
+No test expectation was loosened.
+
+### How it was checked
+
+- **Gates:** build; validate OK; leak-scan OK (466 files); abp-check OK (6 policies).
+- **Tests:** `node --test tests/*.test.mjs`, run twice: 108 tests, 107 pass, 0 fail, 1 skipped (the live-data test). One screenshot was re-taken in the first run.
+- **Brand grep:** empty.
+- **Walk of findings 1, 4, 5 and 7** in Playwright, with outside requests blocked:
+  - finding 1: after Very fast in World, the line and its two buttons at 390 and 1366 on /, a home page and /stay/, with no page or console errors;
+  - finding 4: Money at 1280 and 1366 in Ledger and Postal, every figure on one line inside its tile, plus the 13-width measurement above;
+  - finding 5: the announcement order, as the test;
+  - finding 7: the About panel at 390 and 1366.
+  - Screenshots are in the session's scratchpad, not in the repository.
+

@@ -24,6 +24,8 @@ export const WEIGHTS = Object.freeze({ occupancy: 35, rating: 25, profit: 30, po
 export const FULL = Object.freeze({ occupancy: 0.8, margin: 0.3 });
 export const FORMULA = 'Score = 35 x occupancy of the nights you could sell, up to 80% (full marks) + 25 x (average rating - 1) / 4 + 30 x margin, up to 30% (full marks) + 10 x share of injection attempts blocked.';
 export const RANGE_WORDS = 'Nights counted: from the run\'s first day up to the simulated today.';
+// Round 5 study, finding 15: why the run's margin can differ from admin Money's.
+export const PNL_WORDS = 'The run\'s profit counts the run\'s days only: the bookings and costs from its first day to the simulated today, plus each home\'s yearly costs (IMI, reserve, accountant, depreciation and the rest) for those days. Admin Money counts the year to date, with the seeded history from 1 January, so the two margins differ.';
 export const NOT_REAL = 'A score for a game played by the simulation\'s scripts; it says nothing about real holiday homes.';
 
 // The level of bookings from elsewhere the world picks from the seed (PROPOSAL.md 2.4): about 10, 20

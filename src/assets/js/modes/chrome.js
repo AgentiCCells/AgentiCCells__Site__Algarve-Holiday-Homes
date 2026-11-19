@@ -147,6 +147,8 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
 <li>${badge('invented')}<span>The company Cinco Chaminés, the five homes, prices, rules, check-in details, suggestions of places to eat, every person.</span></li>
 <li>${badge('ai')}<span>Every picture of a home or of the Algarve (an image model); no photograph.</span></li>
 </ul>
+<h3 id="about-owner">If you own a house</h3>
+<p>This is a demonstration, not a service. Nobody here lets, manages or advertises houses, and there is nothing to buy, book or sign up for. It shows how agents could do the work of a small holiday-home business (bookings, guests, cleaning, stock, money and the rules) and how written policies stop them when they should not act. The figures for a real house would need its own numbers, and its taxes an accountant. <a href="/behind-the-scenes/">How it was built</a>; <a href="/use-the-data/">the live data it reads</a>.</p>
 <p class="foot">State is kept in this browser only (localStorage: the simulation, your stay plan, your cost assumptions, your best scores, your admin design "cc.admin.design.v1" and a tour's saved copy). Reset clears it. Taxes and rules shown are a simulation, not legal or tax advice. The assistants are scripted, not a live model. <a href="/behind-the-scenes/">How it was made</a></p>
 <button type="button" class="tbtn about-close">Close</button>`;
   bar.insertAdjacentElement('afterend', about);
@@ -225,6 +227,32 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
     cleanups.push(store.subscribe(showLeft));
   }
 
+  // Round 5 study, finding 1: on the visitor pages, say plainly when the shared simulation was moved on
+  // (in World, the admin or the side-by-side page): the clock at the last day with real data, so nothing
+  // can be booked, or nightly rates that differ from the list. Two ways back: the first day again (the
+  // same seed and settings; your stay plan, cost assumptions, scores and design stay), or Reset (all).
+  if (!embed && (mode === 'visitor' || mode === 'stay')) {
+    const mv = doc.createElement('div');
+    mv.className = 'sim-moved'; mv.hidden = true; mv.setAttribute('role', 'region'); mv.setAttribute('aria-label', 'The simulation was moved on');
+    about.insertAdjacentElement('afterend', mv);
+    let last = '';
+    const showMoved = () => {
+      const w = movedWords(store.getState(), store.clock().now, clock.bounds());
+      if (w === last) return; last = w;
+      mv.hidden = !w;
+      mv.innerHTML = w ? `<p><span>${esc(w)}</span> <button type="button" class="tbtn" data-moved="first">Go back to the first day</button> <button type="button" class="tbtn" data-moved="reset">Reset</button></p>` : '';
+    };
+    mv.addEventListener('click', e => {
+      const v = e.target.closest('[data-moved]')?.dataset.moved; if (!v) return;
+      clock.pause();
+      if (v === 'first') { const st = store.getState(); store.reset(st.seed || undefined, { now: `${clock.bounds().from}T09:00`, settings: { ...st.settings } }); }
+      else tools.querySelector('.reset').click();
+    });
+    showMoved();
+    cleanups.push(store.subscribe(showMoved));
+    S.boundsReady?.then(() => { last = ''; showMoved(); });
+  }
+
   // Guest's stay is greyed until the visitor has a booking here.
   const stayLink = bar.querySelector('.modes a[data-mode="stay"]');
   const showStay = state => {
@@ -259,6 +287,15 @@ export function resetAll(store, { storage, session } = {}) {
   if (session === undefined) { try { globalThis.sessionStorage?.removeItem('cc-stay'); } catch { /* blocked */ } }
   else { try { session?.removeItem('cc-stay'); } catch { /* blocked */ } }
   try { globalThis.dispatchEvent?.(new Event('cc-reset')); } catch { /* not a browser */ }
+}
+// movedWords(state, now, bounds) -> the sentence for the visitor pages when the simulation was moved on, or ''.
+export function movedWords(state, now, bounds) {
+  const parts = [];
+  if (bounds?.to && String(now).slice(0, 10) >= bounds.to) parts.push(`the clock is at ${fmtSim(now)}, the last day with real data, so no stay can be booked now`);
+  const moved = (state?.homeOrder?.length ? state.homeOrder : Object.keys(state?.homes || {})).map(id => state.homes[id]).filter(h => h?.rate && h.rate.listBase && h.rate.base !== h.rate.listBase);
+  if (moved.length) parts.push(`nightly rates differ from the list (${moved.map(h => `${h.name} EUR ${h.rate.base}, list EUR ${h.rate.listBase}`).join('; ')}), and the prices on these pages follow them`);
+  if (!parts.length) return '';
+  return `This browser's simulation was moved on, in World, the admin or the side-by-side page: ${parts.join('; and ')}. Simulated.`;
 }
 const addMin = (t, m) => new Date(Date.parse(`${String(t).slice(0, 16)}:00Z`) + m * 60000).toISOString().slice(0, 16);
 

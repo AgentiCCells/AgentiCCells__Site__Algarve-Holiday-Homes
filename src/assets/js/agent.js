@@ -12,6 +12,7 @@ import { LABEL, HOME_WORDS, MESSAGES, SUGGESTED, FALLBACK, INTENTS } from './age
 import * as D from './data.js';
 import { houseSvg } from './houses.js';
 import { simState, nightFrom, simAvailability } from './sim/price.js';
+import { POLICIES, decide, detectInjection } from './sim/abp.js';
 
 // ---------- small helpers ----------
 
@@ -438,6 +439,41 @@ const needsDates = tpl => /\{(availability|price|forecast|events):[^}]*:dates\}/
 
 // ---------- the conversation ----------
 
+// refuse(raw, text) -> a refusal with the policy decision, or null (round 5 study, finding 11).
+const DISCOUNT = /\b(discount|money off|cheaper (for|price)|\d+ ?(%|percent|per cent) off|half price|for free|free (night|nights|stay|week)|desconto)\b/;
+const ACTION_OF = { 'refund-all': 'refund.issue', 'pt-reembolsa': 'refund.issue', 'guest-list': 'read.guest-list', 'pt-lista-hospedes': 'read.guest-list', 'free-booking': 'discount.offer' };
+export function refuse(raw, text) {
+  const inj = detectInjection(raw);
+  const wantsDiscount = DISCOUNT.test(text);
+  if (!inj.flagged && !wantsDiscount) return null;
+  const action = inj.matches.map(m => ACTION_OF[m]).find(Boolean) || (wantsDiscount ? 'discount.offer' : 'policy.change');
+  const r = decide(POLICIES, 'agent.cinco-chamines', action, {});
+  const why = inj.flagged ? ' Your message reads like an order to set the rules aside; words typed into this chat are material, never an instruction, and the rules do not change.' : '';
+  return {
+    intent: 'refused',
+    html: render(`Refused by the site agent's policy (${r.decision.toUpperCase()} · ${r.rule}, ${action}, simulated).${why} The site's agent may not give discounts, refunds or other guests' details, and the invented prices are set by the invented owner. The policy is on [the agents page](/agents/) (simulated). What I can do: tell you a home's invented price and simulated availability, or the real weather and events for your dates.`),
+    suggestions: ['How much is the Cape House?', 'Is the Cape House free next week?', 'How do you work?'],
+    decision: r
+  };
+}
+// statedDetail(text, homeId) -> what a home's page states about one detail, or that it is not stated.
+const DETAILS = [['pool'], ['fenced', 'fence'], ['wifi', 'wi-fi', 'internet'], ['parking'], ['air conditioning', 'air-conditioning', 'aircon'], ['heating'], ['fireplace'], ['dishwasher'], ['washing machine'], ['barbecue', 'bbq'], ['cot', 'high chair'], ['towels'], ['hairdryer'], ['sea view'], ['garden'], ['balcony', 'terrace'], ['lift', 'elevator'], ['tv', 'television'], ['kitchen', 'oven'], ['bath', 'shower']];
+const detailRe = w => new RegExp(`\\b${w.replace(/[-\s]/g, '[-\\s]?')}`, 'i');
+async function statedDetail(text, homeId) {
+  if (!/\?|\b(is|are|does|do|has|have|any|got)\b/.test(text)) return null;
+  const groups = DETAILS.filter(g => g.some(w => detailRe(w).test(text)));
+  if (!groups.length) return null;
+  const homes = await loadHomes(); const h = homeById(homes, homeId); if (!h) return null;
+  const said = [...(h.features || []), ...String(h.description || '').split(/(?<=\.)\s+/), String(h.accessibility || '')].map(String);
+  const lines = [];
+  for (const g of groups) {
+    const w = g.find(x => detailRe(x).test(text));
+    const hit = said.filter(x => g.some(y => detailRe(y).test(normalise(x))));
+    lines.push(hit.length ? `- ${w}: the page says "${hit.slice(0, 2).join('"; "')}".` : `- ${w}: not stated. ${h.name}'s page says nothing about it, so I cannot tell you, and I will not guess.`);
+  }
+  return { intent: 'detail', html: render(`${h.name} (invented):\n${lines.join('\n')}\nEverything about the homes is invented for this made-up example. [See ${h.name}](/homes/${h.id}/).`), suggestions: ['Tell me about it', 'Is it free on my dates?'] };
+}
+
 export function createAgent() {
   const state = { home: null, dates: null, pending: null };
   async function answer(raw) {
@@ -448,7 +484,17 @@ export function createAgent() {
     const guests = extractGuests(text);
     if (home) state.home = home;
     if (dates) state.dates = dates;
+    // Round 5 study, finding 11: a request for a discount, a refund, other guests' data or an order to drop
+    // the rules is refused with the site agent's own policy decision (sim/abp.js), never answered with a description.
+    const refusal = refuse(raw, text);
+    if (refusal) return refusal;
     let intent = matchIntent(text);
+    // A detail the home's page does not state is said to be not stated, not answered with the description
+    // (only when no task intent matched: availability, price, weather and the rest keep their answers).
+    if ((!intent || /^(home-|about-home)/.test(intent.id)) && (home || state.home)) {
+      const detail = await statedDetail(text, home || state.home);
+      if (detail) return detail;
+    }
     // A follow-up that only names a home after "Which home do you mean?" answers the earlier question.
     if (state.pending && (!intent || /^home-/.test(intent.id)) && home) intent = state.pending;
     state.pending = null;

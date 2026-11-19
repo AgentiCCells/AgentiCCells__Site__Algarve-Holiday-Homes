@@ -52,6 +52,13 @@ export async function adminWithExamples(page, base, query = '') {
 export async function section(page, sec) {
   await page.evaluate(s => { location.hash = `#${s}`; }, sec);
   await page.waitForFunction(s => document.querySelector(`.adm-side a[data-sec="${s}"]`)?.getAttribute('aria-current') === 'page', sec, { timeout: 5000 });
+  await settle(page);
+}
+// settle(page): no request in flight, the fonts loaded and two frames drawn, then a short pause. Under the
+// parallel test run a fixed pause alone sometimes caught a section before its last redraw (round 5 study pass).
+export async function settle(page) {
+  await page.waitForLoadState('networkidle').catch(() => {});
+  await page.evaluate(() => new Promise(r => { const go = () => requestAnimationFrame(() => requestAnimationFrame(r)); document.fonts?.ready ? document.fonts.ready.then(go) : go(); }));
   await page.waitForTimeout(250);
 }
 // colours(page) -> [path, values...] for every element of the page, in document order.
@@ -105,3 +112,22 @@ export const kpiFit = page => page.evaluate(() => {
   }
   return out;
 });
+
+// figureSplits(page, root) -> figures (money, percentages, counts) broken across two lines anywhere in root,
+// outside the KPI tiles too (round 5 study, finding 4: "€111,3" over "64").
+export const figureSplits = (page, root = 'main, .adm-main, body') => page.evaluate(sel => {
+  const out = [], top = document.querySelector(sel); if (!top) return out;
+  const w = document.createTreeWalker(top, NodeFilter.SHOW_TEXT);
+  for (let n = w.nextNode(); n; n = w.nextNode()) {
+    // A figure on its own: not part of a word, an id or a link (nothing alphanumeric, hyphen, slash or dot touching it).
+    const re = /(?<![\p{L}\p{N}\-_/.:#])(?:[-−]?[€$]?\d[\d.,]*\d%?|[€$]\d|\d%)(?![\p{L}\p{N}\-_/])/gu; let m;
+    while ((m = re.exec(n.textContent))) {
+      if (m[0].length < 3) continue;
+      const r = document.createRange(); r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length);
+      const rects = [...r.getClientRects()].filter(x => x.width && x.height);
+      if (new Set(rects.map(x => Math.round(x.top))).size > 1) out.push(`figure split "${m[0]}" in "${n.textContent.trim().slice(Math.max(0, m.index - 20), m.index + 30)}"`);
+    }
+  }
+  return out;
+}, root);
+

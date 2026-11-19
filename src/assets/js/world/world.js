@@ -17,7 +17,7 @@ import { figureFor } from '../sim/figure.js';
 import { pnl } from '../sim/money.js';
 import { nightTakenBy } from '../sim/booking.js';
 import { createShadow } from '../sim/shadow.js';
-import { score, measures, injections, FORMULA, RANGE_WORDS, NOT_REAL, LEVELS, levelOfSeed, levelOfKeep, readScores, addScore } from '../sim/score.js';
+import { score, measures, injections, FORMULA, RANGE_WORDS, NOT_REAL, PNL_WORDS, LEVELS, levelOfSeed, levelOfKeep, readScores, addScore } from '../sim/score.js';
 import * as A from '../sim/assumptions.js';
 import { WORDS as DEMAND_WORDS } from '../sim/demand.js';
 import { esc, addDays, dayOf, daysBetween, toMs } from '../sim/util.js';
@@ -542,7 +542,7 @@ function renderScore(s, sc, n, total) {
 <tr><th scope="row">Rating</th><td>${P.rating.value === null ? 'no reviews yet' : `${P.rating.value.toFixed(1)} average from ${P.rating.count} review${P.rating.count === 1 ? '' : 's'}`}</td><td>${Math.round(P.rating.points)} of 25</td></tr>
 <tr><th scope="row">Profit</th><td>${P.profit.value === null ? 'no revenue yet' : `${Math.round(P.profit.value * 100)}% margin, ${eur(P.profit.profit)}`}</td><td>${Math.round(P.profit.points)} of 30</td></tr>
 <tr><th scope="row">Policies</th><td>${P.policy.tried ? `${P.policy.blocked} of ${P.policy.tried} attempts blocked` : 'nothing tried yet'}</td><td>${Math.round(P.policy.points)} of 10</td></tr>
-</tbody></table><p class="mini">Costs: ${esc(A.costsWord(fp))}. ${esc(NOT_REAL)}</p>`;
+</tbody></table><p class="mini">Costs: ${esc(A.costsWord(fp))}. ${esc(PNL_WORDS)} ${esc(NOT_REAL)}</p>`;
   if (final && savedRun !== `${s.seed}|${s.created}`) {
     savedRun = `${s.seed}|${s.created}`;
     const kept = addScore({ id: savedRun, score: sc.total, seed: s.seed, level: levelOfKeep(s.settings.backgroundKeep), rates: Object.values(s.homes).some(h => h.rate.manual) ? 'you' : 'Helena (synthetic owner)', costs: fp, date: new Date().toISOString().slice(0, 10), parts: Object.fromEntries(Object.entries(P).map(([k, v]) => [k, Math.round(v.points * 10) / 10])) });
@@ -554,7 +554,7 @@ let bestKept = true;
 function renderBest(s) {
   const r = readScores(), fp = A.fingerprint(assumptions(), s.settings);
   const list = r.list;
-  const rows = list.map(x => `<tr><td><b>${esc(x.score)}</b></td><td><code>${esc(x.seed)}</code></td><td>${esc(x.level)}</td><td>rates: ${esc(x.rates)}</td><td>${esc(A.costsWord(x.costs))}${x.costs !== fp ? '<br><span class="mini">other costs: not directly comparable</span>' : ''}</td><td>${esc(x.date)}</td><td><button type="button" class="tbtn" data-seed="${esc(x.seed)}">Play this seed again</button></td></tr>`).join('');
+  const rows = list.map(x => `<tr><td><b>${esc(x.score)}</b></td><td><code class="seed">${esc(x.seed)}</code></td><td>${esc(x.level)}</td><td>rates: ${esc(x.rates)}</td><td>${esc(A.costsWord(x.costs))}${x.costs !== fp ? '<br><span class="mini">other costs: not directly comparable</span>' : ''}</td><td>${esc(x.date)}</td><td><button type="button" class="tbtn" data-seed="${esc(x.seed)}">Play this seed again</button></td></tr>`).join('');
   $('best').innerHTML = `<h3 class="w-h3">Best runs <span class="mini">(this browser only)</span></h3>${!r.kept || !bestKept ? '<p class="mini">This browser is not keeping scores; this run\'s score is shown above only.</p>' : ''}${list.length ? `<div class="w-tscroll"><table class="w-best"><thead><tr><th scope="col">Score</th><th scope="col">Seed</th><th scope="col">Bookings from elsewhere</th><th scope="col">Rates</th><th scope="col">Costs</th><th scope="col">Played</th><th scope="col"><span class="sr-only">Again</span></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="mini">A run is added here when it reaches the end of the real-data window.</p>'}<p><button type="button" class="tbtn" data-new-seed>Try to beat it: New seed</button></p>`;
 }
 
@@ -601,11 +601,13 @@ function renderStock(s) {
   }).join('') + `<p class="mini">Hatched: at or under the reorder point. The housekeeper reorders up to EUR 150; above that the owner is asked (${asks} ${decisionChip({ decision: 'ask', rule: 'K5-limit' })} so far).</p>`;
 }
 
+// Round 5 study, finding 8: the same invented visitor can return and write the same words; the stay's dates tell the lines apart.
+const stayOf = (s, r) => { const b = s.bookings[r.bookingId]; return b ? `, ${esc(fmtDay(b.from))} to ${esc(fmtDay(b.to))}` : ''; };
 function renderReviews(s) {
   const rv = s.reviews.slice(-6).reverse();
   const avg = s.reviews.length ? (s.reviews.reduce((t, r) => t + r.rating, 0) / s.reviews.length).toFixed(1) : null;
   $('rv-avg').textContent = avg ? `${avg} average, ${s.reviews.length} reviews` : '';
-  $('reviews').innerHTML = rv.length ? rv.map(r => `<div class="rv ${r.rating <= 2 ? 'low' : ''}"><b class="stars">${r.rating}/5</b> ${esc(r.authorName)}, ${esc(homeName(r.homeId))}: "${esc(r.text)}"${r.flagged ? ` <span class="k untr">instruction-like text, marked</span>` : ''}</div>`).join('') + '<p class="mini">All simulated, written by the simulation; shown as text, never obeyed.</p>'
+  $('reviews').innerHTML = rv.length ? rv.map(r => `<div class="rv ${r.rating <= 2 ? 'low' : ''}"><b class="stars">${r.rating}/5</b> ${esc(r.authorName)} (invented), ${esc(homeName(r.homeId))}${stayOf(s, r)}: "${esc(r.text)}"${r.flagged ? ` <span class="k untr">instruction-like text, marked</span>` : ''}</div>`).join('') + '<p class="mini">All simulated, written by the simulation; shown as text, never obeyed.</p>'
     : '<p class="mini">No reviews yet: guests review when they check out.</p>';
 }
 

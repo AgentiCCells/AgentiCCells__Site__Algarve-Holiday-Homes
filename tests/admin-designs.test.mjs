@@ -9,7 +9,7 @@
 // developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19, round 5.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SKIP, playwright, serve, context, adminWithExamples, section, SECTIONS, small, overflow, kpiFit } from './browser.mjs';
+import { SKIP, playwright, serve, context, adminWithExamples, section, SECTIONS, small, overflow, kpiFit, figureSplits } from './browser.mjs';
 
 const DESIGNS = ['ledger', 'revista', 'azulejo', 'linho', 'costa', 'postal'];
 const EDGES = { allow: '#2E7D4F', ask: '#C08A00', deny: '#B42318' };
@@ -78,10 +78,10 @@ test('the admin in six designs: scroll, labels, the 12 px floor, contrast, needs
         if (s === 'today' && !/Claude, the host's assistant \(simulated\)/.test(text)) problems.push(`${where}: the host's assistant is not named as /agents/ names it`);
         // 3. the 12 px floor, no exception
         for (const x of await small(page)) problems.push(`${where}: under 12 px: ${x}`);
-        // The tiles' figures fit their tiles in every design; a word broken across lines is checked in the five new designs.
-        // Ledger splits four Money figures at 1366 since round 4's nine-tile row; Ledger stays unchanged this round
-        // (PROPOSAL.md 2.9), so that is recorded in team/rounds/5/build/NOTES.md as open, not hidden here.
-        for (const x of await kpiFit(page)) if (d !== 'ledger' || x.startsWith('clipped')) problems.push(`${where}: tile ${x}`);
+        // The tiles' figures fit their tiles and no word in a tile breaks across lines, in all six designs; and no
+        // figure anywhere on the page breaks inside itself (round 5 study, finding 4; the default's exemption removed).
+        for (const x of await kpiFit(page)) problems.push(`${where}: tile ${x}`);
+        for (const x of await figureSplits(page, '.adm-main')) problems.push(`${where}: ${x}`);
         // 4. contrast
         for (const x of await page.evaluate(`(${CONTRAST})(${JSON.stringify(LABELS)})`)) problems.push(`${where}: contrast ${x}`);
       }
@@ -154,6 +154,24 @@ test('answer 7: the .k and .d chips are 12 px on every mode page, with no sidewa
         await page.goto(srv.base + p, { waitUntil: 'load' }); await page.waitForTimeout(700);
         for (const x of await small(page, { selector: '.k, .d' })) problems.push(`${p} ${width}: ${x}`);
         const o = await overflow(page); if (o > 0) problems.push(`${p} ${width} ${dark ? 'dark' : 'light'}: scrolls sideways by ${o}px`);
+      }
+      await ctx.close();
+    }
+  } finally { await browser.close(); await srv.close(); }
+  assert.deepEqual(problems, []);
+});
+
+test('finding 4: figures never break inside themselves at any width, in any design (Today, Money, Legality)', { skip: SKIP, timeout: 1200000 }, async () => {
+  const srv = await serve(); const browser = await playwright.chromium.launch();
+  const problems = [];
+  try {
+    for (const d of DESIGNS) for (const width of [600, 768, 1024, 1201, 1280, 1440, 1600, 1920]) {
+      const ctx = await context(browser, { width }); const page = await ctx.newPage();
+      await adminWithExamples(page, srv.base, `?design=${d}`);
+      for (const s of ['today', 'money', 'legality']) {
+        await section(page, s);
+        for (const x of [...await kpiFit(page), ...await figureSplits(page, '.adm-main')]) problems.push(`${d} ${width} ${s}: ${x}`);
+        const o = await overflow(page); if (o > 0) problems.push(`${d} ${width} ${s}: scrolls sideways by ${o}px`);
       }
       await ctx.close();
     }

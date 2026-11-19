@@ -98,6 +98,8 @@ if (form) {
     e.preventDefault();
     const a = arrive.value, l = leave.value, g = Number(guests.value);
     msg.classList.remove('bad');
+    // Round 5 study, finding 1: at the last day with real data nothing can be booked; say so and why.
+    if (T >= LAST) { msg.classList.add('bad'); msg.textContent = `No stay can be booked: the simulated clock is at ${fmtDay(T)}, the last day with real data, because the simulation was moved on (in World, the admin or the side-by-side page). Use "Go back to the first day" or "Reset" at the top of the page.`; return; }
     if (!isDay(a) || !isDay(l)) { msg.classList.add('bad'); msg.textContent = 'Choose an arrive date and a leave date.'; return; }
     if (a < T) { msg.classList.add('bad'); msg.textContent = `The arrive date is before the simulated today (${fmtDay(T)}).`; return; }
     if (l <= a) { msg.classList.add('bad'); msg.textContent = 'The leave date must be after the arrive date.'; return; }
@@ -133,7 +135,8 @@ async function renderNow() {
   const ud = uv.days.find(d => d.date === RT) || uv.days[0];
   const w = wa.items[0];
   const items = [
-    item('Faro today', fc.res, f ? `<b>${esc(one(f.tmin))} to ${esc(one(f.tmax))} °C</b>, ${esc(f.weather)}, rain ${esc(f.rain_pct ?? '?')} %` : '<span class="muted">no forecast for today in the file</span>'),
+    // Round 5 study, finding 6: the real date beside the simulated one in the header.
+    item(`Faro, ${esc(fmtDay(RT))} (real date, today in Lisbon)`, fc.res, f ? `<b>${esc(one(f.tmin))} to ${esc(one(f.tmax))} °C</b>, ${esc(f.weather)}, rain ${esc(f.rain_pct ?? '?')} %` : '<span class="muted">no forecast for today in the file</span>'),
     item('Sea, Faro coast', sea.res, sd ? `<b>${esc(one(sd.temp_min))} to ${esc(one(sd.temp_max))} °C</b>, waves ${esc(one(sd.waves_min))} to ${esc(one(sd.waves_max))} m${sd.date !== RT ? ` (${esc(fmtDay(sd.date))})` : ''}` : '<span class="muted">no sea forecast in the file</span>'),
     item('UV, Faro', uv.res, ud ? `<b>${esc(one(ud.index))}</b> ${esc(ud.band)}${ud.date !== RT ? ` (${esc(fmtDay(ud.date))})` : ''}` : '<span class="muted">no UV forecast in the file</span>'),
     item('Warning, Faro district', wa.res, w ? `<b>${esc(w.level)}, ${esc(w.type)}</b>${wa.items.length > 1 ? ` and ${wa.items.length - 1} more` : ''}` : '<b>none</b> at the time read'),

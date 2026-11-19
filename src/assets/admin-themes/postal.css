@@ -42,5 +42,5 @@
 @media (max-width:900px){:root[data-design="postal"] .adm-side{border-right:0}:root[data-design="postal"] .adm-side a{border-radius:0;margin:0}}
 
 :root[data-design="postal"] .panel>svg.chart{width:calc(100% - 28px)}
-/* Round 5 build: the 8- and 9-tile rows are narrow above 1200 px; a smaller figure keeps each number on one line, inside its tile. */
-@media (min-width:1201px){:root[data-design="postal"] .kpis.k8 .kv,:root[data-design="postal"] .kpis.k9 .kv{font-size:1.05rem}}
+/* Round 5 build: from 1600 px the 8- and 9-tile rows are one narrow row (admin.css puts them in two rows from 1201 to 1599 px); a smaller figure keeps each number on one line, inside its tile. */
+@media (min-width:1600px){:root[data-design="postal"] .kpis.k8 .kv,:root[data-design="postal"] .kpis.k9 .kv{font-size:1.05rem}}

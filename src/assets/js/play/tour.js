@@ -1,4 +1,4 @@
-// play/tour.js: the guided tour "Show me how it works (90 seconds)" on /play/ of Cinco Chaminés, a
+// play/tour.js: the guided tour "Show me how it works (about 90 seconds, at your pace)" (round 5 study, finding 14) on /play/ of Cinco Chaminés, a
 // made-up example (round 4, team/rounds/4/design/PROPOSAL.md 1; mock-up team/rounds/4/design/
 // mockup-tour.html). Ten steps that book a pretend stay, move the simulated clock, open the admin and
 // point at each change. The tour sets the visitor's simulation aside first (localStorage
@@ -168,7 +168,7 @@ export function mountTour(api) {
     if (T.on) return;
     const dates = chooseDates({ bounds: SIM.clock.bounds(), state: tourState() });
     if (!dates) {
-      dialog('<h2 id="tour-dh">A 90-second tour</h2><p>The tour cannot find free dates with real data just now.</p><div class="tour-acts"><button type="button" class="pri" data-tact="close">Close</button></div>', () => closeDialog());
+      dialog('<h2 id="tour-dh">A tour of about 90 seconds, at your pace</h2><p>The tour cannot find free dates with real data just now.</p><div class="tour-acts"><button type="button" class="pri" data-tact="close">Close</button></div>', () => closeDialog());
       return;
     }
     T.dates = dates;
@@ -286,7 +286,7 @@ export function mountTour(api) {
   }
   function paintTimer() {
     const t = card.querySelector('.tour-next-in'), p = card.querySelector('.tour-prog span');
-    if (t) t.textContent = reduced() ? 'Press Next when you are ready' : T.paused ? 'Paused' : (T.hover || card.contains(doc.activeElement)) ? 'Waiting while you read' : `Next in ${Math.max(0, Math.ceil(T.left / 1000))} s`;
+    if (t) t.textContent = reduced() ? 'Press Next when you are ready' : T.paused ? 'Paused' : (T.hover || card.contains(doc.activeElement)) ? 'Waiting while you read: press Next, or move the focus or the pointer out of this card' : `Next in ${Math.max(0, Math.ceil(T.left / 1000))} s`;
     if (p) p.style.width = `${Math.max(0, Math.min(100, 100 - (T.left / STEP_MS) * 100))}%`;
   }
   function showCard(n, { failed } = {}, moveFocus) {

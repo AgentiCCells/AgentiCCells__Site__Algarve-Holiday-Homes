@@ -108,9 +108,17 @@ function pnlTable(S, opts) {
   return `<div class="tscroll" tabindex="0" role="region" aria-label="Profit and loss table"><table class="tbl wide pnl"><thead><tr><th></th>${cols.map(c => `<th class="n" scope="col"${c.k === 'lagoon' ? ' data-tour="pnl-lagoon"' : ''}>${esc(c.t)}</th>`).join('')}</tr></thead><tbody>
 ${row('Revenue, VAT incl.', l => eur(l.revenue))}${row('- VAT 6%', l => eur(l.vat))}${row('= revenue net of VAT', l => eur(l.netRevenue), 'sub')}${row('- platform fees', l => eur(l.commission))}${row('- cleaning and laundry', l => eur(l.cleaning))}${row('- consumables', l => eur(l.supplies))}${row('- utilities, insurance, upkeep', l => eur(l.running))}
 ${ex('management', 'management', 'assumption')}${ex('reserve', 'maintenance reserve (set aside)', 'assumption')}${ex('imi', 'IMI', 'invented')}${all.aimi > 0 ? ex('aimi', 'AIMI', 'assumption') : ''}${ex('accountant', 'accountant', 'assumption')}${all.depreciation > 0 ? ex('depreciation', 'depreciation', 'assumption') : ''}${all.interest > 0 ? ex('interest', 'mortgage interest', 'assumption') : ''}
-${row('= profit before income tax', l => `<b>${eur(l.profit)}</b>`, 'sum')}${row(`IRS estimate (${S.settings.irsCoef} x net${S.settings.irsCoef === 0.35 ? ' + 15% expenses shortfall' : ''}) x ${pct(S.settings.marginalRate)}, assumption`, l => eur(l.irs.irs))}${row('Tourist tax collected (passed on)', l => eur(l.touristTax))}${row('Nights sold', l => esc(l.nights))}
-${row('Net yield a year on your house value', l => (l.netYield === null || l.netYield === undefined ? '<span class="small">type a house value</span>' : `${pct1(l.netYield)} <span class="small">on ${eur(l.houseValue)}${l.valuedHomes < l.homesCount ? ` (${l.valuedHomes} of ${l.homesCount} homes)` : ''}</span>`))}
+${row('= profit before income tax', l => `<b>${eur(l.profit)}</b>`, 'sum')}${row(`IRS estimate (${S.settings.irsCoef} x net${S.settings.irsCoef === 0.35 ? ' + 15% expenses shortfall' : ''}) x ${pct(S.settings.marginalRate)}, assumption`, l => eur(l.irs.irs))}${row('= profit after the estimated income tax', l => `<b>${eur(l.profit - l.irs.irs)}</b>`, 'sum')}${row('Tourist tax collected (passed on)', l => eur(l.touristTax))}${row('Nights sold', l => esc(l.nights))}
+${row(`Net yield a year on ${houseValueWords(AS, HOME_IDS) === 'the house values you typed' ? 'your house value' : 'the house value in the assumptions'}`, l => (l.netYield === null || l.netYield === undefined ? '<span class="small">type a house value</span>' : `${pct1(l.netYield)} <span class="small">on ${eur(l.houseValue)}${l.valuedHomes < l.homesCount ? ` (${l.valuedHomes} of ${l.homesCount} homes)` : ''}</span>`))}
 </tbody></table></div>`;
+}
+// houseValueWords(doc, ids) -> how the yields name the house values: typed by the owner, or the invented defaults.
+export function houseValueWords(doc, ids = HOME_IDS) {
+  const a = A.normalise(doc);
+  const typed = ids.filter(id => a.homes[id] && a.homes[id].houseValue !== A.DEFAULTS.homes[id].houseValue).length;
+  if (!typed) return 'the house values in the assumptions (invented defaults)';
+  if (typed === ids.length) return 'the house values you typed';
+  return `the house values in the assumptions (${typed} of ${ids.length} typed by you, the rest invented defaults)`;
 }
 const pct1 = n => `${(Number(n) * 100).toFixed(2)}%`;
 // ---------- the assumptions panel (round 4, PROPOSAL.md 3.1) ----------
@@ -166,14 +174,20 @@ export function money(S, ctx) {
   const v53 = vat53Check(lines(S, { to: today, assumptions: AS }).netRevenue);
   const tile = (label, big, small, hi) => `<div class="kpi${hi ? ' hi' : ''}"><p class="kl">${label}</p><p class="kv">${big}</p><p class="ks">${small}</p></div>`;
   const part = Y.valuedHomes < Y.homesCount ? ` (${Y.valuedHomes} of ${Y.homesCount} homes)` : '';
-  const yTile = (label, v) => tile(label, v === null || v === undefined ? '-' : pct1(v), `${v === null || v === undefined ? 'Type a house value to see the yield. ' : ''}a year, on the house value you typed (${eur(Y.houseValue)}${part}): year to date scaled to a year (x 365 / ${Y.days} days). <b>Simulated, not financial advice.</b>`);
+  // Round 5 study, finding 2: the yields say "you typed" only once the owner has typed a house value.
+  const valueWords = houseValueWords(AS, homeId ? [homeId] : HOME_IDS);
+  const yTile = (label, v) => tile(label, v === null || v === undefined ? '-' : pct1(v), `${v === null || v === undefined ? 'Type a house value to see the yield. ' : ''}a year, on ${valueWords} (${eur(Y.houseValue)}${part}): year to date scaled to a year (x 365 / ${Y.days} days). <b>Simulated, not financial advice.</b>`);
+  // Round 5 study, finding 3 (LEGAL-PT.md 3.3 and 3.4): the profit after the estimated income tax, and why
+  // the estimate can be close to the profit: the simplified regime taxes a share of revenue, not the profit.
+  const coefPct = Math.round(Number(S.settings.irsCoef) * 100);
+  const irsWords = `assumption: ${pct(S.settings.marginalRate)} marginal rate. Profit after it: <b>${eur(L.profit - L.irs.irs)}</b>. The simplified regime taxes ${coefPct} percent of revenue net of VAT whatever the costs${S.settings.irsCoef === 0.35 ? ' (more if documented expenses are under 15 percent of it)' : ''}, so the estimate can be close to the profit. ${esc(L.irs.caveat || '')} Not tax advice.`;
   const kpis = `<div class="kpis k9">${[
     tile('Revenue, VAT included', eur(L.revenue), 'paid by guests'),
     tile(`VAT ${S.settings.vatExempt53 ? '(article 53 exemption on)' : '6%'}`, eur(L.vat), 'to the tax office'),
     tile('Platform fees', eur(L.commission), `${pct(S.settings.platformCommission)} on platform bookings (assumption)`),
     tile('Running costs', eur(L.cleaning + L.supplies + L.running + L.extraTotal), 'cleaning, stock, utilities, insurance, upkeep, and your cost assumptions'),
     tile('Profit before income tax', eur(L.profit), homeId ? esc(S.homes[homeId].name) : 'all five homes', true),
-    tile('IRS estimate', eur(L.irs.irs), `assumption: ${pct(S.settings.marginalRate)} marginal rate`),
+    tile('IRS estimate', eur(L.irs.irs), irsWords),
     tile('Tourist tax collected', eur(L.touristTax), 'Faro and Loulé homes; passed on'),
     yTile('Gross yield', Y.grossYield),
     yTile('Net yield', Y.netYield),

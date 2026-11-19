@@ -11,7 +11,7 @@ import { POLICY_LOG_KEEP } from '../sim/store.js';
 import { levelLine } from '../sim/score.js';
 import { nightTakenBy, reorderNeeds, CHANNELS } from '../sim/booking.js';
 import { registrationDuty } from '../sim/legal.js';
-import { lines } from './history.js';
+import { lines, HISTORY_END } from './history.js';
 import { sourceLine } from '../data.js';
 
 const opt = (v, t, sel) => `<option value="${esc(v)}"${v === sel ? ' selected' : ''}>${esc(t)}</option>`;
@@ -105,6 +105,7 @@ function todayBody(S, ctx, ids, bs, t, now) {
   const alerts = alertsFor(S, ctx);
   const m = Number(t.slice(5, 7));
   const rev = lines(S, { homeId: ctx.home === 'all' ? null : ctx.home, month: m, to: t });
+  const MO3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; // round 5 study, finding 10
   const tile = (label, big, small, warn) => `<div class="kpi${warn ? ' warn' : ''}"><p class="kl">${label}</p><p class="kv">${big}</p><p class="ks">${small}</p></div>`;
   const kpis = `<div class="kpis">${[
     tile('Homes occupied tonight', `${occupied} of ${ids.length}`, `${pct(occupied / ids.length)} · ${guests} guest${guests === 1 ? '' : 's'} here`),
@@ -113,7 +114,7 @@ function todayBody(S, ctx, ids, bs, t, now) {
     tile('Cleanings', jobs.filter(j => j.status !== 'done').length, jobs.length ? `${jobs.filter(j => j.status === 'done').length} done` : 'none due'),
     tile('Open issues', issues.length, `${issues.filter(i => i.severity === 'high').length} urgent`, issues.length > 0),
     tile('Alerts', alerts.length, [...new Set(alerts.map(a => ({ B: 'booking', S: 'stock', L: 'bulletin', I: 'issue', W: 'weather' }[a.l])))].join(', ') || 'none', alerts.length > 0),
-    tile(`${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m - 1]} revenue to date`, eur(rev.revenue), badge('simulated')),
+    tile(`${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m - 1]} revenue to date`, eur(rev.revenue), `${badge('simulated')} ${t.slice(0, 7) === HISTORY_END.slice(0, 7) ? `seeded history, 1 to ${Number(HISTORY_END.slice(8, 10))} ${MO3[m - 1]}, plus this browser's bookings` : 'this browser\'s bookings'}`),
     tile('Refused today', refusedOn(S, t).length, refusedOn(S, t).length ? 'by the policies, <a href="#today/stopped">see below</a>' : 'by the policies', refusedOn(S, t).length > 0),
   ].join('')}</div>`;
   const ready = b => {

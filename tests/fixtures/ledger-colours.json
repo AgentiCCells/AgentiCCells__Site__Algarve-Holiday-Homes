@@ -18,216 +18,220 @@
   {
    "at": "2026-11-19T05:53Z",
    "reason": "step 4: the Design chooser in the admin title row (12 new elements in every view: the wrapper, its paragraph, label, select with six options, link and note); with those removed in the page, all 52 views equal the previous recording, so per-home check-out times and the pins change no Ledger colour"
+  },
+  {
+   "at": "2026-11-19T06:39Z",
+   "reason": "Study fix pass (team/rounds/5/research/STUDY.md, the conductor's brief after commit fdd286f): finding 4, the default's figures no longer break inside themselves (.kv overflow-wrap normal; the 8- and 9-tile rows in two rows from 1201 to 1599 px, so Money at 1366 is five tiles across; Legality's row headers no longer shrink below a word); finding 7, 'If you own a house' in About this demo (4 new elements in every view); findings 2, 3 and 10, Money and Today tile words and the 'profit after the estimated income tax' row"
   }
  ],
  "views": {
   "today|390-light": {
-   "elements": 560,
-   "sha256": "edd9e1ba92bd2331339c26dca77a2a9898aefba5"
+   "elements": 564,
+   "sha256": "75f3d220035dc05e71cfa4be816980d42814f845"
   },
   "bookings|390-light": {
-   "elements": 331,
-   "sha256": "ac0a3e360635cc35d2ee69ad5cc22d24980148a9"
+   "elements": 335,
+   "sha256": "7cbc400cd5b4c3881e32cf9ae3c8e4ca33da8550"
   },
   "calendar|390-light": {
-   "elements": 708,
-   "sha256": "ad2a05251e1bcdfec5da7ef3b5c4cd6d7d9d75d6"
+   "elements": 712,
+   "sha256": "6cc2be037eece239110857061fb1049825ce6706"
   },
   "cleaning|390-light": {
-   "elements": 284,
-   "sha256": "ff663851eaeaa6f1d1620262827ad5185ccb9884"
+   "elements": 288,
+   "sha256": "41389af43c72e7016cea6496fa933192c8f4590b"
   },
   "stock|390-light": {
-   "elements": 560,
-   "sha256": "3ece43963872472e7018103595cde548f0a94b2d"
+   "elements": 564,
+   "sha256": "da47de132a541cb85babefce292854e9a08a9b16"
   },
   "issues|390-light": {
-   "elements": 271,
-   "sha256": "61a398f94f3f65ecf2e802a47c6f460a166697e5"
+   "elements": 275,
+   "sha256": "e6ea2bd2c00a32756e743ffd7b18c41128d19345"
   },
   "messages|390-light": {
-   "elements": 268,
-   "sha256": "2174b73845ce34fee2ca9709ddbd4c62f3f03447"
+   "elements": 272,
+   "sha256": "bac0be936ba66158d808cbdaf70b1649b6103157"
   },
   "reviews|390-light": {
-   "elements": 272,
-   "sha256": "59f23af21822010e4361c2380959510ec15a25e8"
+   "elements": 276,
+   "sha256": "a7007b42befd1b6147fad89f95388c6070ffd3d6"
   },
   "rates|390-light": {
-   "elements": 356,
-   "sha256": "924105ee74682d399d771b5ad6eccbf3ced077b0"
+   "elements": 360,
+   "sha256": "96adda0dc654aa058081c636914d934ac03eeaaa"
   },
   "money|390-light": {
-   "elements": 1012,
-   "sha256": "1038704c5c9629612c05f6b2ac1d94779777519c"
+   "elements": 1031,
+   "sha256": "54a9de0ae7cd1d96bda03933781896d6c24d51dd"
   },
   "legality|390-light": {
-   "elements": 1533,
-   "sha256": "69fd184d1ebbc1fc9f34320352feb29d638c92d2"
+   "elements": 1537,
+   "sha256": "7c8d1c244d7559d6905e6a7f7e769108a970f7d7"
   },
   "integrations|390-light": {
-   "elements": 282,
-   "sha256": "0b29a2dd02c621cd41d28260a57d4f0fc09d0100"
+   "elements": 286,
+   "sha256": "8090ce57e3f6937bf56f53c92af026b6caea9cd5"
   },
   "policies|390-light": {
-   "elements": 1313,
-   "sha256": "c29dcc418d8f80ff60ea35b4fa3fd08dbb683955"
+   "elements": 1317,
+   "sha256": "883184167c99508264fca7ce50900bc8a61cd5d6"
   },
   "today|390-dark": {
-   "elements": 560,
-   "sha256": "f79989353a68d18c6d4eb6bcbc8c51dde7e2f049"
+   "elements": 564,
+   "sha256": "e3a02d2bac32149f6d5ad883afe06f6ec5c3c397"
   },
   "bookings|390-dark": {
-   "elements": 331,
-   "sha256": "bdd68845159cce408db24bece8cb790948171027"
+   "elements": 335,
+   "sha256": "eb166f8cee6c14b01ea748eac02fcc746ba91f05"
   },
   "calendar|390-dark": {
-   "elements": 708,
-   "sha256": "302580859a3442acc41e07b9e77ef2def0f29602"
+   "elements": 712,
+   "sha256": "317ad14b84de1551d1dcdd47a3554dd4af3cb68d"
   },
   "cleaning|390-dark": {
-   "elements": 284,
-   "sha256": "f5f4860cceff7099b376dc846d152d9b6e7a65e8"
+   "elements": 288,
+   "sha256": "cc26a57a133e8196d05c8f2a9a92a6f914a72038"
   },
   "stock|390-dark": {
-   "elements": 560,
-   "sha256": "5e2496bbf4a7ca1125170c5435beb5f2473ec9b5"
+   "elements": 564,
+   "sha256": "4097da021c6398aa3509f229f8675fbcd5252460"
   },
   "issues|390-dark": {
-   "elements": 271,
-   "sha256": "f1874754dc59bffaacb75dacb85406dfb634cf9f"
+   "elements": 275,
+   "sha256": "8e927a7d7ae8130b2a321775176d07c6a6f54beb"
   },
   "messages|390-dark": {
-   "elements": 268,
-   "sha256": "d79416d0371281b0465a760178bebb49c29cfd08"
+   "elements": 272,
+   "sha256": "187f6c7dc6ff6a71d2f31e23a9531cf90fd5bc8a"
   },
   "reviews|390-dark": {
-   "elements": 272,
-   "sha256": "dabfa3a312e4a30d2f27e610fa7c24aa297def30"
+   "elements": 276,
+   "sha256": "d26cc4bbc8fe87e3be6a48b78c7ec09a4af69498"
   },
   "rates|390-dark": {
-   "elements": 356,
-   "sha256": "237cb6df6a6c6d6ae1d5b5861a1a8c97cb2ee2e6"
+   "elements": 360,
+   "sha256": "7aa2c4659df21c639b5b642d9a352c40012b0e40"
   },
   "money|390-dark": {
-   "elements": 1012,
-   "sha256": "49389edc2a799c1ffa88fc70658560a078f1b2c0"
+   "elements": 1031,
+   "sha256": "41721e5ceaad9a46ccbbf8f018f8c6d0ac99048a"
   },
   "legality|390-dark": {
-   "elements": 1533,
-   "sha256": "922328a8d2c0296df9cff10ed47a45b6bd8db3da"
+   "elements": 1537,
+   "sha256": "bf88108f78c32446f5ae6775d4bdad388bb6f470"
   },
   "integrations|390-dark": {
-   "elements": 282,
-   "sha256": "4af389f9c03da2ab5c5a7a2759954596a1c92204"
+   "elements": 286,
+   "sha256": "5a8f0045638b6c96ef832b62b5cf6588c0349bd7"
   },
   "policies|390-dark": {
-   "elements": 1313,
-   "sha256": "9824b5f92711bd9b6f402448eecbce404dbd31fa"
+   "elements": 1317,
+   "sha256": "ef1efd6d124771c2f45c87f91caf9415c658a619"
   },
   "today|1366-light": {
-   "elements": 560,
-   "sha256": "bae3aca4076c34682708fe69d5bf01ed95ba5498"
+   "elements": 564,
+   "sha256": "2fb29d885f3c4bc6807f242d10864e17337f8236"
   },
   "bookings|1366-light": {
-   "elements": 331,
-   "sha256": "78b9f26ab72e32c67ca08cb1aa12a30560ad69d5"
+   "elements": 335,
+   "sha256": "15e8395ddff9828770ca6b71b53971677e5b32e3"
   },
   "calendar|1366-light": {
-   "elements": 708,
-   "sha256": "78466368adc0a6054711ab5678656e6143116201"
+   "elements": 712,
+   "sha256": "906f91b10c9db6e245fd72d7d9ef04ebeef874d0"
   },
   "cleaning|1366-light": {
-   "elements": 284,
-   "sha256": "152425e5297697e05e2ef40d32c1f0d077ff52f8"
+   "elements": 288,
+   "sha256": "22568212deddc552d81926afe1ecf5af8c2f19c8"
   },
   "stock|1366-light": {
-   "elements": 560,
-   "sha256": "5ec5607de3375db9dc6e2e57dc93523e47fc1601"
+   "elements": 564,
+   "sha256": "cde804e20af690235ed08dd1304facb5cc5eef54"
   },
   "issues|1366-light": {
-   "elements": 271,
-   "sha256": "3ae6cf3d8fd6e7e33029f1191a5007470cff55f6"
+   "elements": 275,
+   "sha256": "b19c11dc677f374dba4ecb541cb9e55713e770b8"
   },
   "messages|1366-light": {
-   "elements": 268,
-   "sha256": "1b23a82b6825994e650a868b43a30a1584be3ae8"
+   "elements": 272,
+   "sha256": "cc74cb31704720cdbabdd8c0ba44d945d768c31e"
   },
   "reviews|1366-light": {
-   "elements": 272,
-   "sha256": "ef6908b8f0d3a5489903c908297923fcf0ac72f9"
+   "elements": 276,
+   "sha256": "03af2fec3174c118ad6546587a56d129cfb001f4"
   },
   "rates|1366-light": {
-   "elements": 356,
-   "sha256": "9b39265ce73686cc1785398e0592de89f2e83680"
+   "elements": 360,
+   "sha256": "6cd1444433acdcd25cb0d572ba9b22771204cfeb"
   },
   "money|1366-light": {
-   "elements": 1012,
-   "sha256": "65d63623348d003cc7c402db7302e4e3f56473ea"
+   "elements": 1031,
+   "sha256": "cb58c3f8cacb67bc80f190be5863e8974160c2da"
   },
   "legality|1366-light": {
-   "elements": 1533,
-   "sha256": "8a961e8458acc1395723df291bb284d8a94c463f"
+   "elements": 1537,
+   "sha256": "d5805caf943eba6817625fce96c1fb7b401a5000"
   },
   "integrations|1366-light": {
-   "elements": 282,
-   "sha256": "71cf01cf3323c6b63af5d3641418e0d5741a37dc"
+   "elements": 286,
+   "sha256": "fba1b48f5741b6ac1b096ff347701ce32c5bd802"
   },
   "policies|1366-light": {
-   "elements": 1313,
-   "sha256": "c25f75b20c5cfe44d6eaf76b8ac3464e2796d934"
+   "elements": 1317,
+   "sha256": "2b80a09f93a83ff08c4c2f82d8009d5f96a9f474"
   },
   "today|1366-dark": {
-   "elements": 560,
-   "sha256": "23a3c5ceac93eb1682796e1e820a637baca9587e"
+   "elements": 564,
+   "sha256": "cf22bf027e55b15905c2f485c9a30010728310a1"
   },
   "bookings|1366-dark": {
-   "elements": 331,
-   "sha256": "67bc3631b0c7e462872e0b8175a4298745422443"
+   "elements": 335,
+   "sha256": "6a30a7562f4ff6e6f0b4a152093195ab4d9aefd1"
   },
   "calendar|1366-dark": {
-   "elements": 708,
-   "sha256": "87ce7436f0eae624cfe95b217d8945ef8b466315"
+   "elements": 712,
+   "sha256": "1de39ec00f10e6ae85c53311b9873735c62162cc"
   },
   "cleaning|1366-dark": {
-   "elements": 284,
-   "sha256": "e3d0665373c61362bf477f54f9a8c0a5c1454490"
+   "elements": 288,
+   "sha256": "febbf7eef3a410488ff0eaecf914217f292759e8"
   },
   "stock|1366-dark": {
-   "elements": 560,
-   "sha256": "9150295be278c1204981ecbd0c8820e9f1b5e338"
+   "elements": 564,
+   "sha256": "d8661b8b42baac845f72738188fac4c465e2d711"
   },
   "issues|1366-dark": {
-   "elements": 271,
-   "sha256": "5f1837715763f754ac149e97ee68149cc7a3d80a"
+   "elements": 275,
+   "sha256": "577f4e530545ae8edd39afb0893017d41701bd68"
   },
   "messages|1366-dark": {
-   "elements": 268,
-   "sha256": "01df5773414babf9106ea1dae134da20a5d40e00"
+   "elements": 272,
+   "sha256": "76ee11049fd6b109aa0e59ad2a835acd1a58369d"
   },
   "reviews|1366-dark": {
-   "elements": 272,
-   "sha256": "3c341e8cc68ed2ee9fa0d0a79caaece8d750d404"
+   "elements": 276,
+   "sha256": "e4508083a46559d515cff3a9db7cfcbc9c9d9c05"
   },
   "rates|1366-dark": {
-   "elements": 356,
-   "sha256": "93be96f70e0a76b04f378b91b924b0faf0f83523"
+   "elements": 360,
+   "sha256": "c438b4d452a9d8df3680875ad69c5c4c20a83860"
   },
   "money|1366-dark": {
-   "elements": 1012,
-   "sha256": "09300fd466af2a94b25e2b7bf9a47ab2d568d67c"
+   "elements": 1031,
+   "sha256": "03d3f547194a6841bcd648ea086046c12469d9ed"
   },
   "legality|1366-dark": {
-   "elements": 1533,
-   "sha256": "86052ffe829c671677768afbe3b73eb9f0fd5cd2"
+   "elements": 1537,
+   "sha256": "81ce433d2f7c848782afdf8f1d5af897ec2a1c13"
   },
   "integrations|1366-dark": {
-   "elements": 282,
-   "sha256": "b2cc9c190ca28f1dec59e02956131c5c65032351"
+   "elements": 286,
+   "sha256": "fbb0ed5461cb1392961e9136702418197313fa8d"
   },
   "policies|1366-dark": {
-   "elements": 1313,
-   "sha256": "618dd63f6b31c713732db61bcd16c75e0c0072cb"
+   "elements": 1317,
+   "sha256": "1287f71a835656e95adf05162e793d5f775ffe33"
   }
  }
 }

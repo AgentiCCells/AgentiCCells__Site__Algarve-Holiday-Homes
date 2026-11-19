@@ -45,6 +45,11 @@ const live = document.createElement('p');
 live.className = 'sr-only'; live.setAttribute('aria-live', 'polite'); live.setAttribute('role', 'status');
 document.body.append(live);
 const say = t => { live.textContent = ''; setTimeout(() => { live.textContent = t; }, 30); };
+// Round 5 study, finding 5: the data blocks are not live regions (they read about 3,250 characters before the
+// price); a second, separate polite line says once, after them, that they changed.
+const liveData = document.createElement('p');
+liveData.className = 'sr-only'; liveData.setAttribute('aria-live', 'polite');
+document.body.append(liveData);
 
 const plural = (n, a, b = `${a}s`) => `${n} ${n === 1 ? a : b}`;
 const nights = (a, b) => daysBetween(a, b);
@@ -346,8 +351,8 @@ function finalStep() {
   const h = b ? state().homes[b.homeId] : null;
   return `<div class="final">
 ${chimney({ width: 72, height: 120, cls: 'final-mark' })}
-${b ? `<p class="booked"><strong>Booked (pretend): ${esc(h?.name || S.home.name)}, ${esc(fmtDay(b.from))} to ${esc(fmtDay(b.to))}.</strong> Booking <code>${esc(b.id)}</code>, ${esc(b.status)} (pretend) in the simulation.</p>` : ''}
 <h3 class="step-h statement" tabindex="-1">This is a demonstration: nothing was booked, nothing was sent, nothing was charged.</h3>
+${b ? `<p class="booked"><strong>Pretend booking, kept in your browser: ${esc(h?.name || S.home.name)}, ${esc(fmtDay(b.from))} to ${esc(fmtDay(b.to))}.</strong> Simulation record <code>${esc(b.id)}</code>, ${esc(b.status)} (pretend).</p>` : ''}
 <p>In this simulation your booking is now in the admin.</p>
 <p class="small">It lives in this browser only (localStorage); Reset clears it.</p>
 <div class="actions" style="justify-content:center"><a class="btn" href="/stay/${b ? `?booking=${encodeURIComponent(b.id)}` : ''}">Go to your stay</a><button type="button" class="btn ghost" data-restart>Book another stay</button></div>
@@ -421,7 +426,7 @@ function range() {
   return { from: RT, to: addDays(RT, 4), picked: false };
 }
 function failure(what, res, page) {
-  return `<div class="status fail" role="alert"><strong>Could not read ${esc(what)} just now</strong> (${esc(res.error)}). Nothing is shown in its place: this page does not guess.
+  return `<div class="status fail"><strong>Could not read ${esc(what)} just now</strong> (${esc(res.error)}). Nothing is shown in its place: this page does not guess.
 <button type="button" class="btn small retry" data-retry="${esc(res.id)}">Try again</button> ${page ? `<a href="${esc(page)}">See it on the publisher's page</a>` : ''}</div>${sourceLine(res)}`;
 }
 const blocks = [
@@ -431,21 +436,33 @@ const blocks = [
 function renderStay() {
   if (!S.home) return;
   const r = range();
-  stayH.textContent = r.picked ? `Your stay: ${fmtDay(r.from)} to ${fmtDay(r.to)}` : 'The next five days';
+  // Round 5 study, finding 6: the live days are real dates, which can differ from the simulated today.
+  stayH.textContent = r.picked ? `Your stay: ${fmtDay(r.from)} to ${fmtDay(r.to)}` : `The next five days (real dates, from ${fmtDay(RT)})`;
   staySub.innerHTML = r.picked
     ? `Real data for ${esc(S.home.place)} and the Faro district, read live from data.promptugal.news. Each block names its source.`
     : 'Pick dates on the calendar to see the weather, sea and events for your stay. Until then, the next five days. Real data, read live from data.promptugal.news; each block names its source.';
-  stayEl.innerHTML = blocks.map(([k, label]) => `<section class="blk" id="blk-${k}" aria-live="polite"><p class="status loading" role="status">Reading the ${esc(label)}...</p></section>`).join('');
-  for (const [k, , fn] of blocks) runBlock(k, fn, r);
+  stayEl.innerHTML = blocks.map(([k, label]) => `<section class="blk" id="blk-${k}"><p class="status loading">Reading the ${esc(label)}...</p></section>`).join('');
+  const done = blocks.map(([k, , fn]) => runBlock(k, fn, r));
+  if (r.picked) {
+    const key = `${r.from}|${r.to}`; dataFor = key;
+    Promise.all(done).then(oks => {
+      if (dataFor !== key) return;
+      const failed = oks.filter(ok => ok === false).length;
+      setTimeout(() => { liveData.textContent = `Weather, sea, UV and events below are now for your dates${failed ? `; ${failed} block${failed === 1 ? '' : 's'} could not be read` : ''}.`; }, 1500);
+    });
+  }
 }
+let dataFor = '';
 async function runBlock(k, fn, r) {
   const el = document.getElementById(`blk-${k}`);
   if (!el) return;
-  try { el.innerHTML = await fn(r); }
-  catch (e) { el.innerHTML = `<div class="status fail" role="alert"><strong>This block could not be drawn</strong> (${esc(e.message)}). Nothing is shown in its place.</div>`; }
+  let ok = true;
+  try { el.innerHTML = await fn(r); if (el.querySelector('.status.fail')) ok = false; }
+  catch (e) { ok = false; el.innerHTML = `<div class="status fail"><strong>This block could not be drawn</strong> (${esc(e.message)}). Nothing is shown in its place.</div>`; }
   el.querySelectorAll('[data-retry]').forEach(b => b.addEventListener('click', () => {
-    forget(b.dataset.retry); el.innerHTML = '<p class="status loading" role="status">Reading again...</p>'; runBlock(k, fn, range());
+    forget(b.dataset.retry); el.innerHTML = '<p class="status loading">Reading again...</p>'; runBlock(k, fn, range());
   }));
+  return ok;
 }
 const n1 = v => (v === null || v === undefined ? '?' : String(Math.round(Number(v) * 10) / 10));
 

@@ -8,7 +8,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { SKIP, playwright } from './browser.mjs';
+import { SKIP, playwright, VIEWS } from './browser.mjs';
 
 const fx = n => JSON.parse(readFileSync(new URL(`./fixtures/${n}`, import.meta.url), 'utf8'));
 
@@ -24,6 +24,20 @@ test('Ledger unchanged: colours of every element in 52 views, and the screenshot
   const diff = keys.filter(k => m.colours[k]?.sha256 !== colours.views[k].sha256);
   assert.deepEqual(diff, [], `colour differences in: ${diff.join(', ')}`);
   if (!sameEngine) { t.diagnostic(`screenshots not compared: recorded on Chromium ${shots.chromium} ${shots.platform}, this is ${version} ${process.platform}-${process.arch}`); return; }
-  const sd = Object.keys(shots.views).filter(k => m.shots[k] !== shots.views[k]);
+  let sd = Object.keys(shots.views).filter(k => m.shots[k] !== shots.views[k]);
+  // Under the parallel test run Chromium sometimes rasterises the clock pill's text with different sub-pixel
+  // anti-aliasing (measured in the round 5 study pass: 987 bytes in one 15 px band, the same text). A real change
+  // shows on every capture, so a view that differs is captured once more, alone, and must then match exactly.
+  if (sd.length) {
+    t.diagnostic(`screenshots re-taken once: ${sd.join(', ')}`);
+    const again = [];
+    for (const k of sd) {
+      const [sec, key] = k.split('|');
+      const v = VIEWS().find(x => x.key === key);
+      const r = await measure({ views: [v], sections: [sec], shots: true });
+      if (r.shots[k] !== shots.views[k]) again.push(k);
+    }
+    sd = again;
+  }
   assert.deepEqual(sd, [], `screenshot differences in: ${sd.join(', ')}`);
 });

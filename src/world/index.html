@@ -69,7 +69,7 @@
           <h2 id="found-h">What this run found <span class="k sim">Simulated</span></h2>
           <div class="w-score" id="score" aria-live="off"><p class="mini">No score yet: press 1&times; or Very fast.</p></div>
           <details class="w-formula" id="formula"><summary>How the score is worked out</summary><p class="mini" id="formula-t"></p></details>
-          <div id="best"></div>
+          <div id="best" tabindex="0" role="region" aria-label="Best runs (scrolls sideways on a narrow screen)"></div>
           <div id="found"></div>
           <p class="mini">Ordered by cost. Played by the simulation's scripts, not by people: agreement between these invented people says as much about the scripts as about the site.</p>
           <p><button type="button" class="tbtn" id="export">Export this run (JSON, to your device)</button></p>
@@ -106,7 +106,7 @@
         <div id="stock"></div>
       </section>
       <section class="w-box w-panel" id="p-reviews" role="tabpanel" aria-labelledby="tab-reviews">
-        <h2>Reviews <span id="rv-avg" class="mini"></span></h2>
+        <h2>Reviews <span class="k sim">Simulated</span> <span id="rv-avg" class="mini"></span></h2>
         <div id="reviews"></div>
       </section>
       <section class="w-box w-panel" id="p-pol" role="tabpanel" aria-labelledby="tab-pol">
