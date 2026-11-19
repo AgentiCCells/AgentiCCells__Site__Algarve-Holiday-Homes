@@ -17,11 +17,16 @@ import { SPEEDS } from '../sim/clock.js';
 import { createWorld, loadCast, castFrom } from '../sim/personas.js';
 import { toMs, fromMs, addDays, dayOf } from '../sim/util.js';
 import { forecastFor, fmtDay, esc } from '../data.js';
+import { mountTour } from './tour.js';
+import { createShadow } from '../sim/shadow.js';
+import { measures, levelLine } from '../sim/score.js';
+import { BACK_NOTE, playedWhen } from '../sim/store.js';
+import * as A from '../sim/assumptions.js';
 
 const $ = id => document.getElementById(id);
 const thumb = $('thumb'), rail = $('rail'), ticker = $('ticker'), note = $('play-note');
 const HOUR = 60, DAY = 1440;
-let SIM = null, world = null, speed = SPEEDS.hour, lastSeq = 0, fullCast = null;
+let SIM = null, world = null, speed = SPEEDS.hour, lastSeq = 0, fullCast = null, tour = null, shadow = null, lastNow = null, prevState = null, prevSeq = 0, backTimer = null;
 const say = t => { note.textContent = t; };
 
 // ---------- the frames ----------
@@ -80,9 +85,12 @@ function drawClock() {
   thumb.style.left = `${pct(t)}%`;
   thumb.setAttribute('aria-valuenow', String(Math.round((toMs(t) - lo()) / 60000)));
   const rd = SIM.clock.realDataFor(dayOf(t));
-  const words = `${fmtSim(t)}, simulated. ${rd.weather === 'issued' ? 'Real weather exists for this day.' : 'No real forecast for this day.'} ${rd.events ? 'Real events exist for this day.' : 'No real events for this day.'}`;
+  const p = SIM.clock.behind();
+  const words = `${fmtSim(t)}, simulated. ${rd.weather === 'issued' ? 'Real weather exists for this day.' : 'No real forecast for this day.'} ${rd.events ? 'Real events exist for this day.' : 'No real events for this day.'}${p ? ` Earlier than played, ${playedWhen(p)}.` : ''}`;
   thumb.setAttribute('aria-valuetext', words);
-  $('tb-now').innerHTML = `<b>${esc(fmtSim(t).replace(/, (\d\d:\d\d)$/, ''))}</b><span>${esc(t.slice(11, 16))} simulated</span>`;
+  $('tb-now').innerHTML = `<b>${esc(fmtSim(t).replace(/, (\d\d:\d\d)$/, ''))}</b><span>${esc(t.slice(11, 16))} simulated${p ? ` (earlier than played, ${esc(playedWhen(p))})` : ''}</span>`;
+  const lv = levelLine(SIM.store.getState().settings.backgroundKeep);
+  $('lg-level').hidden = !lv; $('lg-level').textContent = lv;
   const playing = SIM.clock.playing();
   $('tb-play').textContent = playing ? 'Pause' : 'Play';
   $('tb-play').setAttribute('aria-pressed', String(playing));
@@ -196,7 +204,8 @@ function pull() {
 // ---------- the simulation's hourly work while time moves here ----------
 // The visitor's own stay gets no invented review or issue from the engine: those are theirs to write.
 function filterOwn(st, events) {
-  const own = new Set(ownBookings(st).map(b => b.id));
+  // The tour's booking is treated like the visitor's own here: no invented review, issue or message.
+  const own = new Set([...ownBookings(st).map(b => b.id), ...Object.values(st.bookings).filter(b => st.guests[b.guestId]?.tour).map(b => b.id)]);
   return events.filter(e => {
     if (e.type === 'review.added') return !own.has(e.data.review.bookingId);
     if (e.type === 'issue.raised') return !own.has(e.data.issue.bookingId);
@@ -214,20 +223,66 @@ async function startWorld(weatherFor) {
   let w = createWorld({ store: wrapped, clock: SIM.clock, cast: castNow(), weatherFor });
   w.attach();
   world = w;
+  // The shadow "what if" (round 4, PROPOSAL.md 2.3), when synthetic visitors book too.
+  shadow = createShadow({ opts: () => world.opts() });
+  const hook = wd => wd.onHours(hours => { if (shadow.active) shadow.advance(hours); drawStrip(); });
+  hook(world);
   $('synth').addEventListener('change', () => {
     world.detach();
-    world = createWorld({ store: wrapped, clock: SIM.clock, cast: castNow(), weatherFor }); world.attach();
+    world = createWorld({ store: wrapped, clock: SIM.clock, cast: castNow(), weatherFor }); world.attach(); hook(world);
+    if (!$('synth').checked) shadow.stop();
+    drawStrip();
     say($('synth').checked ? 'Synthetic visitors now arrive as time moves (invented people, scripted; round 4 adds their figures).' : 'Synthetic visitors stopped. Your bookings and the admin carry on.');
   });
+}
+
+// ---------- round 4: going back in time, the comparison strip ----------
+function backNote() {
+  say(BACK_NOTE);
+  clearTimeout(backTimer); backTimer = setTimeout(() => { if (note.textContent === BACK_NOTE) say(''); }, 6000);
+  ticker.querySelector('.tk-empty')?.remove();
+  ticker.insertAdjacentHTML('afterbegin', `<li class="tk tk-note"><span class="tk-at">${esc(fmtSim(SIM.store.clock().now))}</span><span class="tk-text">${esc(BACK_NOTE)}</span></li>`);
+}
+// The first rate change by the visitor (by: 'you', from the admin frame) forks the shadow from the state before it.
+function watchRates(st) {
+  if (shadow && !shadow.active && $('synth').checked) {
+    const ev = SIM.store.events().find(e => e.seq > prevSeq && e.type === 'home.rate' && e.data?.by === 'you');
+    if (ev && prevState) { shadow.start(prevState, ev.at); }
+  }
+  prevState = st; prevSeq = st.seq;
+}
+function drawStrip() {
+  const box = $('play-strip');
+  if (!$('synth').checked) { box.hidden = true; return; }
+  box.hidden = false;
+  if (!shadow?.active) { box.innerHTML = '<p>Change a rate or a minimum stay in the admin (Rates and rules, "Apply as the owner"), and this compares what happens with what would have happened. Kept in this tab only.</p>'; return; }
+  const today = SIM.clock.today(), a = A.read().doc;
+  const r = measures(SIM.store.getState(), { fromAt: shadow.startedAt, today, assumptions: a }), w = measures(shadow.state, { fromAt: shadow.startedAt, today, assumptions: a });
+  const pc = v => (v === null ? '-' : `${Math.round(v * 100)}%`);
+  box.innerHTML = `<p><b>What happened, and what if you had left the rates</b> (since ${esc(fmtSim(shadow.startedAt))}, simulated): booked ${r.booked} against ${w.booked}; conversion ${pc(r.conversion)} against ${pc(w.conversion)}; nights sold ${r.sold} against ${w.sold}; revenue net of VAT ${eur(r.revenue)} against ${eur(w.revenue)}; profit before income tax (your cost assumptions) ${eur(r.profit)} against ${eur(w.profit)}. Same synthetic visitors, same hours, same weather; only the rates differ. Your own bookings, messages and admin actions since then are in "what happened" only, not in the "what if". Kept in this tab only.</p>`;
 }
 
 async function start() {
   chrome('play');
   SIM = await sim();
   lastSeq = Math.max(0, SIM.store.getState().seq - 30);
+  lastNow = SIM.store.clock().now; prevState = SIM.store.getState(); prevSeq = prevState.seq;
   drawRail(); drawClock(); pull();
   SIM.bounds.then(() => { drawRail(); drawClock(); });
-  SIM.store.subscribe(() => { ownLifecycle(SIM); drawClock(); pull(); });
+  SIM.store.subscribe((st, info) => {
+    ownLifecycle(SIM); drawClock(); pull();
+    const n = SIM.store.clock().now;
+    if (lastNow && n < lastNow && info?.kind !== 'reset' && info?.kind !== 'import') backNote();
+    lastNow = n;
+    if (info?.kind === 'reset' || info?.kind === 'import') { shadow?.stop(); prevState = st; prevSeq = st.seq; } else watchRates(st);
+    drawStrip();
+  });
+  tour = mountTour({ SIM, goVisitor, visitorFrame: () => frameV, adminFrame: () => $('frame-a'), say,
+    setSynth: on => { const c = $('synth'); if (c.checked !== on) { c.checked = on; c.dispatchEvent(new Event('change')); } } });
+  $('tb-tour').addEventListener('click', () => tour.open());
+  let wantsTour = false;
+  try { wantsTour = new URLSearchParams(location.search).get('tour') === '1'; } catch { /* no address */ }
+  if (wantsTour) SIM.bounds.then(() => tour.open());
   const stay = currentStay(SIM.store.getState());
   goVisitor(stay ? `/stay/?booking=${encodeURIComponent(stay.id)}` : '/');
   mountAdmin();

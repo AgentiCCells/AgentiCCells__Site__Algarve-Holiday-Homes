@@ -247,7 +247,7 @@ function tool(who, action, args = {}, ctx = {}, effect = null, onApprove = null,
   return d;
 }
 const fromOwner = t => ({ provenance: [trusted('the owner (the assistant\'s principal)', t)] });
-const toHost = t => ({ provenance: [untrusted('message', t, 'data')] });
+const toHost = t => ({ provenance: [untrusted('message', t, 'data', { kind: 'agents-chat', id: null })] });
 const own = b => (b ? { ownGuestId: b.guestId, subjectGuestId: b.guestId, target: b.id } : {});
 const B = () => activeBooking() || { id: 'b-demo', homeId: 'salt', guestId: 'g-demo', from: addDays(dayOf(store.clock().now), 2), to: addDays(dayOf(store.clock().now), 5), quote: { price: 560 }, demo: true };
 const real = b => !b.demo;
@@ -413,8 +413,8 @@ function ownerSays(text) {
     tool('host-assistant', 'read.host', { target: 'the latest review' }, fromOwner(text));
     if (!rv) { say('host', 'host-assistant', 'There are no reviews yet: run the world for a few days.'); return; }
     say('host', 'host-assistant', `Latest review, ${rv.rating}/5 (untrusted text, shown as written): "${rv.text}"`, rv.flagged ? { flagged: detectInjection(rv.text).matches } : undefined);
-    if (rv.flagged) tool('host-assistant', 'refund.issue', { target: 'all guests (asked by the review)', amount: 5000 }, { amount: 5000, provenance: [untrusted('review', rv.text, 'instruction')] });
-    tool('host-assistant', 'review.reply', { target: rv.id, draft: rv.rating >= 4 ? 'Thank you for staying with us.' : 'Thank you; we are sorry and are fixing it.' }, { provenance: [trusted('the owner asked for a reply'), untrusted('review', rv.text, 'data')] },
+    if (rv.flagged) tool('host-assistant', 'refund.issue', { target: 'all guests (asked by the review)', amount: 5000 }, { amount: 5000, provenance: [untrusted('review', rv.text, 'instruction', { kind: 'review', id: rv.id })] });
+    tool('host-assistant', 'review.reply', { target: rv.id, draft: rv.rating >= 4 ? 'Thank you for staying with us.' : 'Thank you; we are sorry and are fixing it.' }, { provenance: [trusted('the owner asked for a reply'), untrusted('review', rv.text, 'data', { kind: 'review', id: rv.id })] },
       () => ({ type: 'note', actor: 'host-assistant', data: { text: `Reply to review ${rv.id} posted in the simulation (approved by ${YOU_OWNER}).` } }));
     return;
   }

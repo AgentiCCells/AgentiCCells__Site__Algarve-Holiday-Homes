@@ -16,11 +16,11 @@
 // guard and the store. Nothing is sent anywhere. Code Apache-2.0.
 // Written by developer.algarve-holiday-homes@AgentiCCells.dinis (instance C), 2026-11-18, round 3.
 
-import { isTaken } from '../availability.js';
+import { isTaken, keepLevel } from '../availability.js';
 import { addDays, nightsOf, daysBetween, month, weekday, round2, dayOf, addMinutes, toMs, hid, isDay, rng } from './util.js';
 import { touristTax, vat, normaliseGuests, registrationDuty } from './legal.js';
 import { untrusted } from './abp.js';
-import { ACTIVE, bookingsList } from './store.js';
+import { ACTIVE, bookingsList, playedNote, behind } from './store.js';
 
 export const CHANNELS = Object.freeze({
   direct: { id: 'direct', label: 'this site (direct)', commission: false },
@@ -49,7 +49,9 @@ export function nightTakenBy(state, homeId, day, { now, excludeBookingId } = {})
     if (day >= b.from && day < b.to) return { date: day, why: 'booking', bookingId: b.id, status: b.status };
   }
   for (const k of state.blocks) if (k.homeId === homeId && day >= k.from && day < k.to) return { date: day, why: 'calendar feed', blockId: k.id };
-  if (state.settings.background && day >= state.anchor && isTaken(homeId, day, state.anchor)) return { date: day, why: 'simulated background occupancy' };
+  // Bookings from elsewhere: one level for the whole site, state.settings.backgroundKeep (round 4,
+  // PROPOSAL.md 2.4); every caller reads it through here. A level it does not know is treated as 1.
+  if (state.settings.background && day >= state.anchor && isTaken(homeId, day, state.anchor, keepLevel(state.settings.backgroundKeep))) return { date: day, why: 'simulated background occupancy' };
   return null;
 }
 // availability(state, homeId, from, to, opts) -> { free, taken: [...] }
@@ -109,7 +111,7 @@ export function buildEnquiry(state, { homeId, from, to, guests, guest = {}, chan
   const bid = id || hid('b', `${state.seq}|${homeId}|${from}|${to}|${now}|${guest.name || ''}|${bookingsList(state).length}`);
   const gid = guest.id || hid('g', `${bid}|${guest.name || 'guest'}`);
   const events = [];
-  if (!state.guests[gid]) events.push({ type: 'guest.added', at: now, actor, data: { guest: { id: gid, name: guest.name || 'A guest (invented)', country: guest.country || 'GB', persona, invented: true, typedHere: Boolean(guest.typedHere) } } });
+  if (!state.guests[gid]) events.push({ type: 'guest.added', at: now, actor, data: { guest: { id: gid, name: guest.name || 'A guest (invented)', country: guest.country || 'GB', persona, invented: true, typedHere: Boolean(guest.typedHere), ...(guest.tour ? { tour: true } : {}) } } });
   const booking = { id: bid, homeId, guestId: gid, from, to, guests: q.guests, channel: q.channel, status: 'enquiry', createdAt: now, persona, quote: quoteSummary(q),
     notes: notes ? [{ text: String(notes), trusted: false }] : [], simulated: true };
   events.push({ type: 'booking.created', at: now, actor, data: { booking } });
@@ -284,20 +286,27 @@ export const SAMPLE_ICAL = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//invente
 export function createBooking({ store, guard }) {
   const now = () => store.clock().now;
   const S = () => store.getState();
+  // While the clock is earlier than playedTo, the actions that need hours to be played are refused
+  // for every actor (round 4, PROPOSAL.md 7.2). A state rule, not a policy decision: not logged.
+  const PLAYED = ['booking.enquire', 'booking.hold', 'booking.pay', 'booking.change'];
   function run(actor, action, ctx, build) {
+    const p = PLAYED.includes(action) ? behind(store) : null;
+    if (p) return { ok: false, played: p, error: playedNote(p), events: [] };
     const decision = guard(actor, action, { ...ctx, at: now() });
     if (decision.decision !== 'allow') return { ok: false, decision, error: decision.reason };
     const r = build();
     if (!r.ok) return { ...r, decision };
+    // A tag such as by: 'tour' (round 4, PROPOSAL.md 1.2) goes on the decision and on every event.
+    if (ctx.by) r.events = r.events.map(e => ({ ...e, data: { ...e.data, by: ctx.by } }));
     store.dispatch(r.events);
     return { ...r, decision };
   }
-  const own = (id, ctx) => ({ ownGuestId: ctx.ownGuestId, subjectGuestId: S().bookings[id]?.guestId, provenance: ctx.provenance, approvedBy: ctx.approvedBy, target: id });
+  const own = (id, ctx) => ({ ownGuestId: ctx.ownGuestId, subjectGuestId: S().bookings[id]?.guestId, provenance: ctx.provenance, approvedBy: ctx.approvedBy, target: id, ...(ctx.by ? { by: ctx.by } : {}) });
   return {
     quote: (homeId, from, to, guests, o = {}) => quoteFor(S(), homeId, from, to, guests, { now: now(), ...o }),
     availability: (homeId, from, to) => availability(S(), homeId, from, to, { now: now() }),
     calendar: (homeId, from, to) => calendar(S(), homeId, from, to, { now: now() }),
-    enquire: (o, ctx = {}) => run(ctx.actor || 'visitor', 'booking.enquire', { target: o.homeId, provenance: ctx.provenance, approvedBy: ctx.approvedBy },
+    enquire: (o, ctx = {}) => run(ctx.actor || 'visitor', 'booking.enquire', { target: o.homeId, provenance: ctx.provenance, approvedBy: ctx.approvedBy, ...(ctx.by ? { by: ctx.by } : {}) },
       () => buildEnquiry(S(), { ...o, now: now(), actor: ctx.actor || 'visitor' })),
     hold: (id, ctx = {}) => run(ctx.actor || 'visitor', 'booking.hold', own(id, ctx), () => buildHold(S(), id, { now: now(), actor: ctx.actor || 'visitor' })),
     pay: (id, ctx = {}) => run(ctx.actor || 'visitor', 'booking.pay', { ...own(id, ctx), amount: S().bookings[id]?.quote.guestPays }, () => buildPay(S(), id, { now: now(), actor: ctx.actor || 'visitor' })),

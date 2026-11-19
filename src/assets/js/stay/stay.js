@@ -146,7 +146,7 @@ function page() {
   V.focusDay = V.day;
   return [picker(st, b), head(b, h, today, stayDays), timeline(b, h, today, stayDays),
     `<div class="stay-grid">
-<div class="col col-day">${dayColumn(b, h, today)}</div>
+<div class="col col-day" data-tour="stay-today">${dayColumn(b, h, today)}</div>
 <div class="col col-plan">${planColumn(b, h)}</div>
 <div class="col col-side">${sideColumn(b, h, today)}</div>
 </div>`].join('');
@@ -180,7 +180,7 @@ function head(b, h, today, stayDays) {
   return `<header class="stay-head">
 ${pic ? `<img class="stay-pic" src="/assets/img/${esc(pic.src)}-800.jpg" alt="${esc(pic.alt)}" width="800" height="537">` : '<div class="stay-pic"></div>'}
 <div class="stay-title">
-<h1>Your stay at ${esc(h?.name || b.homeId)}, ${esc(h?.place || '')}</h1>
+<h1>${SIM.store.getState().guests[b.guestId]?.tour ? 'The tour\'s stay at' : 'Your stay at'} ${esc(h?.name || b.homeId)}, ${esc(h?.place || '')}</h1>
 <p>${esc(longDay(b.from))} to ${esc(longDay(b.to))} ${esc(b.to.slice(0, 4))} · ${plural(n, 'night')} · ${plural(g.adults || 0, 'adult')}${g.children?.length ? `, ${plural(g.children.length, 'child', 'children')}` : ''} ${kb('sim', 'SIMULATED BOOKING')} ${pic ? kb('ai', 'AI PICTURE') : ''}</p>
 <p class="clock-line small">Simulated today: <b>${esc(fmtSim(SIM.store.clock().now))}</b>
 <button type="button" class="btn ghost small" data-clock="-1">Back one day</button> <button type="button" class="btn ghost small" data-clock="1">Forward one day</button>

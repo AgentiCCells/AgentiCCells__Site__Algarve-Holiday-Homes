@@ -13,7 +13,7 @@
 // Code Apache-2.0. Written by developer.algarve-holiday-homes@AgentiCCells.dinis (instance D),
 // 2026-11-18, round 3.
 
-import { createStore, bookingsList } from '../sim/store.js';
+import { createStore, bookingsList, playedWhen } from '../sim/store.js';
 import { createClock, loadBounds, FALLBACK_BOUNDS } from '../sim/clock.js';
 import { createGuard, POLICIES } from '../sim/abp.js';
 import { createBooking } from '../sim/booking.js';
@@ -61,7 +61,9 @@ export const ACTOR_NAMES = Object.freeze({
 export const actorName = e => ACTOR_NAMES[e?.policy] || ACTOR_NAMES[e?.actor] || String(e?.actor || 'unknown');
 
 // badge(kind, label?) -> HTML. kind: real | simulated | invented | ai | untrusted | yours.
-const KINDS = { real: ['real', 'REAL'], simulated: ['sim', 'SIMULATED'], sim: ['sim', 'SIMULATED'], invented: ['inv', 'INVENTED'], ai: ['ai', 'AI-GENERATED'], 'ai-generated': ['ai', 'AI-GENERATED'], untrusted: ['untr', 'UNTRUSTED TEXT'], yours: ['yours', 'YOUR BOOKING'] };
+const KINDS = { real: ['real', 'REAL'], simulated: ['sim', 'SIMULATED'], sim: ['sim', 'SIMULATED'], invented: ['inv', 'INVENTED'], ai: ['ai', 'AI-GENERATED'], 'ai-generated': ['ai', 'AI-GENERATED'], untrusted: ['untr', 'UNTRUSTED TEXT'], yours: ['yours', 'YOUR BOOKING'],
+  // Round 4: a value the owner can change and that nobody has checked for them (PROPOSAL.md 0.2).
+  assumption: ['assum', 'ASSUMPTION'], tour: ['sim', 'THE TOUR\'S BOOKING'] };
 export function badge(kind, label) {
   const [cls, word] = KINDS[String(kind).toLowerCase()] || ['sim', String(kind).toUpperCase()];
   return `<span class="k ${cls}">${esc(label || word)}</span>`;
@@ -125,7 +127,7 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
   if (cur && bar.querySelector('.modes').scrollWidth > bar.querySelector('.modes').clientWidth) cur.scrollIntoView({ block: 'nearest', inline: 'center' });
   const tools = bar.querySelector('.mode-tools');
   tools.innerHTML = `
-<div class="clockwrap"><button type="button" class="clock" aria-expanded="false" aria-controls="clock-menu" title="The simulated time: change it here or on the side-by-side page"><span class="clock-t">Simulated: ${esc(fmtSim(store.clock().now))}</span></button>
+<div class="clockwrap"><button type="button" class="clock" aria-expanded="false" aria-controls="clock-menu" title="The simulated time: change it here or on the side-by-side page"><span class="clock-t">Simulated: ${esc(fmtSim(store.clock().now))}</span><span class="clock-behind" hidden></span></button>
 <div class="clock-menu" id="clock-menu" hidden role="group" aria-label="Move the simulated clock">
 <button type="button" data-clock="-1440">Back one day</button><button type="button" data-clock="60">Forward one hour</button><button type="button" data-clock="1440">Forward one day</button><button type="button" data-clock="first">Back to the first real day</button>
 <p class="clock-note">The clock is simulated and stays inside the days with real data (<span class="clock-range"></span>).</p></div></div>
@@ -167,25 +169,22 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
     try { S.booking.expireHolds(); } catch { /* nothing to expire */ }
   });
   const showClock = () => {
-    tools.querySelector('.clock-t').textContent = `Simulated: ${fmtSim(store.clock().now)}`;
+    const c = store.clock(), p = typeof store.playedTo === 'function' ? store.playedTo() : null;
+    tools.querySelector('.clock-t').textContent = `Simulated: ${fmtSim(c.now)}`;
+    const cb = tools.querySelector('.clock-behind'), behindNow = Boolean(p && c.now < p);
+    cb.hidden = !behindNow; cb.textContent = behindNow ? `(earlier than played, ${playedWhen(p)})` : '';
     const b = clock.bounds(); tools.querySelector('.clock-range').textContent = `${fmtSim(b.from, { time: false })} to ${fmtSim(b.to, { time: false })}`;
   };
 
   // Reset, with a confirm
   const dlg = doc.createElement('dialog');
   dlg.className = 'reset-dlg'; dlg.setAttribute('aria-labelledby', 'reset-h');
-  dlg.innerHTML = `<h2 id="reset-h">Reset the simulation?</h2><p>Your bookings, plan, messages and the admin's changes in this browser are deleted. Real data is read again.</p><div class="row"><button type="button" class="tbtn reset" data-do="reset">Reset</button> <button type="button" class="tbtn" data-do="keep">Keep</button></div>`;
+  dlg.innerHTML = `<h2 id="reset-h">Reset the simulation?</h2><p>${esc(RESET_WORDS)}</p><div class="row"><button type="button" class="tbtn reset" data-do="reset">Reset</button> <button type="button" class="tbtn" data-do="keep">Keep</button></div>`;
   doc.body.appendChild(dlg);
-  // Reset also clears the visitor's plan (localStorage cc.stay.v1) and the dates this tab kept
-  // (sessionStorage cc-stay, review S11).
-  const doReset = () => {
-    clock.pause(); store.reset();
-    try { globalThis.localStorage?.removeItem('cc.stay.v1'); } catch { /* blocked */ }
-    try { globalThis.sessionStorage?.removeItem('cc-stay'); } catch { /* blocked */ }
-  };
+  const doReset = () => { clock.pause(); resetAll(store); };
   tools.querySelector('.reset').addEventListener('click', () => {
     if (typeof dlg.showModal === 'function') dlg.showModal();
-    else if (globalThis.confirm('Reset the simulation? Your bookings, plan, messages and the admin\'s changes in this browser are deleted.')) doReset();
+    else if (globalThis.confirm(`Reset the simulation? ${RESET_WORDS}`)) doReset();
   });
   dlg.addEventListener('click', e => { const d = e.target.closest('button')?.dataset.do; if (!d) return; dlg.close(); if (d === 'reset') doReset(); tools.querySelector('.reset').focus(); });
 
@@ -206,6 +205,24 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
   const drawer = embed ? null : mountDrawer(doc, store);
   if (drawer) root.classList.add('has-pdrawer');
 
+  // A tour left half-way (round 4, PROPOSAL.md 1.2 item 5): offer to put the simulation back. Not on
+  // /play/ while its own tour runs there, and not inside a frame.
+  if (!embed) {
+    const bar2 = doc.createElement('div');
+    bar2.className = 'tour-left'; bar2.hidden = true; bar2.setAttribute('role', 'region'); bar2.setAttribute('aria-label', 'A tour was stopped');
+    bar2.innerHTML = '<p><b>A tour was stopped before the end.</b> Put your simulation back as it was before the tour? <button type="button" class="tbtn" data-tour-left="back">Put it back</button> <button type="button" class="tbtn" data-tour-left="keep">Keep as it is</button></p>';
+    about.insertAdjacentElement('afterend', bar2);
+    const showLeft = () => { bar2.hidden = !(tourBackup() && !globalThis.__ccTourRunning); };
+    bar2.addEventListener('click', e => {
+      const v = e.target.closest('[data-tour-left]')?.dataset.tourLeft; if (!v) return;
+      if (v === 'back') { const t = tourBackup(); if (t) store.importJSON(t); }
+      clearTourBackup(); showLeft();
+    });
+    showLeft();
+    globalThis.addEventListener?.('storage', showLeft);
+    cleanups.push(store.subscribe(showLeft));
+  }
+
   // Guest's stay is greyed until the visitor has a booking here.
   const stayLink = bar.querySelector('.modes a[data-mode="stay"]');
   const showStay = state => {
@@ -223,6 +240,22 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
   cleanups.push(store.subscribe(render));
   S.boundsReady?.then(() => showClock());
   return { ...S, embed, unmount: () => { for (const c of cleanups) c(); } };
+}
+// ---------- Reset and the keys this site keeps (round 4, PROPOSAL.md 0.3) ----------
+export const RESET_WORDS = 'This deletes, in this browser only: your simulation (bookings, messages, the admin\'s changes), your stay plan, your cost assumptions, your best scores, and a tour\'s saved copy if one is waiting. Real data is read again.';
+export const KEPT_KEYS = Object.freeze(['cc.stay.v1', 'cc.assumptions.v1', 'cc.world.scores.v1', 'cc.tour.backup.v1']);
+export function tourBackup() { try { return globalThis.localStorage?.getItem('cc.tour.backup.v1') || null; } catch { return null; } }
+export function clearTourBackup() { try { globalThis.localStorage?.removeItem('cc.tour.backup.v1'); } catch { /* blocked */ } }
+// resetAll(store): the simulation back to its first day (every setting to its default, so the level
+// of bookings from elsewhere is 1 again), and every other key this site keeps removed.
+export function resetAll(store, { storage, session } = {}) {
+  store.reset();
+  const ls = storage === undefined ? (() => { try { return globalThis.localStorage; } catch { return null; } })() : storage;
+  for (const k of KEPT_KEYS) { try { ls?.removeItem(k); } catch { /* blocked */ } }
+  // The dates this tab kept (sessionStorage cc-stay, review S11).
+  if (session === undefined) { try { globalThis.sessionStorage?.removeItem('cc-stay'); } catch { /* blocked */ } }
+  else { try { session?.removeItem('cc-stay'); } catch { /* blocked */ } }
+  try { globalThis.dispatchEvent?.(new Event('cc-reset')); } catch { /* not a browser */ }
 }
 const addMin = (t, m) => new Date(Date.parse(`${String(t).slice(0, 16)}:00Z`) + m * 60000).toISOString().slice(0, 16);
 

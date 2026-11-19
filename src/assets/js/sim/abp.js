@@ -41,10 +41,12 @@ export function detectInjection(text) {
   const matches = INJECTION_PATTERNS.filter(p => p.re.test(t)).map(p => p.id);
   return { flagged: matches.length > 0, matches, excerpt: t.slice(0, 140) };
 }
-// untrusted(source, text, role) -> a provenance item, marked. source: review | message | guest-note | event-title | ical | ...
-export function untrusted(source, text, role = 'instruction') {
+// untrusted(source, text, role, ref) -> a provenance item, marked. source: review | message | guest-note | event-title | ical | ...
+// ref (round 4, PROPOSAL.md 5.2): where the text lives, { kind: 'message' | 'review' | 'issue' |
+// 'guest-note' | 'event' | 'agents-chat', id }, so the admin can link a refusal to its text.
+export function untrusted(source, text, role = 'instruction', ref = null) {
   const d = detectInjection(text);
-  return { source, trusted: false, role, text: String(text ?? ''), flagged: d.flagged, matches: d.matches };
+  return { source, trusted: false, role, text: String(text ?? ''), flagged: d.flagged, matches: d.matches, ...(ref ? { ref: { kind: String(ref.kind), id: ref.id ?? null } } : {}) };
 }
 // trusted(source, text): the actor's own principal or standing mandate.
 export const trusted = (source, text = '', role = 'instruction') => ({ source, trusted: true, role, text: String(text), flagged: false, matches: [] });
@@ -240,7 +242,8 @@ export function decide(policies, actor, action, ctx = {}, settings = {}) {
   const provenance = (ctx.provenance || []).map(p => (p.flagged === undefined && p.text ? { ...p, ...detectInjection(p.text) } : p));
   const flagged = provenance.filter(p => p.flagged).map(p => ({ source: p.source, matches: p.matches || [] }));
   const base = { actor, who: ctx.who || null, policy: pol ? pol.id : null, action, target: ctx.target ?? null, amount: ctx.amount ?? null, approvedBy: ctx.approvedBy || null, flagged,
-    provenance: provenance.map(p => ({ source: p.source, trusted: p.trusted !== false, role: p.role || 'instruction', flagged: Boolean(p.flagged), excerpt: String(p.text || '').slice(0, 140) })) };
+    provenance: provenance.map(p => ({ source: p.source, trusted: p.trusted !== false, role: p.role || 'instruction', flagged: Boolean(p.flagged), excerpt: String(p.text || '').slice(0, 140), ...(p.ref ? { ref: { kind: p.ref.kind, id: p.ref.id ?? null } } : {}) })),
+    ...(ctx.by ? { by: String(ctx.by) } : {}) };
   const out = (decision, rule, reason) => ({ ...base, decision, rule, reason });
   if (!pol) return out('deny', 'D-default', `No policy for "${actor}": deny by default.`);
   if (action === 'network.send' || action === 'data.send' || (ctx.destination && ctx.destination !== 'browser' && ctx.destination !== 'device'))

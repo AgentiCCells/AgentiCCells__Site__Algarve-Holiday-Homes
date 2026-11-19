@@ -4,7 +4,7 @@
 // each figure with its source line, read live from data.promptugal.news. Sends nothing.
 // Code Apache-2.0. developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2.
 import { D, T, esc, FAIL, FAIL_EVENTS, CAPTION, imgName, altFor, picture, stay, avail, stayWords, bindStay,
-  live, homeToday, src, shortSrc, failNote, bindRetry, ipmaTerms, eventItems, TOWN, range, one } from './kit.js';
+  live, homeToday, src, shortSrc, failNote, bindRetry, ipmaTerms, eventItems, TOWN, range, one, rateHtml, rateNote, levelHtml } from './kit.js';
 
 const $ = id => document.getElementById(id);
 // One card shows its joke picture, a different home each day of the year.
@@ -37,7 +37,7 @@ async function renderHomes() {
   if (!list.length) { $('az-grid').insertAdjacentHTML('beforebegin', '<p class="fail">The list of homes could not be read just now; the links below still work.</p>'); return; }
   const today = await Promise.all(list.map(homeToday));
   const joke = list[doy % list.length].id;
-  $('az-grid').innerHTML = list.map((h, i) => {
+  $('az-grid').innerHTML = levelHtml('li') + list.map((h, i) => {
     const a = avail(h, s), t = today[i];
     const kind = h.id === joke ? 'funny' : 'hero';
     const fig = t.res.error ? '<span class="az-na">forecast not read</span>' : t.day ? `<b>${esc(range(t.day.tmin, t.day.tmax, '°C'))}</b>, ${esc(t.day.weather)}` : 'no forecast for today in the file';
@@ -47,7 +47,7 @@ async function renderHomes() {
 <div class="az-home-body">
 <h3 id="az-${esc(h.id)}"><a href="${esc(a.link)}">${esc(h.name)}</a></h3>
 <p>${esc(h.place)}. ${esc(h.short || '')}</p>
-<p class="az-meta">Sleeps ${esc(h.sleeps)} · ${esc(h.bedrooms)} bedroom${h.bedrooms === 1 ? '' : 's'} · <span class="az-price">EUR ${esc(h.price_eur_invented)} a night</span> (invented)</p>
+<p class="az-meta">Sleeps ${esc(h.sleeps)} · ${esc(h.bedrooms)} bedroom${h.bedrooms === 1 ? '' : 's'} · <span class="az-price">EUR ${rateHtml(h)} a night</span> (invented)${rateNote(h)}</p>
 <p class="az-avail ${a.free ? 'is-free' : 'is-taken'}">${esc(a.text)}</p>
 <p class="az-today">Today at IPMA's ${esc(h.data?.forecast_name || 'place')}: ${fig}</p>
 ${shortSrc(t.res)}

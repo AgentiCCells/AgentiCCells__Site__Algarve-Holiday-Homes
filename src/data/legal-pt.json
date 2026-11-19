@@ -1,0 +1,678 @@
+{
+ "about": "Every row of team/rounds/2/research/LEGAL-PT.md (researcher, 18 November 2026), sections 1, 2.1, 2.2 and 2.3, in the research's own words, for the made-up example's admin. Not legal or tax advice: rules change and depend on each owner's situation; check the official text and a qualified professional. Text CC BY 4.0.",
+ "advice": "Not legal or tax advice.",
+ "read": "18 November 2026",
+ "sectionTitles": {
+  "1": "The legal frame",
+  "2.1": "VAT (IVA)",
+  "2.2": "Income tax (IRS) for a person who runs the AL",
+  "2.3": "Municipal tourist tax"
+ },
+ "sectionDate": {
+  "2.3": "18 November 2026"
+ },
+ "rows": [
+  {
+   "section": "1",
+   "topic": "The AL regime",
+   "rule": "Decreto-Lei 128/2014 (Regime Jurídico da Exploração dos Estabelecimentos de Alojamento Local), amended several times and republished by DL 76/2024. Modalities: moradia (house), apartamento, estabelecimento de hospedagem (including hostel), quartos (rooms in the owner's home).",
+   "source": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/76-2024-892301177",
+   "sources": [
+    {
+     "label": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/76-2024-892301177",
+     "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/76-2024-892301177"
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "search result; page not opened",
+   "sure": "high",
+   "sureText": "high (that the regime exists and was republished); details below vary"
+  },
+  {
+   "section": "1",
+   "topic": "\"Mais Habitação\" (2023)",
+   "rule": "Lei 56/2023 of 6 October 2023: suspended new AL registrations in apartments (autonomous fractions) outside low-density areas, made registrations expire and need renewal (five years, review in 2030), made them non-transferable, created the extraordinary contribution CEAL, let the condominium cancel an AL by a two-thirds vote, and gave a tax exemption to owners moving an AL to long-term renting.",
+   "source": "Turismo de Portugal business page (below); law-firm notes (Cuatrecasas, SRS Legal, PLMJ)",
+   "sources": [
+    {
+     "label": "Turismo de Portugal business page (below); law-firm notes (Cuatrecasas, SRS Legal, PLMJ)",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium"
+  },
+  {
+   "section": "1",
+   "topic": "The 2024 reversal",
+   "rule": "DL 76/2024 of 23 October 2024, in force 1 November 2024: revoked the suspension of new registrations, the five-year expiry, the 120-day seasonal rules and (with DL 57/2024) the CEAL; made transfer of a registration the general rule again (limits possible in contention areas); gave municipalities the power to regulate AL by municipal regulation, with \"áreas de contenção\" and \"áreas de crescimento sustentável\"; created a provedor do alojamento local (an ombudsperson for disputes).",
+   "source": "https://business.turismodeportugal.pt/pt/Planear_Iniciar/Como_comecar/Alojamento_Local/Paginas/alteracao-regime-juridico-alojamento-local.aspx",
+   "sources": [
+    {
+     "label": "https://business.turismodeportugal.pt/pt/Planear_Iniciar/Como_comecar/Alojamento_Local/Paginas/alteracao-regime-juridico-alojamento-local.aspx",
+     "url": "https://business.turismodeportugal.pt/pt/Planear_Iniciar/Como_comecar/Alojamento_Local/Paginas/alteracao-regime-juridico-alojamento-local.aspx"
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "page read",
+   "sure": "high",
+   "sureText": "high (Turismo de Portugal's own summary)"
+  },
+  {
+   "section": "1",
+   "topic": "Registration",
+   "rule": "A \"comunicação prévia com prazo\" to the municipality, made through the Balcão Único Eletrónico (ePortugal); the establishment gets a number in the RNAL (Registo Nacional de Alojamento Local, kept by Turismo de Portugal). The municipality may oppose within 60 days, or 90 days in a contention area (DL 76/2024). The RNAL now also shows the validity date of the mandatory insurance.",
+   "source": "Turismo de Portugal page above; RNAL: https://rnt.turismodeportugal.pt/RNAL/",
+   "sources": [
+    {
+     "label": "Turismo de Portugal page above; RNAL:",
+     "url": null
+    },
+    {
+     "label": "https://rnt.turismodeportugal.pt/RNAL/",
+     "url": "https://rnt.turismodeportugal.pt/RNAL/"
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high (deadlines and insurance date); medium (portal names)"
+  },
+  {
+   "section": "1",
+   "topic": "RNAL number in adverts",
+   "rule": "Every advert or listing must show the establishment's name and RNAL number (DL 128/2014). The site's invented homes should show a clearly fake number, e.g. \"RNAL 00000/AL (demonstration)\".",
+   "source": "DL 128/2014 as republished",
+   "sources": [
+    {
+     "label": "DL 128/2014 as republished",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium"
+  },
+  {
+   "section": "1",
+   "topic": "CEAL",
+   "rule": "Contribuição extraordinária sobre o alojamento local (15% under Lei 56/2023): revoked by Decreto-Lei 57/2024 of 10 September 2024 (authorised by Lei 35/2024 of 7 August), with effect from 31 December 2023, so it was never due.",
+   "source": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/legislacao/diplomas_legislativos/Documents/Decreto_Lei_57_2024.pdf ; https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/legislacao/diplomas_legislativos/Documents/Lei_35_2024.pdf",
+   "sources": [
+    {
+     "label": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/legislacao/diplomas_legislativos/Documents/Decreto_Lei_57_2024.pdf",
+     "url": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/legislacao/diplomas_legislativos/Documents/Decreto_Lei_57_2024.pdf"
+    },
+    {
+     "label": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/legislacao/diplomas_legislativos/Documents/Lei_35_2024.pdf",
+     "url": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/legislacao/diplomas_legislativos/Documents/Lei_35_2024.pdf"
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "Portal das Finanças links in search results; PDFs not opened",
+   "sure": "high",
+   "sureText": "high"
+  },
+  {
+   "section": "1",
+   "topic": "Condominium",
+   "rule": "Since DL 76/2024 no condominium authorisation is needed for an AL in a residential fraction (it still is for a hostel). The condominium can no longer cancel the registration itself; it can oppose the AL by a reasoned resolution of more than half of the building's permilagem, on grounds of repeated, proven acts that disturb the building's normal use or residents' rest, and ask the mayor to decide on cancellation (the mayor may first seek an agreement, with or without the provedor). A condominium regulation may also restrict uses; check the building's title (título constitutivo).",
+   "source": "Turismo de Portugal page above",
+   "sources": [
+    {
+     "label": "Turismo de Portugal page above",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high for the 2024 rule; one law-firm note says two-thirds for changing the condominium regulation to forbid AL: low, check the text"
+  },
+  {
+   "section": "1",
+   "topic": "Municipal AL regulations",
+   "rule": "Faro, Loulé, Tavira, Lagos and Vila do Bispo: I did not find or read a municipal AL regulation or a declared contention area for any of the five on 18 November 2026.",
+   "source": "searches only",
+   "sources": [
+    {
+     "label": "searches only",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "unknown",
+   "sureText": "unknown: check each câmara's \"regulamentos\" page and the Diário da República, 2.ª série"
+  },
+  {
+   "section": "1",
+   "topic": "Insurance",
+   "rule": "A multi-risk insurance (seguro multirriscos) with civil liability cover for damage to guests and third parties is mandatory (article 13.º-A of DL 128/2014, added by Lei 62/2018). Missing or invalid insurance is a ground for cancellation by the municipality (DL 76/2024).",
+   "source": "Turismo de Portugal page above; DL 128/2014",
+   "sources": [
+    {
+     "label": "Turismo de Portugal page above; DL 128/2014",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high (mandatory, cancellation); medium (article number)"
+  },
+  {
+   "section": "1",
+   "topic": "Safety and fire",
+   "rule": "The establishment must have a fire extinguisher and a fire blanket within reach, a first-aid kit, and visible information on the emergency number 112. Larger establishments fall under the general fire safety rules for buildings (DL 220/2008, SCIE).",
+   "source": "DL 128/2014 (article 13.º, as I recall it from the republished text; not opened today)",
+   "sources": [
+    {
+     "label": "DL 128/2014 (article 13.º, as I recall it from the republished text; not opened today)",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium"
+  },
+  {
+   "section": "1",
+   "topic": "Maximum capacity",
+   "rule": "Moradia and apartamento: at most 9 bedrooms and 30 guests; quartos: at most 3 rooms. (Some buildings allow more beds per room; sofa beds count.)",
+   "source": "DL 128/2014 article 11.º (from memory of the text and secondary guides; not opened today)",
+   "sources": [
+    {
+     "label": "DL 128/2014 article 11.º (from memory of the text and secondary guides; not opened today)",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium"
+  },
+  {
+   "section": "1",
+   "topic": "Complaints book",
+   "rule": "A complaints book in paper and the electronic complaints book (Livro de Reclamações Eletrónico) are mandatory, with the notice of its existence visible; the electronic one is at https://www.livroreclamacoes.pt",
+   "source": "DL 156/2005, amended by DL 74/2017",
+   "sources": [
+    {
+     "label": "DL 156/2005, amended by DL 74/2017",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium (general rule for service providers; applies to AL)"
+  },
+  {
+   "section": "1",
+   "topic": "Guest registration (foreign guests)",
+   "rule": "Anyone who houses foreign citizens for payment must send an accommodation bulletin (boletim de alojamento) for each foreign guest within 3 working days of arrival, and record the departure, through SIBA (Sistema de Informação de Boletins de Alojamento). Portuguese guests are not reported this way. The body running SIBA moved from SEF to AIMA and the internal security system after 2023; sources disagree on which runs it now.",
+   "source": "Lei 23/2007, article 16.º; vendor guides",
+   "sources": [
+    {
+     "label": "Lei 23/2007, article 16.º; vendor guides",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high (3 working days); low (which body runs SIBA today, the fines)"
+  },
+  {
+   "section": "1",
+   "topic": "Information to guests",
+   "rule": "House rules and how things work, in Portuguese and English (and further languages in some cases).",
+   "source": "DL 128/2014",
+   "sources": [
+    {
+     "label": "DL 128/2014",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "low",
+   "sureText": "low"
+  },
+  {
+   "section": "2.1",
+   "topic": "Rate on accommodation",
+   "rule": "6% (reduced rate, mainland Portugal), CIVA List I, item 2.17. Madeira and the Azores have their own rates (not relevant here).",
+   "source": "https://www.e-konomista.pt/alojamento-local-impostos/ and CIVA",
+   "sources": [
+    {
+     "label": "https://www.e-konomista.pt/alojamento-local-impostos/",
+     "url": "https://www.e-konomista.pt/alojamento-local-impostos/"
+    },
+    {
+     "label": "and CIVA",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high"
+  },
+  {
+   "section": "2.1",
+   "topic": "Extras",
+   "rule": "Cleaning or linen charged as part of the stay generally follow the accommodation (6%); separate services (transfers, tours, bike hire) may be at 23%.",
+   "source": "general VAT rule on ancillary services",
+   "sources": [
+    {
+     "label": "general VAT rule on ancillary services",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "low",
+   "sureText": "low: check"
+  },
+  {
+   "section": "2.1",
+   "topic": "Small-business exemption",
+   "rule": "Article 53.º CIVA: no VAT charged (and none deducted) while annual turnover in Portugal is at most €15,000. Revised by Decreto-Lei 35/2025 of 24 March 2025 (effect from 1 July 2025 per one source): the limit counts operations in Portugal only; exceeding the limit by more than 25% (that is, above €18,750) ends the exemption at once, otherwise from the next year.",
+   "source": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/civa_rep/Pages/artigo-53-o-do-civa.aspx ; Ofício-Circulado 25062/2025",
+   "sources": [
+    {
+     "label": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/civa_rep/Pages/artigo-53-o-do-civa.aspx",
+     "url": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/civa_rep/Pages/artigo-53-o-do-civa.aspx"
+    },
+    {
+     "label": "Ofício-Circulado 25062/2025",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high (€15,000); medium (25% rule, start date)"
+  },
+  {
+   "section": "2.1",
+   "topic": "Tourist tax and VAT",
+   "rule": "The municipal tourist tax is collected for the municipality and shown separately; it is not part of the accommodation price for VAT.",
+   "source": "municipal regulations' practice",
+   "sources": [
+    {
+     "label": "municipal regulations' practice",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "low",
+   "sureText": "low: check"
+  },
+  {
+   "section": "2.2",
+   "topic": "Category",
+   "rule": "AL income is business income (category B). Under certain conditions the owner may opt to tax it as property income (category F, flat 28% on rent less actual expenses, with reductions for long contracts that do not apply to AL).",
+   "source": "CGD guide; accountants' notes",
+   "sources": [
+    {
+     "label": "CGD guide; accountants' notes",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium (cat B); low (cat F option conditions)"
+  },
+  {
+   "section": "2.2",
+   "topic": "Simplified regime",
+   "rule": "Allowed while gross annual business income is up to €200,000. Taxable income = gross receipts × coefficient.",
+   "source": "article 31.º CIRS",
+   "sources": [
+    {
+     "label": "article 31.º CIRS",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high"
+  },
+  {
+   "section": "2.2",
+   "topic": "Coefficient: house or apartment",
+   "rule": "0.35 (article 31.º, n.º 1, alínea h) CIRS)",
+   "source": "https://informador.pt/legislacao/lexit/codigos/direito-fiscal/codigo-do-irs/capitulo-ii-determinacao-do-rendimento-coletavel/seccao-iii-rendimentos-empresariais/artigo-31-o-regime-simplificado/",
+   "sources": [
+    {
+     "label": "https://informador.pt/legislacao/lexit/codigos/direito-fiscal/codigo-do-irs/capitulo-ii-determinacao-do-rendimento-coletavel/seccao-iii-rendimentos-empresariais/artigo-31-o-regime-simplificado/",
+     "url": "https://informador.pt/legislacao/lexit/codigos/direito-fiscal/codigo-do-irs/capitulo-ii-determinacao-do-rendimento-coletavel/seccao-iii-rendimentos-empresariais/artigo-31-o-regime-simplificado/"
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high"
+  },
+  {
+   "section": "2.2",
+   "topic": "Coefficient: in a contention area",
+   "rule": "0.50 for a house or apartment located in an \"área de contenção\" (from the 2020 State Budget law)",
+   "source": "same",
+   "sources": [
+    {
+     "label": "same",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high (rule); unknown whether any of the five municipalities has a contention area"
+  },
+  {
+   "section": "2.2",
+   "topic": "Coefficient: hospedagem, quartos",
+   "rule": "0.15 (hotel and similar activities)",
+   "source": "article 31.º CIRS, n.º 1, alínea a)",
+   "sources": [
+    {
+     "label": "article 31.º CIRS, n.º 1, alínea a)",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium"
+  },
+  {
+   "section": "2.2",
+   "topic": "The 15% expenses rule",
+   "rule": "With the 0.35 coefficient, expenses of at least 15% of gross income must be shown (on e-Fatura, or standard deductions); any shortfall is added to taxable income. Not applied to 0.50 and 0.15.",
+   "source": "article 31.º, n.º 13 CIRS; simulator note",
+   "sources": [
+    {
+     "label": "article 31.º, n.º 13 CIRS; simulator note",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium"
+  },
+  {
+   "section": "2.2",
+   "topic": "First years",
+   "rule": "The coefficient is reduced by 50% in the first tax year of activity and by 25% in the second (article 31.º, n.º 10 CIRS), under conditions.",
+   "source": "article 31.º CIRS",
+   "sources": [
+    {
+     "label": "article 31.º CIRS",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "medium",
+   "sureText": "medium"
+  },
+  {
+   "section": "2.2",
+   "topic": "Then",
+   "rule": "Taxable income joins the person's other income and is taxed at the progressive IRS rates for the year (rates change every year: take them from the year's State Budget).",
+   "source": "CIRS article 68.º",
+   "sources": [
+    {
+     "label": "CIRS article 68.º",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "high",
+   "sureText": "high (principle); no rate is quoted here"
+  },
+  {
+   "section": "2.2",
+   "topic": "Non-residents",
+   "rule": "A non-resident owner pays IRS in Portugal on this income at rates for non-residents; not modelled.",
+   "source": "OCC notes",
+   "sources": [
+    {
+     "label": "OCC notes",
+     "url": null
+    }
+   ],
+   "checked": "18 Nov 2026",
+   "checkedNote": "",
+   "sure": "low",
+   "sureText": "low"
+  },
+  {
+   "section": "2.2",
+   "topic": "A company",
+   "rule": "If the operator is a company (IRC), different rules; not modelled.",
+   "source": "",
+   "sources": [],
+   "checked": "",
+   "checkedNote": "",
+   "sure": "not given",
+   "sureText": ""
+  },
+  {
+   "section": "2.3",
+   "municipality": "Faro",
+   "rate": "€2.00",
+   "season": "1 March to 31 October",
+   "nightCap": "7 nights per stay (guides; not in the press report)",
+   "age": "16 and over",
+   "exemptions": "University of the Algarve students in term, guests for medical treatment plus one companion, people displaced by disasters or emergencies, education, health and security professionals posted to Faro, Faro residents",
+   "inForce": "since 1 November 2024, Regulamento n.º 1207/2024 (DR 22 October 2024), replacing n.º 725/2019",
+   "source": "https://www.barlavento.pt/faro-introduz-novas-regras-e-excecoes-na-taxa-municipal-turistica/ (6 Nov 2024); https://www.eazyal.com/pt/blog/taxa-turistica-faro-algarve-guia",
+   "sources": [
+    {
+     "label": "https://www.barlavento.pt/faro-introduz-novas-regras-e-excecoes-na-taxa-municipal-turistica/",
+     "url": "https://www.barlavento.pt/faro-introduz-novas-regras-e-excecoes-na-taxa-municipal-turistica/"
+    },
+    {
+     "label": "(6 Nov 2024)",
+     "url": null
+    },
+    {
+     "label": "https://www.eazyal.com/pt/blog/taxa-turistica-faro-algarve-guia",
+     "url": "https://www.eazyal.com/pt/blog/taxa-turistica-faro-algarve-guia"
+    }
+   ],
+   "sure": "high",
+   "sureText": "high (rates, age, date); low (7-night cap). One press article of August 2026 still says €1.50 all year (the old rule): treat as out of date",
+   "checked": "18 November 2026",
+   "checkedNote": "section date"
+  },
+  {
+   "section": "2.3",
+   "municipality": "Faro",
+   "rate": "€1.00",
+   "season": "1 November to end of February",
+   "nightCap": "as above",
+   "age": "as above",
+   "exemptions": "as above",
+   "inForce": "as above",
+   "source": "as above",
+   "sources": [
+    {
+     "label": "as above",
+     "url": null
+    }
+   ],
+   "sure": "high",
+   "sureText": "as above",
+   "checked": "18 November 2026",
+   "checkedNote": "section date"
+  },
+  {
+   "section": "2.3",
+   "municipality": "Loulé",
+   "rate": "€2.00",
+   "season": "April to October",
+   "nightCap": "5 nights",
+   "age": "16 and over",
+   "exemptions": "(not checked in the regulation)",
+   "inForce": "since 1 November 2024; Regulamento n.º 786/2024 (DR 2.ª série, 22 July 2024)",
+   "source": "https://postal.pt/algarve/loule-ja-esta-a-cobrar-taxa-turistica-ate-dois-euros-por-dia/ ; https://vlex.pt/vid/regulamento-n-786-2024-1043962835",
+   "sources": [
+    {
+     "label": "https://postal.pt/algarve/loule-ja-esta-a-cobrar-taxa-turistica-ate-dois-euros-por-dia/",
+     "url": "https://postal.pt/algarve/loule-ja-esta-a-cobrar-taxa-turistica-ate-dois-euros-por-dia/"
+    },
+    {
+     "label": "https://vlex.pt/vid/regulamento-n-786-2024-1043962835",
+     "url": "https://vlex.pt/vid/regulamento-n-786-2024-1043962835"
+    }
+   ],
+   "sure": "high",
+   "sureText": "high",
+   "checked": "18 November 2026",
+   "checkedNote": "section date"
+  },
+  {
+   "section": "2.3",
+   "municipality": "Loulé",
+   "rate": "€1.00",
+   "season": "November to March",
+   "nightCap": "5 nights",
+   "age": "16 and over",
+   "exemptions": "",
+   "inForce": "as above",
+   "source": "as above",
+   "sources": [
+    {
+     "label": "as above",
+     "url": null
+    }
+   ],
+   "sure": "high",
+   "sureText": "high",
+   "checked": "18 November 2026",
+   "checkedNote": "section date"
+  },
+  {
+   "section": "2.3",
+   "municipality": "Tavira",
+   "rate": "none found",
+   "season": "",
+   "nightCap": "",
+   "age": "",
+   "exemptions": "",
+   "inForce": "no regulation, start date or payment portal in force could be verified (a guide checked official sources on 10 August 2026; a budget line named \"taxa turística\" is not a charging rule)",
+   "source": "https://www.eazyal.com/blog/tavira-tourist-tax-2026 ; https://cm-tavira.pt/site/camara-municipal/regulamentos/",
+   "sources": [
+    {
+     "label": "https://www.eazyal.com/blog/tavira-tourist-tax-2026",
+     "url": "https://www.eazyal.com/blog/tavira-tourist-tax-2026"
+    },
+    {
+     "label": "https://cm-tavira.pt/site/camara-municipal/regulamentos/",
+     "url": "https://cm-tavira.pt/site/camara-municipal/regulamentos/"
+    }
+   ],
+   "sure": "medium",
+   "sureText": "medium (none)",
+   "checked": "18 November 2026",
+   "checkedNote": "section date"
+  },
+  {
+   "section": "2.3",
+   "municipality": "Lagos",
+   "rate": "none found",
+   "season": "",
+   "nightCap": "",
+   "age": "",
+   "exemptions": "",
+   "inForce": "a regulation at €1.50 a night, first 7 nights, was proposed in 2019 within AMAL; no adopted regulation found",
+   "source": "https://www.cmjornal.pt/portugal/detalhe/taxa-turistica-podera-chegar-aos-15-milhoes-em-lagos ; guides list Lagos with no tax in 2026",
+   "sources": [
+    {
+     "label": "https://www.cmjornal.pt/portugal/detalhe/taxa-turistica-podera-chegar-aos-15-milhoes-em-lagos",
+     "url": "https://www.cmjornal.pt/portugal/detalhe/taxa-turistica-podera-chegar-aos-15-milhoes-em-lagos"
+    },
+    {
+     "label": "guides list Lagos with no tax in 2026",
+     "url": null
+    }
+   ],
+   "sure": "medium",
+   "sureText": "medium (none); one older guide lists Lagos as charging: low",
+   "checked": "18 November 2026",
+   "checkedNote": "section date"
+  },
+  {
+   "section": "2.3",
+   "municipality": "Vila do Bispo",
+   "rate": "none found",
+   "season": "",
+   "nightCap": "",
+   "age": "",
+   "exemptions": "",
+   "inForce": "the 2026 table of municipal fees (Edital 27/2026, in force 1 March 2026) has no per-night tourist tax in what was seen",
+   "source": "https://cm-viladobispo.pt (Edital n.º 27/2026)",
+   "sources": [
+    {
+     "label": "https://cm-viladobispo.pt",
+     "url": "https://cm-viladobispo.pt"
+    },
+    {
+     "label": "(Edital n.º 27/2026)",
+     "url": null
+    }
+   ],
+   "sure": "medium",
+   "sureText": "medium (none)",
+   "checked": "18 November 2026",
+   "checkedNote": "section date"
+  }
+ ],
+ "formulas": [
+  {
+   "id": "3.1",
+   "title": "Tourist tax for one booking",
+   "text": "```\nnights = list of the stay's nights (local dates, arrival night to the night before departure)\npayingGuests = guests aged 16 or over, minus exempt guests (resident, medical, ...)\nrate(m, d) = per-night rate of municipality m on date d (table below), 0 if none\ncap(m) = Faro 7, Loulé 5, others 0 (no tax)\ntaxedNights = first min(len(nights), cap(m)) nights\ntouristTax = payingGuests × Σ over taxedNights of rate(m, night)\n```\n\nRates as data (effective dates matter; keep a `from` date so a rule change is a new row):\n\n```json\n[\n  {\"municipality\": \"faro\",  \"from\": \"2024-11-01\", \"months\": [3,4,5,6,7,8,9,10], \"eur\": 2.00, \"cap\": 7, \"min_age\": 16, \"source\": \"Regulamento 1207/2024\", \"sure\": \"high; cap low\"},\n  {\"municipality\": \"faro\",  \"from\": \"2024-11-01\", \"months\": [11,12,1,2],        \"eur\": 1.00, \"cap\": 7, \"min_age\": 16, \"source\": \"Regulamento 1207/2024\", \"sure\": \"high; cap low\"},\n  {\"municipality\": \"loule\", \"from\": \"2024-11-01\", \"months\": [4,5,6,7,8,9,10],   \"eur\": 2.00, \"cap\": 5, \"min_age\": 16, \"source\": \"Regulamento 786/2024\", \"sure\": \"high\"},\n  {\"municipality\": \"loule\", \"from\": \"2024-11-01\", \"months\": [11,12,1,2,3],      \"eur\": 1.00, \"cap\": 5, \"min_age\": 16, \"source\": \"Regulamento 786/2024\", \"sure\": \"high\"},\n  {\"municipality\": \"tavira\", \"eur\": 0, \"note\": \"none found 18 Nov 2026\"},\n  {\"municipality\": \"lagos\", \"eur\": 0, \"note\": \"none found 18 Nov 2026\"},\n  {\"municipality\": \"vila-do-bispo\", \"eur\": 0, \"note\": \"none found 18 Nov 2026\"}\n]\n```\n\nExample (Faro, 2 adults and 1 child of 10, 4 nights from 18 November): 2 × 4 × €1.00 = €8.00."
+  },
+  {
+   "id": "3.2",
+   "title": "VAT on one booking",
+   "text": "```\nprice = accommodation price the guest pays, VAT included (excluding the tourist tax)\nif owner.vatExempt53 (yearly turnover ≤ 15000):  vat = 0; net = price\nelse:                                             net = price / 1.06; vat = price − net\nguestPays = price + touristTax\n```\n\nExemption check over the year: `turnoverYear = Σ net` (or Σ price when exempt). If `turnoverYear > 15000` the exemption ends from the next year; if `> 18750` it ends at once (medium: check the date rule). Show a warning, do not switch silently.\n\nExample: €480 for 4 nights, not exempt: net €452.83, VAT €27.17."
+  },
+  {
+   "id": "3.3",
+   "title": "IRS estimate, simplified regime (category B)",
+   "text": "```\ngross = Σ net accommodation receipts in the year (VAT and tourist tax excluded)\ncoef = 0.35 (house or apartment); 0.50 if in a contention area (none known in the five municipalities: default off); 0.15 for rooms or hospedagem\nstartYear factor: × 0.5 in the first year, × 0.75 in the second (optional toggle)\ntaxableAL = gross × coef × startYearFactor\nif coef == 0.35: shortfall = max(0, 0.15 × gross − documentedExpenses); taxableAL += shortfall\nirsAL ≈ taxableAL × marginalRate   (marginalRate is typed in by the admin, default 0.30, labelled \"assumption: your IRS bracket\")\n```\n\nNote on screen: \"IRS is assessed on all your income for the year at progressive rates; this is a rough share for the holiday homes only.\"\n\nExample: gross €20,000, coefficient 0.35, documented expenses €4,000 (more than 15% of €20,000 = €3,000, so no shortfall): taxable €7,000; at an assumed 30% marginal rate, about €2,100."
+  },
+  {
+   "id": "3.4",
+   "title": "A simple yearly P&L per home (simulation)",
+   "text": "```\nrevenue      = Σ booking prices (VAT included)\n− vat        = Σ vat (0 if exempt)\n− platformFees = Σ price × commission (0 for direct bookings; typed in for a booking platform)\n− cleaning, laundry, consumables, utilities, insurance, maintenance, IMI, accounting = typed-in costs\n= profit before income tax\n− irsAL      (3.3)\n= profit after the estimated income tax\ntouristTax is shown as collected and passed on: never revenue, never cost.\n```"
+  }
+ ],
+ "gaps": "open the consolidated DL 128/2014 on diariodarepublica.pt for articles 11.º, 13.º, 13.º-A and the advert rule; open Regulamentos 1207/2024 (Faro, cap of nights) and 786/2024 (Loulé, exemptions); check each of the five câmaras for a municipal AL regulation or contention area; confirm who runs SIBA today.",
+ "sources": [
+  "Turismo de Portugal, changes to the AL regime: https://business.turismodeportugal.pt/pt/Planear_Iniciar/Como_comecar/Alojamento_Local/Paginas/alteracao-regime-juridico-alojamento-local.aspx (read 18 Nov 2026)",
+  "Diário da República, DL 76/2024: https://diariodarepublica.pt/dr/detalhe/decreto-lei/76-2024-892301177",
+  "Portal das Finanças: DL 57/2024 and Lei 35/2024 PDFs (CEAL); article 53.º CIVA; Ofício-Circulado 25062/2025",
+  "Article 31.º CIRS: https://informador.pt/legislacao/lexit/codigos/direito-fiscal/codigo-do-irs/capitulo-ii-determinacao-do-rendimento-coletavel/seccao-iii-rendimentos-empresariais/artigo-31-o-regime-simplificado/",
+  "Faro tourist tax: https://www.barlavento.pt/faro-introduz-novas-regras-e-excecoes-na-taxa-municipal-turistica/ ; Loulé: https://postal.pt/algarve/loule-ja-esta-a-cobrar-taxa-turistica-ate-dois-euros-por-dia/ ; Algarve overview (August 2026): https://postal.pt/algarve/ha-7-municipios-no-algarve-que-cobram-um-valor-extra-a-quem-quiser-la-dormir-saiba-quais-sao-e-quanto-se-paga/ ; Tavira: https://www.eazyal.com/blog/tavira-tourist-tax-2026",
+  "Law-firm notes on DL 76/2024 (Cuatrecasas, SRS Legal, ECIJA) and the CEAL (Garrigues, Lexpoint), and the press (idealista, Observador), used only to cross-check",
+  "Lei 23/2007 (foreign guests), article 16.º; DL 156/2005 and DL 74/2017 (complaints book); https://www.livroreclamacoes.pt"
+ ]
+}

@@ -7,6 +7,8 @@
 // Code Apache-2.0.
 import * as D from '/assets/js/data.js';
 import { isFree, firstTaken, nights, price } from '/assets/js/availability.js';
+import { simState, nightFrom, paintRates } from '/assets/js/sim/price.js';
+import { levelLine } from '/assets/js/sim/score.js';
 
 export { D };
 export const T = D.today();
@@ -72,12 +74,30 @@ export function stay() {
   if (s.from && s.to && s.from >= T) return { ...s, chosen: true };
   return { from: D.addDays(T, 2), to: D.addDays(T, 5), chosen: false };
 }
+// ---------- the rate and the level set in this browser's simulation (round 4, N1 and PROPOSAL.md 2.4) ----------
+// rateOf(h): the simulation's base rate when this browser holds a simulation, else the file's price.
+export const rateOf = h => nightFrom(h.id, simState(), h.price_eur_invented);
+// The level of bookings from elsewhere, read the same way as the rate: 1 (the round 2 calendar) with no simulation.
+export const keepOf = () => { const k = simState()?.settings?.backgroundKeep; return k === undefined || k === null ? 1 : k; };
+// rateHtml(h): the number in a span the storage listener repaints; rateNote(h): said only when it differs from the file.
+export const rateHtml = h => `<span data-rate-home="${esc(h.id)}" data-rate-file="${esc(h.price_eur_invented)}">${esc(rateOf(h))}</span>`;
+export const rateNote = h => `<span class="rate-note" data-rate-note="${esc(h.id)}" data-rate-file="${esc(h.price_eur_invented)}"${rateOf(h) === Number(h.price_eur_invented) ? ' hidden' : ''}> (the rate set in this browser's simulation)</span>`;
+export const levelHtml = (tag = 'p') => { const l = levelLine(keepOf()); return l ? `<${tag} class="level-line" style="grid-column:1/-1;list-style:none">${esc(l)}</${tag}>` : ''; };
+// Another tab changed the simulation: repaint the prices and their notes.
+function repaintRates() {
+  const st = simState();
+  paintRates(st);
+  for (const el of document.querySelectorAll('[data-rate-note]')) el.hidden = nightFrom(el.dataset.rateNote, st, el.dataset.rateFile) === Number(el.dataset.rateFile);
+}
+try { globalThis.addEventListener?.('storage', e => { if (!e || e.key === 'cc.sim.v1' || e.key === null) repaintRates(); }); } catch { /* not a browser */ }
+
 // avail(h, s) -> { free, nights, total, first, text, link }
 export function avail(h, s) {
-  const free = isFree(h.id, s.from, s.to, T);
+  const keep = keepOf();
+  const free = isFree(h.id, s.from, s.to, T, keep);
   const n = nights(s.from, s.to);
-  const total = price(h.price_eur_invented, s.from, s.to);
-  const first = free ? null : firstTaken(h.id, s.from, s.to, T);
+  const total = price(rateOf(h), s.from, s.to);
+  const first = free ? null : firstTaken(h.id, s.from, s.to, T, keep);
   const text = free
     ? `Free for ${D.fmtDay(s.from)} to ${D.fmtDay(s.to)} (simulated): ${n} night${n === 1 ? '' : 's'}, EUR ${total} (invented)`
     : `Taken on some of these dates (simulated), from ${D.fmtDay(first || s.from)}`;

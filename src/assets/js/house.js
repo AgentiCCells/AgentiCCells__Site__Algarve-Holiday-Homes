@@ -23,6 +23,7 @@ import { sim, ownBookings, markEmbed, chrome, kb, db, fmtSim, eur } from './stay
 import { nightTakenBy } from './sim/booking.js';
 import { untrusted } from './sim/abp.js';
 import { paintRates } from './sim/price.js';
+import { levelLine } from './sim/score.js';
 
 const RT = today(); // the real today: the live data panel
 let T = RT;         // the simulated today: the calendar and the booking
@@ -185,12 +186,13 @@ function datesStep() {
   return `<h3 class="step-h sr-only" tabindex="-1">Step 1 of 5: dates</h3>
 ${calendar()}
 <ul class="legend" aria-label="Key"><li><i></i>free</li><li><i class="taken"></i>taken (struck through)</li><li><i class="in"></i>your nights</li><li><i class="leave"></i>leave day</li><li><i class="nodata"></i>no real data for this day</li></ul>
+${levelLine(state().settings.backgroundKeep) ? `<p class="small level-line">${esc(levelLine(state().settings.backgroundKeep))}</p>` : ''}
 <div class="alt-dates">
 <div><label for="in-from">Arrive</label><input type="date" id="in-from" min="${T}" max="${addDays(LAST, -1)}" value="${S.from || ''}"></div>
 <div><label for="in-to">Leave</label><input type="date" id="in-to" min="${addDays(T, 1)}" max="${LAST}" value="${S.to || ''}"></div>
 </div>
 <p class="small">Simulated: the nights taken come from the simulation in your browser, the same one the admin side reads. Simulated today: <b>${esc(fmtSim(now()))}</b>. You can pick days from then to ${esc(fmtDay(LAST))}, the last day with real data (real weather as IPMA issued it, or real events); nothing later is offered.</p>
-<p class="summary" id="cal-sum">${summary()}</p>
+<p class="summary" id="cal-sum" data-tour="quote">${summary()}</p>
 <div class="actions"><button type="button" class="btn" data-go="2"${ok ? '' : ' disabled'}>Next: guests</button>${S.from ? '<button type="button" class="btn ghost small" data-clear>Clear dates</button>' : ''}<span class="small">Nothing is sent or charged.</span></div>`;
 }
 function pick(d) {
@@ -285,7 +287,7 @@ function errorBox() {
   const e = S.error;
   const alt = (S.alt || []).map(a => `<li><a href="/homes/${encodeURIComponent(a.id)}/?from=${S.from}&amp;to=${S.to}">${esc(a.name)}, ${esc(a.place)}</a>: free, ${eur(a.guestPays)} in all (invented)</li>`).join('');
   return `<div class="agent-note" role="alert"><p><strong>Chaminé, the site's agent</strong> ${kb('sim', 'SIMULATED, SCRIPTED')}</p>
-<p>${esc(e.text)} ${e.decision ? db(e.decision) : ''}</p>
+<p>${esc(e.text)} ${e.decision ? db(e.decision) : ''}${e.played ? ' <button type="button" class="btn ghost small" data-go-played>Go there</button>' : ''}</p>
 ${alt ? `<p>The same dates are free in:</p><ul>${alt}</ul>` : e.taken ? '<p>No other home is free for all these nights. Try other dates.</p>' : ''}</div>`;
 }
 function findAlternatives() {
@@ -306,6 +308,8 @@ function doHold() {
   goStep(5);
 }
 function failHold(r) {
+  // Hours already played (round 4, PROPOSAL.md 7.2): one note, and a button to go to playedTo.
+  if (r.played) { S.error = { text: r.error, played: r.played }; S.alt = null; renderBook(); bookEl.querySelector('.agent-note')?.focus?.(); say(r.error); return; }
   const denied = r.decision && r.decision.decision !== 'allow';
   const taken = !denied && /taken/.test(r.error || '');
   S.error = { text: denied ? `The policy refused this booking: ${r.decision.reason}` : taken ? `Sorry: ${S.home.name} was taken in the meantime for some of these nights (${r.error}), perhaps in another tab or by the admin.` : `This could not be booked: ${r.error}.`, decision: r.decision, taken };
@@ -331,7 +335,7 @@ function doPay() {
   S.error = null;
   const b = state().bookings[S.bookingId];
   const p = SIM.booking.pay(S.bookingId, { actor: 'visitor', ownGuestId: b?.guestId });
-  if (!p.ok) { S.error = { text: p.decision && p.decision.decision !== 'allow' ? `The policy refused the payment: ${p.decision.reason}` : `The pretend payment did not go through: ${p.error}.`, decision: p.decision }; renderBook(); say(S.error.text); return; }
+  if (!p.ok) { S.error = p.played ? { text: p.error, played: p.played } : { text: p.decision && p.decision.decision !== 'allow' ? `The policy refused the payment: ${p.decision.reason}` : `The pretend payment did not go through: ${p.error}.`, decision: p.decision }; renderBook(); say(S.error.text); return; }
   S.name = ''; S.note = ''; S.arrival = ''; S.pets = 'no';
   goStep(6);
 }
@@ -361,6 +365,7 @@ function wire() {
     S.bookingId = null; S.error = null; goStep(4); say('The hold is cancelled; the nights are free again.');
   });
   bookEl.querySelector('[data-clear]')?.addEventListener('click', () => { S.from = null; S.to = null; datesChanged(); say('Dates cleared.'); });
+  bookEl.querySelector('[data-go-played]')?.addEventListener('click', () => { const p = SIM.store.playedTo?.(); S.error = null; if (p) SIM.clock.setTime(p); renderBook(true); });
   bookEl.querySelectorAll('[data-restart]').forEach(x => x.addEventListener('click', () => { S.from = null; S.to = null; S.step = 1; S.bookingId = null; S.error = null; S.alt = null; setStayDates(null, null); renderBook(true); renderStay(); }));
   bookEl.querySelectorAll('.cal-nav').forEach(b => b.addEventListener('click', () => {
     S.month = addMonths(`${S.month}-01`, Number(b.dataset.nav)).slice(0, 7); renderBook();

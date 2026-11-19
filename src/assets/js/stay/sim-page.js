@@ -46,9 +46,18 @@ export function ownBookings(state, statuses = OWN_STATUSES) {
   return bookingsList(state).filter(b => state.guests[b.guestId]?.typedHere && statuses.includes(b.status)).reverse();
 }
 // The booking the visitor would call "my stay": the first paid or checked-in one by arrival, else the last checked-out.
-export function currentStay(state) {
+// While a tour runs (localStorage "cc.tour.backup.v1" exists, round 4 PROPOSAL.md 1.2), the tour's own
+// booking (its guest has tour: true) is accepted too, so /stay/ can show it; it is never counted as
+// the visitor's own anywhere else.
+export const TOUR_KEY = 'cc.tour.backup.v1';
+export function tourRunning(storage) { try { const s = storage === undefined ? globalThis.localStorage : storage; return Boolean(s?.getItem(TOUR_KEY)); } catch { return false; } }
+export const tourBookings = (state, statuses = OWN_STATUSES) => bookingsList(state).filter(b => state.guests[b.guestId]?.tour && statuses.includes(b.status)).reverse();
+export function currentStay(state, { tour = tourRunning() } = {}) {
   const live = ownBookings(state, ['paid', 'checked-in']).sort((a, b) => a.from.localeCompare(b.from));
-  return live[0] || ownBookings(state, ['checked-out'])[0] || null;
+  const own = live[0] || ownBookings(state, ['checked-out'])[0] || null;
+  if (own || !tour) return own;
+  const t = tourBookings(state, ['paid', 'checked-in']).sort((a, b) => a.from.localeCompare(b.from));
+  return t[0] || tourBookings(state, ['checked-out'])[0] || null;
 }
 
 // Inside /play/ (or with ?embed) the outer page carries the band, header and log: hide ours.
@@ -141,20 +150,20 @@ export function ownLifecycle(S) {
 // /admin/ shows it marked; then the host's assistant tries to act on it and the guard refuses
 // (DENY N-untrusted-instruction), logged beside it. Nothing is sent anywhere. Returns null when
 // the text is not instruction-like, else { id, host } (host: the host's assistant's decision).
-export function keepRefused(S, b, kind, text, { rating = null } = {}) {
+export function keepRefused(S, b, kind, text, { rating = null, by = null } = {}) {
   const det = detectInjection(text);
   if (!det.flagged || !b) return null;
   const st = S.store.getState();
   let id, target;
   if (kind === 'review') {
     id = hid('r', `${b.id}|held|${st.seq}|${text}`); target = `review ${id}`;
-    S.store.dispatch({ type: 'review.added', actor: 'visitor', data: { review: { id, homeId: b.homeId, bookingId: b.id, rating: Number(rating) || null, text, author: 'visitor', authorName: st.guests[b.guestId]?.name || 'You', trusted: false, flagged: true, matches: det.matches, held: true } } });
+    S.store.dispatch({ type: 'review.added', actor: 'visitor', data: { review: { id, homeId: b.homeId, bookingId: b.id, rating: Number(rating) || null, text, author: 'visitor', authorName: st.guests[b.guestId]?.name || 'You', trusted: false, flagged: true, matches: det.matches, held: true, ...(by ? { by } : {}) }, ...(by ? { by } : {}) } });
   } else {
     id = hid('m', `${b.id}|held|${st.seq}|${text}`); target = `message ${b.id}`;
-    S.store.dispatch({ type: 'message.added', actor: 'visitor', data: { message: { id, from: 'guest', who: 'visitor', bookingId: b.id, homeId: b.homeId, text, trusted: false, flagged: true, matches: det.matches, held: true } } });
+    S.store.dispatch({ type: 'message.added', actor: 'visitor', data: { message: { id, from: 'guest', who: 'visitor', bookingId: b.id, homeId: b.homeId, text, trusted: false, flagged: true, matches: det.matches, held: true, ...(by ? { by } : {}) }, ...(by ? { by } : {}) } });
   }
   const m = det.matches;
   const action = m.some(x => /refund|reembols/.test(x)) || kind === 'review' ? 'refund.issue' : m.some(x => /list|hospedes/.test(x)) ? 'share.guest-data' : 'booking.change';
-  const host = S.guard('host-assistant', action, { who: 'host-assistant', target, amount: action === 'refund.issue' ? 400 : undefined, provenance: [untrusted(kind === 'review' ? 'review' : 'message', text)] });
+  const host = S.guard('host-assistant', action, { who: 'host-assistant', target, amount: action === 'refund.issue' ? 400 : undefined, ...(by ? { by } : {}), provenance: [untrusted(kind === 'review' ? 'review' : 'message', text, 'instruction', { kind: kind === 'review' ? 'review' : 'message', id })] });
   return { id, host };
 }

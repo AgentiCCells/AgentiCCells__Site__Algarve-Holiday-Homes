@@ -5,7 +5,7 @@
 .play-main{padding:var(--s3) var(--s4) var(--s6);max-width:none;width:100%}
 body.mode-play .dock{display:none}
 .mode-note{margin:0 0 var(--s3);color:var(--ink-2);max-width:1100px}
-.timebar{display:grid;grid-template-columns:auto auto minmax(0,1fr);grid-template-areas:"btn speed now" "rail rail rail" "legend legend legend" "synth synth synth";gap:var(--s2) var(--s4);align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s3) var(--s4);margin:0 0 var(--s3)}
+.timebar{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"btn speed now tour" "rail rail rail rail" "legend legend legend legend" "synth synth synth synth";gap:var(--s2) var(--s4);align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s3) var(--s4);margin:0 0 var(--s3)}
 .tb-buttons{grid-area:btn;display:flex;gap:4px}
 .tb-speed{grid-area:speed;display:flex;gap:2px;border:1px solid var(--line);border-radius:var(--r);padding:2px}
 .tb,.tb-speed button,.vt{font:inherit;font-size:.875rem;border:1px solid var(--ink-2);background:var(--surface);color:var(--ink);border-radius:var(--r);padding:5px 10px;cursor:pointer;white-space:nowrap}
@@ -54,7 +54,7 @@ body.mode-play .dock{display:none}
 .tk-new{background:var(--ask-bg)}
 @media (prefers-reduced-motion:no-preference){.tk{transition:background-color 1s}}
 @media (max-width:1100px){
-.timebar{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"btn now" "speed speed" "rail rail" "legend legend" "synth synth"}
+.timebar{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"btn now" "speed tour" "rail rail" "legend legend" "synth synth"}
 .frames,.frames[data-view]{grid-template-columns:minmax(0,1fr)}
 .frames[data-view="both"] .pane-ticker{order:2}.pane-visitor{order:1}.pane-admin{order:3}
 .frame-box iframe{height:640px;min-height:0}
@@ -63,8 +63,45 @@ body.mode-play .dock{display:none}
 }
 @media (max-width:520px){
 .play-main{padding:var(--s2) var(--s4) var(--s6)}
-.timebar{padding:var(--s2) var(--s3);grid-template-areas:"btn btn" "now now" "speed speed" "rail rail" "legend legend" "synth synth"}
+.timebar{padding:var(--s2) var(--s3);grid-template-areas:"btn btn" "now now" "speed speed" "tour tour" "rail rail" "legend legend" "synth synth"}
 .tb-buttons{flex-wrap:wrap}
 .tb-speed{flex-wrap:wrap}
 .tb,.tb-speed button{padding:5px 8px}
 }
+
+/* ---------- round 4: the guided tour (team/rounds/4/design/PROPOSAL.md 1.5, contrast in section 10) ----------
+   developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19. The ring dims the rest of the page with
+   its own shadow; the made-up band and the card sit above it. */
+.tb-tour{grid-area:tour;justify-self:end;border-color:var(--ink);font-weight:600}
+.play-strip{grid-column:1 / -1;margin:0;border:1px solid var(--line);border-radius:var(--r);padding:var(--s2) var(--s3);background:var(--bg)}
+.play-strip p{margin:0}
+.tk-note{border-left:4px solid var(--ink-2)}
+.tour-cta{margin:var(--s2) 0 0}
+html.tour-on .band{position:relative;z-index:9500}
+.tour-shade{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9300}
+.tour-shade[hidden],.tour-ring[hidden],.tour-card[hidden]{display:none}
+.tour-ring{position:fixed;z-index:9400;pointer-events:none;border-radius:6px;outline:3px solid #FBE7A1;box-shadow:0 0 0 5px #1F2328,0 0 0 9999px rgba(0,0,0,.45)}
+.tour-card{position:fixed;z-index:9600;width:360px;max-width:calc(100vw - 16px);background:#fff;color:#1F2328;border:2px solid #1F2328;border-radius:10px;padding:14px 16px 12px;box-shadow:0 14px 36px rgba(0,0,0,.35);font-size:.875rem;line-height:1.45}
+.tour-card.centre,.tour-dlg{left:50%!important;top:50%!important;transform:translate(-50%,-50%);width:440px}
+.tour-hd{display:flex;align-items:center;gap:8px;font-size:.75rem;color:#545A62;margin-bottom:4px;flex-wrap:wrap}
+.tour-hd .k{font-size:11px;font-weight:700;text-transform:uppercase;border-radius:4px;padding:1px 6px;background:#E0E8FB;color:#1E3A8A}
+.tour-next-in{margin-left:auto}
+.tour-prog{height:3px;background:#ECEDEF;border-radius:2px;margin:4px 0 10px}
+.tour-prog span{display:block;height:3px;width:0;background:#1F2328;border-radius:2px}
+.tour-card h2{font-size:1.0625rem;margin:4px 0 6px;line-height:1.25}
+.tour-card h2:focus{outline:3px solid var(--sea,#0E6E8C);outline-offset:2px}
+.tour-card p{margin:0 0 8px}
+.tour-q{display:block;font-family:var(--mono,monospace);font-size:.8rem;background:#FBE1DE;color:#8A1C1C;padding:6px 8px;border-radius:4px;margin:6px 0 8px;quotes:none;overflow-wrap:anywhere}
+.tour-note{font-size:.8rem;color:#545A62}
+.tour-acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tour-acts button{font:inherit;font-size:.8125rem;border:1px solid #1F2328;background:#fff;color:#1F2328;border-radius:6px;padding:5px 12px;cursor:pointer}
+.tour-acts button.pri{background:#1F2328;color:#fff}
+.tour-acts .tour-stop{margin-left:auto;border-color:#8A1C1C;color:#8A1C1C}
+.tour-acts button:focus-visible{outline:3px solid var(--sea,#0E6E8C);outline-offset:2px}
+.tour-small{font-size:.75rem;color:#545A62;margin:8px 0 0!important}
+.tour-small a{color:#1F2328}
+@media (max-width:700px){
+.tour-card,.tour-card.sheet,.tour-card.centre,.tour-dlg{left:8px!important;right:8px;top:auto!important;bottom:8px;transform:none;width:auto;max-width:none;max-height:45vh;overflow:auto}
+.tour-dlg{max-height:80vh}
+}
+@media (prefers-reduced-motion:reduce){.tour-prog{display:none}}

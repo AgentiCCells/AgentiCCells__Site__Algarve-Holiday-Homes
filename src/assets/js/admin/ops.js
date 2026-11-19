@@ -5,8 +5,10 @@
 // Agent Behaviour Policy guard. Text from guests, reviews and feeds is shown as text, marked.
 // Code Apache-2.0. developer.algarve-holiday-homes@AgentiCCells.dinis (instance D), 2026-11-18, round 3.
 
-import { esc, badge, decisionBadge, actorName, fmtSim, eur, pct, day, homeName, guestName, guestCell, isYours, STATUS_WORD, channelWord,
-  bookingsFor, idsFor, occupancyGrid, quote, decisionsFor, addDays, nightsOf, daysBetween, SHORT, HOME_IDS } from './util.js';
+import { esc, badge, decisionBadge, actorName, fmtSim, eur, pct, day, homeName, guestName, guestCell, isYours, isTour, STATUS_WORD, channelWord,
+  bookingsFor, idsFor, occupancyGrid, quote, decisionsFor, addDays, nightsOf, daysBetween, SHORT, HOME_IDS, textFor, whoseText } from './util.js';
+import { POLICY_LOG_KEEP } from '../sim/store.js';
+import { levelLine } from '../sim/score.js';
 import { nightTakenBy, reorderNeeds, CHANNELS } from '../sim/booking.js';
 import { registrationDuty } from '../sim/legal.js';
 import { lines } from './history.js';
@@ -112,6 +114,7 @@ function todayBody(S, ctx, ids, bs, t, now) {
     tile('Open issues', issues.length, `${issues.filter(i => i.severity === 'high').length} urgent`, issues.length > 0),
     tile('Alerts', alerts.length, [...new Set(alerts.map(a => ({ B: 'booking', S: 'stock', L: 'bulletin', I: 'issue', W: 'weather' }[a.l])))].join(', ') || 'none', alerts.length > 0),
     tile(`${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m - 1]} revenue to date`, eur(rev.revenue), badge('simulated')),
+    tile('Refused today', refusedOn(S, t).length, refusedOn(S, t).length ? 'by the policies, <a href="#today/stopped">see below</a>' : 'by the policies', refusedOn(S, t).length > 0),
   ].join('')}</div>`;
   const ready = b => {
     if (b.to === t) return b.status === 'checked-out' ? '<span class="chip ok">key returned</span>' : `<span class="chip">leaves by ${S.homes[b.homeId].check_out}</span> <button type="button" class="btn-s" data-act="checkout" data-id="${esc(b.id)}">Check out</button>`;
@@ -119,7 +122,7 @@ function todayBody(S, ctx, ids, bs, t, now) {
     if (b.status === 'checked-in') return '<span class="chip ok">in house</span>';
     return `${job ? '<span class="chip warn">clean by 13:00</span>' : '<span class="chip ok">ready</span>'} ${b.status === 'paid' ? `<button type="button" class="btn-s" data-act="checkin" data-id="${esc(b.id)}">Check in</button>` : `<button type="button" class="btn-s" data-act="confirm" data-id="${esc(b.id)}">Confirm</button>`}`;
   };
-  const inHouseYours = bs.filter(b => isYours(S, b) && tonight(S, b, t) && b.from !== t);
+  const inHouseYours = bs.filter(b => (isYours(S, b) || isTour(S, b)) && tonight(S, b, t) && b.from !== t);
   const adRows = [...dep, ...arr, ...inHouseYours];
   const ad = adRows.length ? `<div class="tscroll"><table class="tbl"><thead><tr><th>Home</th><th>Guest</th><th>When</th><th class="n">Nights</th><th>Channel</th><th>Ready?</th></tr></thead><tbody>${adRows.map(b => `<tr><td>${esc(homeName(S, b.homeId))}</td><td>${guestCell(S, b)}</td><td>${b.to === t ? `leaves by ${S.homes[b.homeId].check_out}` : b.from === t ? `arrives ${S.homes[b.homeId].check_in}` : `in house, day ${daysBetween(b.from, t) + 1}`}</td><td class="n">${daysBetween(b.from, b.to)}</td><td>${channelWord(b)}</td><td>${ready(b)}</td></tr>`).join('')}</tbody></table></div>`
     : empty(`No arrivals or departures on ${esc(day(t))}.${nextArrival(S, ctx)}`);
@@ -131,11 +134,12 @@ function todayBody(S, ctx, ids, bs, t, now) {
   const msgs = th.length ? th.map(x => { const m = x.ms[x.ms.length - 1]; return `<div class="msg"><p><b>${esc(x.b ? guestName(S, x.b) : m.who || 'A guest')}</b> ${badge('invented')} · ${esc(x.b ? homeName(S, x.b.homeId) : '')} · ${esc(fmtSim(m.at, { year: false }))}</p>${m.from === 'guest' ? quote(m.text, m.flagged ?? undefined) : `<p>${esc(m.text)}</p>`}${lastDecision(S, x.id)}<p><a href="#messages">Reply</a></p></div>`; }).join('') : empty('No messages yet.');
   const rv = S.reviews.filter(r => ctx.home === 'all' || r.homeId === ctx.home).slice(-1)[0];
   const rev1 = rv ? `<p><b>${rv.rating} of 5</b> · ${esc(homeName(S, rv.homeId))} · ${esc(rv.authorName || 'a guest')} ${badge('invented')} ${badge('simulated', 'SIMULATED REVIEW')}</p>${quote(rv.text, rv.flagged)}<p><a href="#reviews">Reply</a></p>` : empty('No reviews yet.');
-  return `${kpis}<div class="cols"><div class="col">
+  return `${kpis.replace('class="kpis"', 'class="kpis k8"')}<div class="cols"><div class="col">
 ${panel('Arrivals and departures', ad, '<a href="#bookings">All bookings</a>')}
 ${panel(`Occupancy, next 14 days ${badge('simulated')}`, occ, '<a href="#calendar">Calendar</a>')}
 ${panel('Issues', iss, '<a href="#issues">Board</a>')}
 </div><div class="col">
+${stoppedPanel(S, ctx)}
 ${panel('Alerts', al)}
 ${panel('Cleaning today', cl, '<a href="#cleaning">Schedule</a>')}
 ${panel('Messages', msgs, '<a href="#messages">Inbox</a>')}
@@ -154,6 +158,89 @@ function issuesMini(S, ctx) {
   const all = Object.values(S.issues).filter(i => ctx.home === 'all' || i.homeId === ctx.home);
   const col = (t, xs) => `<div><h3>${t} (${xs.length})</h3>${xs.slice(-3).map(i => `<div class="card-s"><b>${esc(i.type)}, ${esc(SHORT[i.homeId] || i.homeId)}</b><br><span class="small">${esc(i.severity)}${i.cost ? ` · ${eur(i.cost)} est.` : ''}</span></div>`).join('') || '<p class="small">none</p>'}</div>`;
   return `<div class="mini3">${col('New', all.filter(i => i.status !== 'resolved' && !i.started))}${col('In progress', all.filter(i => i.status !== 'resolved' && i.started))}${col('Done', all.filter(i => i.status === 'resolved'))}</div>`;
+}
+
+// ---------- What the agents were stopped from doing (round 4, PROPOSAL.md 5) ----------
+export const RULE_WORDS = Object.freeze({
+  'N-untrusted-instruction': 'an instruction inside text from a guest, a review or an event title',
+  'N-other-guest-data': 'one guest\'s details, asked for by someone else',
+  'N-no-network': 'something would have left this browser',
+  'N-host-only-data': 'information only the host may see',
+  'N-no-real-money': 'real money',
+  'N-guest-private': 'a guest\'s own notes, which the host\'s assistant may not read',
+  'D-default': 'no policy for this actor, or an action outside its policy',
+});
+export const ruleWords = e => RULE_WORDS[e.rule] || (/-limit$/.test(e.rule || '') ? 'over a money limit' : e.reason || '');
+const SOURCE_WORDS = { message: 'a guest message', review: 'a review', 'guest-note': 'a guest\'s booking note', 'event-title': 'an event title', event: 'an event title', ical: 'a calendar feed line', 'agents-chat': 'the guest\'s assistant\'s chat', 'issue report': 'an issue report' };
+const ACTOR_WORDS = { 'agent.cinco-chamines': 'The site\'s agent', 'guest-assistant': 'The guest\'s assistant', 'host-assistant': 'The host\'s assistant', housekeeper: 'The housekeeper (synthetic)', owner: 'The owner', bookkeeper: 'The bookkeeper (synthetic)', visitor: 'A visitor' };
+export function triedWords(e) {
+  const who = ACTOR_WORDS[e.policy] || ACTOR_WORDS[e.actor] || 'An actor';
+  const amt = e.amount != null && e.amount !== '' ? ` EUR ${Number(e.amount).toLocaleString('en-GB')}` : '';
+  const tg = e.target ? ` (${e.target})` : '';
+  switch (e.action) {
+    case 'message.send': return e.actor === 'visitor' || e.policy === 'visitor' ? 'The guest\'s message was not passed on as an instruction' : `${who} tried to send a message${tg}`;
+    case 'refund.issue': return `${who} tried to refund${amt}${tg}`;
+    case 'share.guest-data': case 'read.guest-list': return `${who} tried to share the guest list${tg}`;
+    case 'network.send': case 'data.send': return `${who} tried to send data outside this browser${tg}`;
+    case 'booking.change': return `${who} tried to change a booking${tg}`;
+    case 'booking.pay': return `${who} tried to mark a booking paid${tg}`;
+    case 'rate.set': return `${who} tried to change the rates${tg}`;
+    case 'review.post': return `${who} tried to post a review${tg}`;
+    case 'read.host': return `${who} tried to read the host's books${tg}`;
+    default: return `${who} tried ${e.action}${tg}`;
+  }
+}
+export const refusedOn = (S, t) => (S.policyLog || []).filter(e => e.decision === 'deny' && String(e.at).slice(0, 10) === t);
+// stopped(S, { today, range }) -> the refusals in the range, grouped by the text that caused them.
+export function stopped(S, { today, range = 'today' }) {
+  const from = range === 'week' ? addDays(today, -6) : range === 'run' ? null : today;
+  const inRange = e => { const d = String(e.at).slice(0, 10); return d <= today && (!from || d >= from); };
+  const log = S.policyLog || [];
+  const denies = log.filter(e => e.decision === 'deny' && inRange(e));
+  const groups = new Map();
+  for (const e of denies.slice().reverse()) {
+    const t = textFor(S, e);
+    const key = t ? (t.id ? `${t.kind}:${t.id}` : `x:${t.text}`) : `seq:${e.seq}`;
+    if (!groups.has(key)) groups.set(key, { t, entries: [], whose: whoseText(S, e, t), source: t?.source || null });
+    groups.get(key).entries.push(e);
+  }
+  for (const g of groups.values()) g.entries.sort((a, b) => (a.seq ?? 0) - (b.seq ?? 0));
+  const trimmed = log.length >= POLICY_LOG_KEEP && log.length && (!from || String(log[0].at).slice(0, 10) > from);
+  const others = log.filter(e => e.decision !== 'deny' && inRange(e));
+  return { denies, groups: [...groups.values()], trimmed, allowed: others.filter(e => e.decision === 'allow').length, asked: others.filter(e => e.decision === 'ask').length, from };
+}
+export function stoppedPanel(S, ctx) {
+  const range = ctx.stopRange || 'today', t = ctx.today;
+  const r = stopped(S, { today: t, range });
+  const n = r.denies.length;
+  const btn = (v, w) => `<button type="button" data-act="stop-range" data-v="${v}" aria-pressed="${range === v}">${w}</button>`;
+  const head = `<div class="rng" role="group" aria-label="Range">${btn('today', 'Today')}${btn('week', 'Last 7 days')}${btn('run', 'This run')}</div>`;
+  const when = range === 'today' ? `On ${esc(day(t))} (simulated)` : range === 'week' ? `From ${esc(day(r.from))} to ${esc(day(t))} (simulated)` : `In this run, up to ${esc(day(t))} (simulated)`;
+  let body;
+  if (!n) {
+    body = `<p class="empty">Nothing was refused ${range === 'today' ? `on ${esc(day(t))}` : range === 'week' ? 'in the last 7 days' : 'in this run'} (simulated). The agents' other decisions ${range === 'today' ? 'today' : 'in this range'}: ${r.allowed} allowed, ${r.asked} asked a person.</p><p class="small"><a href="#policies">Try an attack in Policies</a></p>`;
+  } else {
+    const cat = { untr: 0, net: 0, other: 0 };
+    for (const e of r.denies) { if (e.rule === 'N-untrusted-instruction') cat.untr++; else if (e.rule === 'N-no-network') cat.net++; else cat.other++; }
+    const parts = [cat.untr && `${cat.untr} because the instruction came from text a guest, a review or an event title wrote`, cat.net && `${cat.net} because something would have left this browser`, cat.other && `${cat.other} because the policy does not allow the action`].filter(Boolean);
+    let shown = 0;
+    const rows = [];
+    for (const g of r.groups) {
+      if (shown >= 8) break;
+      const t0 = g.t;
+      const link = !t0?.id || !t0.found ? '' : t0.kind === 'message' ? `<a href="#messages/${encodeURIComponent(t0.id)}">Open the message</a>` : t0.kind === 'review' ? `<a href="#reviews/${encodeURIComponent(t0.id)}">Open the review</a>` : t0.kind === 'issue' ? `<a href="#issues/${encodeURIComponent(t0.id)}">Open the issue</a>` : '';
+      const srcW = SOURCE_WORDS[g.source] || (g.source ? String(g.source) : 'the actor\'s own principal');
+      const untr = (g.entries[0].provenance || []).some(p => p.trusted === false);
+      const home = t0?.item?.homeId ? homeName(S, t0.item.homeId) : t0?.item?.bookingId && S.bookings[t0.item.bookingId] ? homeName(S, S.bookings[t0.item.bookingId].homeId) : '';
+      const notKept = t0 && !t0.found ? `<p class="small">${t0.kind === 'guest-note' ? 'The text is not kept: the booking was refused. The first 140 characters above are from the log.' : 'The full text could not be found in this browser.'}</p>` : '';
+      const items = g.entries.slice(0, 8 - shown).map((e, i) => `<li><time>${esc(String(e.at).slice(11, 16))}</time><div>${i ? 'Then ' : ''}${esc(i ? triedWords(e).replace(/^The /, 'the ') : triedWords(e))}${t0?.text && !(e.action === 'message.send' && (e.actor === 'visitor' || e.policy === 'visitor')) ? ' because of it' : ''}. ${decisionBadge('deny', e.rule)}<br><span class="why">${esc(ruleWords(e))}</span></div></li>`);
+      shown += items.length;
+      rows.push(`<div class="ref"><div class="src"><span>${esc(srcW.charAt(0).toUpperCase() + srcW.slice(1))}</span>${untr ? ` ${badge('untrusted')}` : ''} <span class="whose">${esc(g.whose)}</span>${home ? ` <span>${esc(home)}</span>` : ''} ${link}</div>${t0?.text ? `<blockquote class="untr-q">${esc(String(t0.text).slice(0, 140))}</blockquote>` : ''}${notKept}<ul>${items.join('')}</ul></div>`);
+    }
+    body = `<p class="sum">${when} the policies refused ${n} action${n === 1 ? '' : 's'}: ${esc(parts.join(', '))}.</p>${rows.join('')}${n > shown ? `<p class="small"><a href="#policies">Show all ${n} in the decisions log</a></p>` : `<p class="small"><a href="#policies">The decisions log</a></p>`}`;
+  }
+  const trim = r.trimmed ? '<p class="small">The log keeps the last 1,000 decisions; earlier refusals in this range are not shown.</p>' : '';
+  return `<section class="panel stopped" id="stopped" data-tour="stopped" aria-labelledby="stopped-h"><div class="pnh"><h2 id="stopped-h">What the agents were stopped from doing ${range === 'today' ? 'today' : range === 'week' ? 'in the last 7 days' : 'in this run'}</h2>${head}</div>${body}${trim}<p class="small">Quotes are shown as text, never obeyed. ${badge('simulated')}</p></section>`;
 }
 
 // ---------- Bookings ----------
@@ -184,7 +271,7 @@ function bookingSheet(S, ctx, b) {
   ].filter(Boolean).join(' ');
   const move = can(['enquiry', 'held', 'paid']) ? `<div class="form-row"><label>Move to <input type="date" name="mv-from" data-keep="mv-from-${esc(b.id)}" value="${esc(b.from)}" min="${esc(ctx.clock.bounds().from)}" max="${esc(ctx.clock.bounds().to)}"></label><label>until <input type="date" name="mv-to" data-keep="mv-to-${esc(b.id)}" value="${esc(b.to)}" min="${esc(ctx.clock.bounds().from)}" max="${esc(addDays(ctx.clock.bounds().to, 1))}"></label><button type="button" class="btn-s" data-act="move" data-id="${esc(b.id)}">Move dates</button></div><p class="small">Inside the real-data window only (${esc(day(ctx.clock.bounds().from))} to ${esc(day(ctx.clock.bounds().to))}).</p>` : '';
   const note = `<div class="form-row"><label class="grow">Note <input type="text" name="note" data-keep="note-${esc(b.id)}" maxlength="200" placeholder="for example: late arrival, 22:00"></label><button type="button" class="btn-s" data-act="note" data-id="${esc(b.id)}">Add note</button></div>`;
-  return panel(`Booking ${esc(b.id)} ${isYours(S, b) ? badge('yours') : badge('simulated')}`, `<div class="sheet">
+  return panel(`Booking ${esc(b.id)} ${isTour(S, b) ? badge('simulated', 'THE TOUR\'S BOOKING') : isYours(S, b) ? badge('yours') : badge('simulated')}`, `<div class="sheet">
 <p><b>${esc(guestName(S, b))}</b> at ${esc(homeName(S, b.homeId))}, ${esc(day(b.from))} to ${esc(day(b.to))} (${daysBetween(b.from, b.to)} nights), ${esc(channelWord(b))}. Status: <b>${esc(STATUS_WORD[b.status] || b.status)}</b>.</p>
 <p>Price ${eur(q.price, 2)} (VAT ${eur(q.vat, 2)}), tourist tax ${eur(q.touristTax, 2)}, guest pays ${eur(q.guestPays, 2)}${q.commission ? `, platform commission ${eur(q.commission, 2)}` : ''}. ${b.payment ? esc(b.payment.note) : ''}</p>
 <div class="acts">${acts || '<span class="small">No action: the stay is over or cancelled.</span>'}</div>${move}${note}
@@ -201,7 +288,8 @@ export function calendar(S, ctx) {
   const grid = occupancyGrid(S, ids, from, days, { now: ctx.now, today: ctx.today, realDay: d => ctx.clock.realDataFor(d).weather === 'issued' });
   const form = `<h3>Block days (owner use, maintenance)</h3><div class="form-row">${homeSelect('bl-home', ctx.home === 'all' ? 'salt' : ctx.home, S)}<label>From <input type="date" name="bl-from" data-keep="bl-from" min="${esc(from)}" max="${esc(b.to)}" value="${esc(ctx.today)}"></label><label>until <input type="date" name="bl-to" data-keep="bl-to" min="${esc(from)}" max="${esc(addDays(b.to, 1))}" value="${esc(addDays(ctx.today, 2))}"></label><label class="grow">Reason <input type="text" name="bl-why" data-keep="bl-why" maxlength="60" value="owner use"></label><button type="button" class="btn-s dark" data-act="block">Block</button></div><p class="small">A block over a booking, or over nights booked elsewhere, is refused with the reason.</p>`;
   const feeds = `<h3>Calendar feeds (iCal)</h3><ul class="list">${ids.map(id => `<li><b>${esc(homeName(S, id))}</b>: <button type="button" class="btn-s" data-act="export-ical" data-home="${id}">Export feed (iCal), to your device</button> <span class="small">Imported from: ${S.blocks.some(k => k.homeId === id && !k.owner) ? 'booking platform feed (simulated)' : 'nothing yet'}; see <a href="#integrations">Integrations</a>.</span></li>`).join('')}</ul>`;
-  return panel(`Calendar and occupancy ${badge('simulated')}`, head + grid + form + feeds);
+  const lv = levelLine(S.settings.backgroundKeep);
+  return panel(`Calendar and occupancy ${badge('simulated')}`, head + (lv ? `<p class="note-box">${esc(lv)}</p>` : '') + grid + form + feeds);
 }
 
 // ---------- Cleaning ----------
@@ -244,7 +332,7 @@ export function stock(S, ctx) {
       const low = v.qty + (v.laundered ? (l[k] || 0) : 0) <= v.min;
       return `<tr class="${low ? 'low' : ''}"><td>${esc(v.label)}</td><td class="n">${v.qty <= 0 ? '0 <span class="small">count needed</span>' : esc(v.qty)}</td><td class="n">${v.laundered ? esc(l[k] || 0) : '-'}</td><td class="n">${u ? esc(Math.round(u * 10) / 10) : '0'}</td><td class="n">${esc(v.min)}</td><td class="n">${perDay ? Math.floor(v.qty / perDay) : 'no use yet'}</td><td class="n">${eur(v.unitCost, 2)}</td><td>${low ? '<span class="chip warn hatch">Reorder</span>' : '<span class="chip ok">ok</span>'} <button type="button" class="btn-s" data-act="reorder" data-home="${id}" data-item="${esc(k)}">Reorder ${esc(v.reorderQty)} (${eur(v.reorderQty * v.unitCost)})</button></td></tr>`;
     }).join('');
-    return `<h3>${esc(homeName(S, id))}</h3><div class="tscroll" tabindex="0" role="region" aria-label="Stock, ${esc(homeName(S, id))}"><table class="tbl wide"><thead><tr><th>Item</th><th class="n">On hand</th><th class="n">At the laundry</th><th class="n">Used this month</th><th class="n">Reorder point</th><th class="n">Days left at this use</th><th class="n">Unit cost</th><th>State</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    return `<h3>${esc(homeName(S, id))}</h3><div class="tscroll" tabindex="0" role="region" aria-label="Stock, ${esc(homeName(S, id))}"${id === 'lagoon' ? ' data-tour="stock-lagoon"' : ''}><table class="tbl wide"><thead><tr><th>Item</th><th class="n">On hand</th><th class="n">At the laundry</th><th class="n">Used this month</th><th class="n">Reorder point</th><th class="n">Days left at this use</th><th class="n">Unit cost</th><th>State</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   }).join('');
   return panel(`Stock and reorder ${badge('simulated')}`, `${tables}<p class="small">Stock goes down when guests check out (welcome pack, cleaning kit, linen and towels to the laundry, gas, firewood, pool chemicals) and linen comes back when the cleaning is done. A reorder is placed by the host's assistant from a cash-and-carry (a type of supplier, invented prices): up to ${eur(S.settings.spendLimit)} it may order alone, above that the owner approves (rule H14-limit). Quantities and costs invented.</p>`);
 }
@@ -255,7 +343,7 @@ export function issues(S, ctx) {
   const card = i => {
     const b = i.bookingId ? S.bookings[i.bookingId] : null;
     const fromGuest = i.trusted === false && i.reportedBy !== 'housekeeper' && i.reportedBy !== 'owner';
-    return `<div class="card-s"><b>${esc(i.type)}</b>, ${esc(homeName(S, i.homeId))}<br><span class="small">from ${esc(fromGuest ? 'a guest report' : i.reportedBy || 'the simulation')} · ${esc(i.severity)} · ${i.cost ? `${eur(i.cost)} est. (invented)` : 'no cost'}${b ? ` · ${esc(guestName(S, b))}` : ''} · ${esc(fmtSim(i.firstRaisedAt || i.raisedAt, { year: false }))}</span>
+    return `<div class="card-s" data-item="${esc(i.id)}"><b>${esc(i.type)}</b>, ${esc(homeName(S, i.homeId))}<br><span class="small">from ${esc(fromGuest ? 'a guest report' : i.reportedBy || 'the simulation')} · ${esc(i.severity)} · ${i.cost ? `${eur(i.cost)} est. (invented)` : 'no cost'}${b ? ` · ${esc(guestName(S, b))}` : ''} · ${esc(fmtSim(i.firstRaisedAt || i.raisedAt, { year: false }))}</span>
 ${fromGuest && i.text ? quote(i.text, i.flagged) : ''}
 ${i.status === 'resolved' ? `<p class="small">Resolved ${esc(fmtSim(i.resolvedAt, { year: false }))}${i.cost ? `, ${eur(i.cost)} to repairs` : ''}.</p>` : `<div class="acts">${!i.started ? `<button type="button" class="btn-s" data-act="issue-start" data-id="${esc(i.id)}">Start (book the repair)</button>` : ''}<label class="inl">Cost <input type="number" min="0" max="5000" step="1" name="cost" data-keep="cost-${esc(i.id)}" value="${esc(i.cost || 0)}"></label><button type="button" class="btn-s dark" data-act="issue-done" data-id="${esc(i.id)}">Done</button>${fromGuest ? ` <button type="button" class="btn-s" data-act="assistant-act" data-kind="issue" data-id="${esc(i.id)}">Let the host's assistant act on the guest's words</button>` : ''}</div>${lastDecision(S, `issue ${i.id}`)}`}</div>`;
   };
@@ -268,8 +356,8 @@ ${i.status === 'resolved' ? `<p class="small">Resolved ${esc(fmtSim(i.resolvedAt
 export function messages(S, ctx) {
   const th = guestThreads(S, ctx.home).reverse();
   const body = th.length ? th.map(x => {
-    const ms = x.ms.map(m => `<div class="bub ${m.from === 'guest' ? 'in' : 'out'}"><p class="small">${esc(m.from === 'guest' ? (x.b ? guestName(S, x.b) : m.who || 'a guest') : m.from === 'owner' ? 'You (the owner, simulated)' : m.from)} · ${esc(fmtSim(m.at, { year: false }))}${m.held ? ' <span class="k untr">HELD BY THE POLICY: NOT PASSED ON</span>' : ''}</p>${m.from === 'guest' ? quote(m.text, m.flagged) : `<p>${esc(m.text)}</p>`}</div>`).join('');
-    return `<article class="thread"><h3>${x.b ? `${esc(guestName(S, x.b))} ${isYours(S, x.b) ? badge('yours') : badge('invented')} · ${esc(homeName(S, x.b.homeId))}, ${esc(day(x.b.from))} to ${esc(day(x.b.to))}` : 'Other messages'}</h3>${ms}${lastDecision(S, `message ${x.id}`)}
+    const ms = x.ms.map(m => `<div class="bub ${m.from === 'guest' ? 'in' : 'out'}" data-item="${esc(m.id || '')}"><p class="small">${esc(m.from === 'guest' ? (x.b ? guestName(S, x.b) : m.who || 'a guest') : m.from === 'owner' ? 'You (the owner, simulated)' : m.from)} · ${esc(fmtSim(m.at, { year: false }))}${m.held ? ' <span class="k untr">HELD BY THE POLICY: NOT PASSED ON</span>' : ''}</p>${m.from === 'guest' ? quote(m.text, m.flagged) : `<p>${esc(m.text)}</p>`}</div>`).join('');
+    return `<article class="thread"><h3>${x.b ? `${isTour(S, x.b) ? `The tour's booking ${badge('simulated')}` : `${esc(guestName(S, x.b))} ${isYours(S, x.b) ? badge('yours') : badge('invented')}`} · ${esc(homeName(S, x.b.homeId))}, ${esc(day(x.b.from))} to ${esc(day(x.b.to))}` : 'Other messages'}</h3>${ms}${lastDecision(S, `message ${x.id}`)}
 <div class="form-row"><label class="grow">Reply <textarea name="reply" rows="2" maxlength="600" data-keep="reply-${esc(x.id)}"></textarea></label></div><div class="acts"><button type="button" class="btn-s dark" data-act="reply" data-id="${esc(x.id)}">Send reply</button> <button type="button" class="btn-s" data-act="assistant-act" data-kind="message" data-id="${esc(x.id)}">Let the host's assistant act on the guest's words</button></div></article>`;
   }).join('') : empty('No messages yet. A guest can write from their stay page; synthetic guests write in World mode; or load the example activity on Today.');
   return panel(`Messages ${badge('simulated')}`, `${body}<p class="small">Replies stay in this browser: nothing is emailed or sent.</p>`);
@@ -282,7 +370,7 @@ export function reviews(S, ctx) {
   const body = rs.length ? rs.map(r => {
     const replies = S.messages.filter(m => m.kind === 'review-reply' && m.reviewId === r.id);
     const b = S.bookings[r.bookingId];
-    return `<article class="thread"><h3>${r.rating ? `${r.rating} of 5` : 'No rating'} · ${esc(homeName(S, r.homeId))} · ${esc(r.authorName || 'a guest')} ${badge('invented')} ${badge('simulated', 'SIMULATED REVIEW')}${r.held ? ' <span class="k untr">HELD BY THE POLICY: NOT PUBLISHED</span>' : ''}</h3><p class="small">${b ? `Stay ${esc(day(b.from))} to ${esc(day(b.to))} · ` : ''}posted ${esc(fmtSim(r.at, { year: false }))}</p>${quote(r.text, r.flagged)}
+    return `<article class="thread" data-item="${esc(r.id)}"><h3>${r.rating ? `${r.rating} of 5` : 'No rating'} · ${esc(homeName(S, r.homeId))} · ${esc(r.authorName || 'a guest')} ${badge('invented')} ${badge('simulated', 'SIMULATED REVIEW')}${r.held ? ' <span class="k untr">HELD BY THE POLICY: NOT PUBLISHED</span>' : ''}</h3><p class="small">${b ? `Stay ${esc(day(b.from))} to ${esc(day(b.to))} · ` : ''}posted ${esc(fmtSim(r.at, { year: false }))}</p>${quote(r.text, r.flagged)}
 ${replies.map(m => `<div class="bub out"><p class="small">Your public reply · ${esc(fmtSim(m.at, { year: false }))}</p><p>${esc(m.text)}</p></div>`).join('')}${lastDecision(S, `review ${r.id}`)}
 <div class="form-row"><label class="grow">Reply <textarea name="rreply" rows="2" maxlength="600" data-keep="rreply-${esc(r.id)}"></textarea></label></div><div class="acts"><button type="button" class="btn-s" data-act="draft-reply" data-id="${esc(r.id)}">Draft a reply with the assistant</button> <button type="button" class="btn-s dark" data-act="publish-reply" data-id="${esc(r.id)}">Publish reply</button>${r.flagged ? ` <button type="button" class="btn-s" data-act="assistant-act" data-kind="review" data-id="${esc(r.id)}">Let the host's assistant act on this review</button>` : ''}</div></article>`;
   }).join('') : empty('No reviews yet. Guests review after check-out (World mode), or load the example activity on Today.');

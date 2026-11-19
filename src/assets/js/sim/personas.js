@@ -21,6 +21,7 @@ import { POLICIES, decide, logEvent, untrusted, detectInjection } from './abp.js
 import { quoteFor, buildEnquiry, buildHold, buildPay, buildCheckIn, buildCheckOut, buildCleaningDone, buildExpireHolds, reorderNeeds, reorderEvent, occupancy } from './booking.js';
 import { touristTaxByMunicipality } from './money.js';
 import { FALLBACK_BOUNDS } from './clock.js';
+import { pBook, pStretch } from './demand.js';
 
 // What each invented visitor wants (invented for the simulation, from their cast record).
 export const PROFILES = Object.freeze({
@@ -98,8 +99,12 @@ export function step(state, now, opts = {}) {
 
   // 08:00 the owner looks at occupancy and moves rates; on the 1st the bookkeeper's month end
   if (hour === 8) {
-    for (const id of s.homeOrder) {
-      const h = s.homes[id], occ = occupancy(s, id, day, 14, { now });
+    // Round 4 (PROPOSAL.md 2.1): the owner skips homes whose rate the visitor set (rate.manual), and
+    // moves none when the visitor unticks "Let Helena (synthetic owner) keep moving the rates".
+    for (const id of (s.settings.ownerAuto === false ? [] : s.homeOrder)) {
+      const h = s.homes[id];
+      if (h.rate.manual) continue;
+      const occ = occupancy(s, id, day, 14, { now });
       let base = h.rate.base;
       if (occ < 0.35 && base > h.rate.listBase * 0.75) base = Math.round(base * 0.92);
       else if (occ > 0.8 && base < h.rate.listBase * 1.4) base = Math.round(base * 1.08);
@@ -195,6 +200,9 @@ export function step(state, now, opts = {}) {
 // fold sees them). The 'visit' event carries the steps, for the world page to animate.
 function visit(s0, persona, { r, now, at, guard, bounds, emitLocal, getState }) {
   const p = PROFILES[persona.id];
+  // The closing window (round 4, PROPOSAL.md 2.4): a visitor whose stay cannot fit before the real
+  // data ends is not sent at all, and not counted as a departure; the first such day is kept once.
+  if (addDays(bounds.to, -p.nights) < dayOf(now)) return s0.stats.noFitFrom ? [] : [{ type: 'visit.skipped', at: now, actor: 'system', data: { persona: persona.id, day: dayOf(now) } }];
   const steps = [];
   const vid = hid('v', `${now}|${persona.id}`);
   const say = (min, what, extra = {}) => steps.push({ min, what, ...extra });
@@ -215,10 +223,18 @@ function visit(s0, persona, { r, now, at, guard, bounds, emitLocal, getState }) 
     const homeId = p.homes[t % p.homes.length];
     const home = getState().homes[homeId]; if (!home) continue;
     let nights = p.nights;
-    if (nights < home.rate.minNights && p.tries > 1) nights = home.rate.minNights; // stretch to the minimum if patient
+    // Round 4 (PROPOSAL.md 2.2): a patient visitor stretches to the minimum stay with chance
+    // STRETCH_KEEP ^ extra nights (sim/demand.js, an assumption); others leave.
+    if (nights < home.rate.minNights) {
+      const extra = home.rate.minNights - nights;
+      if (p.tries > 1 && r() < pStretch(extra)) nights = home.rate.minNights;
+      else { reason = 'minimum stay'; continue; }
+    }
     const guests = { adults: p.adults, children: p.children };
-    // look along the calendar: up to 2 + 2 x tries arrival days from the first one they want
-    const first = addDays(dayOf(now), r.int(p.lead[0], p.lead[1]));
+    // look along the calendar: up to 2 + 2 x tries arrival days from the first one they want; the
+    // first arrival day is at most the window's end less the nights (round 4, the closing window)
+    const first = [addDays(dayOf(now), r.int(p.lead[0], p.lead[1])), addDays(lastDay, -nights)].sort()[0];
+    if (first < dayOf(now)) { reason = 'no dates left in the window'; continue; }
     let from = first, to = null, q = null;
     for (let k = 0; k < 2 + 2 * p.tries; k++) {
       from = addDays(first, k);
@@ -232,6 +248,9 @@ function visit(s0, persona, { r, now, at, guard, bounds, emitLocal, getState }) 
     guard('visitor', 'booking.quote', { who: persona.id, target: homeId }, 8 + t * 3);
     if (!q.ok) { reason = /minimum/.test(q.reasons.join()) ? 'minimum stay' : /sleeps/.test(q.reasons.join()) ? 'too many guests' : 'dates taken'; continue; }
     if (q.guestPays > (persona.budget_eur || 0) * 1.1) { reason = 'price'; continue; }
+    // Round 4 (PROPOSAL.md 2.2): the price draw against the same stay at the home's list base.
+    const listQ = quoteFor({ ...getState(), homes: { ...getState().homes, [homeId]: { ...home, rate: { ...home.rate, base: home.rate.listBase || home.rate.base } } } }, homeId, from, to, guests, { now });
+    if (!(r() < pBook(listQ.price, q.price))) { reason = 'price'; say(10 + t * 3, 'the price put them off', { homeId }); continue; }
     // book: enquiry, hold, pretend payment, each through the guard
     const channel = r.chance(p.platform ?? 0.25) ? 'platform' : 'direct';
     const ctx = { who: persona.id };
@@ -277,15 +296,16 @@ function review(s, b, { r, at, guard, weatherFor, nameOf, budgetOf }) {
   const rv = { id: hid('r', b.id), homeId: b.homeId, bookingId: b.id, rating, text, author: b.persona, authorName: nameOf(b.persona), trusted: false, flagged: detectInjection(text).flagged, weatherDays: wx.length, issues: issues.map(i => i.type) };
   events.push({ type: 'review.added', at: at(20), actor: 'visitor', data: { review: rv } });
   // the host's assistant reads it: text in a review is material, never an instruction
-  if (rv.flagged) guard('host-assistant', 'refund.issue', { who: 'host-assistant', target: 'all guests (asked by a review)', amount: 5000, provenance: [untrusted('review', text, 'instruction')] }, 25);
-  if (rating <= 3) guard('host-assistant', 'review.reply', { who: 'host-assistant', target: rv.id, provenance: [untrusted('review', text, 'data')] }, 26);
+  const ref = { kind: 'review', id: rv.id };
+  if (rv.flagged) guard('host-assistant', 'refund.issue', { who: 'host-assistant', target: 'all guests (asked by a review)', amount: 5000, provenance: [untrusted('review', text, 'instruction', ref)] }, 25);
+  if (rating <= 3) guard('host-assistant', 'review.reply', { who: 'host-assistant', target: rv.id, provenance: [untrusted('review', text, 'data', ref)] }, 26);
   return events;
 }
 
 // ---------- the world: step() for every hour the clock passes ----------
 // createWorld({ store, clock, cast, policies, weatherFor, bounds }) -> { runBetween(from, to), attach(), detach(), onEvents(fn) }
 export function createWorld({ store, clock = null, cast, policies = POLICIES, weatherFor = null, bounds = null } = {}) {
-  const listeners = new Set();
+  const listeners = new Set(), hourListeners = new Set();
   let off = null;
   const opts = () => ({ cast, policies, weatherFor, bounds: bounds || clock?.bounds() || FALLBACK_BOUNDS });
   // Every hour mark h with from < h <= to.
@@ -300,16 +320,21 @@ export function createWorld({ store, clock = null, cast, policies = POLICIES, we
     // runBetween(from, to): folds every hour locally, then dispatches all events in one batch.
     runBetween(from, to) {
       let s = store.getState();
-      const all = [];
-      for (const h of hours(from, to)) {
+      const all = [], hs = hours(from, to);
+      for (const h of hs) {
         const evs = step(s, h, opts());
         for (const e of evs) s = reduce(s, { ...e, seq: s.seq + 1 });
         all.push(...evs);
       }
       if (all.length) { store.dispatch(all); for (const fn of [...listeners]) { try { fn(all); } catch { /* listener failed */ } } }
+      if (hs.length) for (const fn of [...hourListeners]) { try { fn(hs, all); } catch { /* listener failed */ } }
       return all;
     },
-    attach() { if (clock && !off) off = clock.onAdvance((from, to) => world.runBetween(from, to)); return world; },
+    // Only the hours later than the clock's high-water mark are played (round 4, PROPOSAL.md 7.2):
+    // going back and forward again replays nothing until the clock passes playedTo.
+    attach() { if (clock && !off) off = clock.onAdvance((from, to, played) => world.runBetween(played && played > from ? played : from, to)); return world; },
+    onHours(fn) { hourListeners.add(fn); return () => hourListeners.delete(fn); },
+    opts,
     detach() { if (off) off(); off = null; },
     onEvents(fn) { listeners.add(fn); return () => listeners.delete(fn); },
   };

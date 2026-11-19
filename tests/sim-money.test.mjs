@@ -30,11 +30,11 @@ test('tourist tax: Loulé EUR 2 April to October, EUR 1 otherwise, at most 5 nig
   assert.equal(L.touristTax({ municipality: 'Loulé', from: '2026-03-30', to: '2026-04-02', guests: 1 }).amount, 1 + 1 + 2);
 });
 
-test('tourist tax: none found for Tavira, Lagos and Vila do Bispo as of 2026-11-18', () => {
+test('tourist tax: none found for Tavira, Lagos and Vila do Bispo on 18 November 2026 (round 4 S4 wording)', () => {
   for (const m of ['Tavira', 'Lagos', 'Vila do Bispo']) {
     const r = L.touristTax({ municipality: m, from: '2026-07-01', to: '2026-07-05', guests: 4 });
     assert.equal(r.amount, 0);
-    assert.match(r.note, /none found as of 2026-11-18/);
+    assert.equal(r.note, 'No municipal tourist tax found on 18 November 2026; check with the câmara.');
     marked(r);
   }
   assert.equal(L.municipalityId('Vila do Bispo'), 'vila-do-bispo');
@@ -78,7 +78,7 @@ test('guest registration: within 3 working days, foreign guests only, a checklis
   assert.equal(L.registrationDuty({ id: 'b2', from: '2026-11-20' }, { country: 'PT' }).applies, false);
   const c = L.checklist({ id: 'cape', municipality: 'Vila do Bispo', sleeps: 5 }, { bookings: [{ id: 'b1', homeId: 'cape', from: '2026-11-20', status: 'checked-in', guestId: 'g' }], guests: { g: { country: 'DE' } }, now: '2026-11-26T09:00' });
   assert.equal(c.items.find(i => i.id === 'registration').ok, false, 'one bulletin late');
-  assert.match(c.items.find(i => i.id === 'tourist-tax').label, /none found as of 2026-11-18/);
+  assert.equal(c.items.find(i => i.id === 'tourist-tax').label, 'No municipal tourist tax found on 18 November 2026; check with the câmara.');
   assert.match(c.items.find(i => i.id === 'rnal').label, /demonstration, fake/);
 });
 

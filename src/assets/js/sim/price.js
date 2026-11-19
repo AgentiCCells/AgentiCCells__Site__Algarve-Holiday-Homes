@@ -5,7 +5,8 @@
 // simulation yet, X is price_eur_invented from homes.json. Reads only; writes and sends nothing.
 // Works in Node for the tests (the storage is passed in). Code Apache-2.0.
 // developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19, round 3 (review M2).
-import { KEY, validDoc, replay, emptyState } from './store.js';
+import { KEY, validDoc, replay, emptyState, reduce, FALLBACK_HOMES, DEFAULT_SEED, START, ANCHOR } from './store.js';
+import { availability } from './booking.js';
 
 // simState(storage) -> the simulation's current state, or null when there is none (never creates one).
 export function simState(storage) {
@@ -36,4 +37,21 @@ export function paintRates(state, root = globalThis.document) {
     const n = nightFrom(el.dataset.rateHome, state, el.dataset.rateFile);
     if (n !== null && el.textContent !== String(n)) el.textContent = String(n);
   }
+}
+
+// ---------- availability as the simulation sees it (round 4, PROPOSAL.md 2.4, review must 2) ----------
+// The site agent asks this instead of availability.js, so it agrees night by night with the home
+// calendars and the booking (both read SIM.booking.availability, through nightTakenBy and the level
+// of bookings from elsewhere). With no simulation in this browser yet it uses the state a new one
+// would start with (and creates nothing).
+export function freshState() {
+  return reduce(emptyState(), { seq: 1, type: 'sim.created', at: START, data: { seed: DEFAULT_SEED, created: START, anchor: ANCHOR, homes: FALLBACK_HOMES.map(h => ({ ...h })) } });
+}
+function simNow(storage) {
+  try { const s = storage === undefined ? globalThis.localStorage : storage; const d = JSON.parse(s?.getItem(KEY) || 'null'); return validDoc(d) ? d.clock.now : null; } catch { return null; }
+}
+// simAvailability(homeId, from, to, storage) -> { free, taken } as SIM.booking.availability gives it.
+export function simAvailability(homeId, from, to, storage) {
+  const st = simState(storage) || freshState();
+  return availability(st, homeId, from, to, { now: simNow(storage) || START });
 }

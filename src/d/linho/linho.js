@@ -5,7 +5,7 @@
 // Sends nothing. Code Apache-2.0.
 // developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2.
 import { D, esc, FAIL, FAIL_EVENTS, CAPTION, imgName, altFor, picture, stay, avail, stayWords, bindStay,
-  live, homeToday, src, shortSrc, failNote, bindRetry, ipmaTerms, eventItems, TOWN, range, one } from './kit.js';
+  live, homeToday, src, shortSrc, failNote, bindRetry, ipmaTerms, eventItems, TOWN, range, one, rateHtml, rateNote, levelHtml } from './kit.js';
 
 const $ = id => document.getElementById(id);
 const wide = matchMedia('(min-width: 900px)');
@@ -34,7 +34,7 @@ async function renderPanels() {
   const s = stay();
   if (!list.length) { $('ln-panels').insertAdjacentHTML('afterbegin', '<p class="fail">The list of homes could not be read just now; the links below still work.</p>'); return; }
   const today = await Promise.all(list.map(homeToday));
-  $('ln-panels').innerHTML = `<p class="ln-for">Shown for ${esc(stayWords(s))}.</p>` + list.map((h, i) => {
+  $('ln-panels').innerHTML = `<p class="ln-for">Shown for ${esc(stayWords(s))}.</p>${levelHtml()}` + list.map((h, i) => {
     const a = avail(h, s), t = today[i];
     const fig = t.res.error ? 'not read just now' : t.day ? `${esc(range(t.day.tmin, t.day.tmax, '°C'))}, ${esc(t.day.weather)}` : 'no forecast for today in the file';
     return `<article class="ln-panel${i % 2 ? ' flip' : ''}" aria-labelledby="ln-${esc(h.id)}">
@@ -44,7 +44,7 @@ async function renderPanels() {
 <h3 id="ln-${esc(h.id)}">${esc(h.name)}</h3>
 <p class="ln-caps ln-place">${esc(h.place)}</p>
 <p class="ln-short">${esc(h.short || '')}</p>
-<dl class="ln-facts"><div><dt>Sleeps</dt><dd>${esc(h.sleeps)}</dd></div><div><dt>Bedrooms</dt><dd>${esc(h.bedrooms)}</dd></div><div><dt>A night</dt><dd>EUR ${esc(h.price_eur_invented)} <span>(invented)</span></dd></div></dl>
+<dl class="ln-facts"><div><dt>Sleeps</dt><dd>${esc(h.sleeps)}</dd></div><div><dt>Bedrooms</dt><dd>${esc(h.bedrooms)}</dd></div><div><dt>A night</dt><dd>EUR ${rateHtml(h)} <span>(invented)${rateNote(h)}</span></dd></div></dl>
 <p class="ln-avail ${a.free ? 'is-free' : 'is-taken'}">${esc(a.text)}</p>
 <p><a class="ln-link" href="${esc(a.link)}">See dates and details</a></p>
 <p class="ln-today"><span class="ln-caps">Today at ${esc(h.data?.forecast_name || 'IPMA')}</span> ${fig}</p>

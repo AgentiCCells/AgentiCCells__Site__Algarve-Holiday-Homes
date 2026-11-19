@@ -10,9 +10,8 @@
 
 import { LABEL, HOME_WORDS, MESSAGES, SUGGESTED, FALLBACK, INTENTS } from './agent-script.js';
 import * as D from './data.js';
-import { isTaken } from './availability.js';
 import { houseSvg } from './houses.js';
-import { simState, nightFrom } from './sim/price.js';
+import { simState, nightFrom, simAvailability } from './sim/price.js';
 
 // ---------- small helpers ----------
 
@@ -88,9 +87,10 @@ const kmBetween = (a, b) => {
 const uvBand = i => i === null ? 'unknown' : i < 3 ? 'low' : i < 6 ? 'moderate' : i < 8 ? 'high' : i < 11 ? 'very high' : 'extreme';
 
 // ---------- simulated availability ----------
-// The same seeded calendar as the home pages (availability.js: FNV-1a of "<homeId>|<today in
-// Lisbon>", mulberry32, free gaps of 1 to 9 nights and taken runs of 2 to 7 nights).
-const nightsFree = (homeId, from, nights) => { const t = todayISO(); for (let k = 0; k < nights; k++) if (isTaken(homeId, addDays(from, k), t)) return false; return true; };
+// Round 4 (PROPOSAL.md 2.4): the same answer as the home calendars and the booking, from the
+// simulation in this browser (SIM.booking.availability's rule, through sim/price.js), so the level
+// of bookings from elsewhere set in World reaches the agent too. Creates no simulation.
+const nightsFree = (homeId, from, nights) => simAvailability(homeId, from, addDays(from, nights)).free;
 
 // ---------- date and home extraction ----------
 

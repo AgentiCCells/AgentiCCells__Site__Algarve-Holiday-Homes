@@ -194,3 +194,56 @@
 .aa{grid-column:2;align-items:flex-start;flex-direction:row;flex-wrap:wrap}
 .kv{font-size:1.25rem}
 }
+
+/* ---------- round 4 (team/rounds/4/design/PROPOSAL.md 3, 5, 6 and 10) ----------
+   developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19. Contrast pairs as section 10. */
+:root{--sure-hi:#14532D;--sure-hi-bg:#DCF2E3;--sure-me:#1E3A8A;--sure-me-bg:#E0E8FB;--sure-lo:#7A4A00;--sure-lo-bg:#FFF0C7;--sure-un:#545A62;--sure-un-bg:#ECEDEF;--whose:#1F2328;--whose-bg:#ECEDEF}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sure-hi:#DCF2E3;--sure-hi-bg:#1D4D30;--sure-me:#E0E8FB;--sure-me-bg:#1E3A8A;--sure-lo:#FFF0C7;--sure-lo-bg:#5A4410;--sure-un:#ECEDEF;--sure-un-bg:#3A3F45;--whose:#ECEDEF;--whose-bg:#3A3F45}}
+:root[data-theme="dark"]{--sure-hi:#DCF2E3;--sure-hi-bg:#1D4D30;--sure-me:#E0E8FB;--sure-me-bg:#1E3A8A;--sure-lo:#FFF0C7;--sure-lo-bg:#5A4410;--sure-un:#ECEDEF;--sure-un-bg:#3A3F45;--whose:#ECEDEF;--whose-bg:#3A3F45}
+.kpis.k8{grid-template-columns:repeat(8,minmax(0,1fr))}
+.kpis.k9{grid-template-columns:repeat(9,minmax(0,1fr))}
+.kpi .ks b{font-weight:700}
+.oc-b.tour{background:#1F2328;color:#fff;border:2px solid #FBE7A1}
+.sw.tour{background:#1F2328;outline:2px solid #FBE7A1}
+.picked{outline:2px solid var(--a-ink);outline-offset:3px}
+/* the refusals panel */
+.stopped .pnh{flex-wrap:wrap}
+.rng{margin-left:auto;display:inline-flex;border:1px solid var(--a-line);border-radius:6px;overflow:hidden}
+.rng button{font:inherit;font-size:.78rem;border:0;background:var(--a-surface);color:var(--a-ink);padding:3px 9px;cursor:pointer}
+.rng button[aria-pressed="true"]{background:var(--a-ink);color:var(--a-surface)}
+.stopped .sum{margin:0 0 8px}
+.stopped .ref{border-top:1px solid var(--a-line);padding:10px 0}
+.stopped .ref:first-of-type{border-top:0}
+.stopped .src{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--a-ink2);margin-bottom:4px}
+.stopped ul{list-style:none;margin:4px 0 0;padding:0}
+.stopped li{display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:8px;padding:3px 0}
+.stopped time{font-family:var(--mono,monospace);font-size:.78rem;color:var(--a-ink2)}
+.stopped .why{color:var(--a-ink2);font-size:.8rem}
+.whose{display:inline-block;font-size:.75rem;border:1px solid var(--a-ink2);border-radius:99px;padding:0 7px;color:var(--whose);background:var(--whose-bg)}
+/* the assumptions panel */
+.assum-p>summary{cursor:pointer;padding:2px 0}
+.assum-p[open]>summary{margin-bottom:8px}
+.k.assum{background:#DDF0F4;color:#0E4A5C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .k.assum{background:#134652;color:#DDF0F4}}
+:root[data-theme="dark"] .k.assum{background:#134652;color:#DDF0F4}
+.tbl.assum th[scope="row"]{min-width:15rem;font-weight:600}
+.tbl.assum input.an{width:6.5rem;font:inherit;padding:3px 6px;border:1px solid var(--a-line);border-radius:4px;background:var(--a-surface);color:var(--a-ink)}
+.tbl.assum input.an.wide{width:8rem}
+.srcn{font-weight:400;font-size:.8rem}
+.srcn summary{cursor:pointer;color:var(--a-accent);text-decoration:underline;display:inline}
+.srcn p{margin:4px 0 0;max-width:42rem}
+/* legality, row by row */
+.sure{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;border-radius:4px;padding:0 6px}
+.s-high{color:var(--sure-hi);background:var(--sure-hi-bg)}.s-medium{color:var(--sure-me);background:var(--sure-me-bg)}.s-low{color:var(--sure-lo);background:var(--sure-lo-bg)}.s-unknown,.s-none{color:var(--sure-un);background:var(--sure-un-bg)}
+.legal-filter{margin:0 0 10px;align-items:center}
+.lcards{display:none;list-style:none;margin:0 0 12px;padding:0}
+.lcard{border:1px solid var(--a-line);border-radius:8px;padding:8px 10px;margin:0 0 8px;overflow-wrap:anywhere}
+.lcard h4{margin:0 0 4px;font-size:.92rem}
+.lcard dl{display:grid;grid-template-columns:6.5rem minmax(0,1fr);gap:2px 8px;margin:0;font-size:.84rem}
+.lcard dt{color:var(--a-ink2)}.lcard dd{margin:0}
+.ltable td,.ltable th{vertical-align:top;overflow-wrap:anywhere}
+.ltable td{min-width:7rem}
+pre.formula{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--a-bg);border:1px solid var(--a-line);border-radius:6px;padding:8px 10px;font-size:.8rem}
+@media (max-width:1200px){.kpis.k8,.kpis.k9{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:900px){.kpis.k8,.kpis.k9{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){.kpis.k8,.kpis.k9{grid-template-columns:repeat(2,minmax(0,1fr))}.ltable{display:none}.lcards{display:block}.rng{margin-left:0}}

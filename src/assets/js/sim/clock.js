@@ -79,8 +79,11 @@ export function createClock({ store, bounds = FALLBACK_BOUNDS, timers = globalTh
   function moveTo(t) {
     const from = store.clock().now, to = clampT(String(t).slice(0, 16));
     if (to === from) return to;
+    // The high-water mark before this move (round 4, PROPOSAL.md 7.2): listeners that play hours
+    // (the world) play only the hours after it, so going back and forward again replays nothing.
+    const played = typeof store.playedTo === 'function' ? store.playedTo() : null;
     store.setClock({ now: to });
-    for (const fn of [...listeners]) { try { fn(from, to); } catch (e) { if (globalThis.console) console.error('cc-sim clock listener failed', e); } }
+    for (const fn of [...listeners]) { try { fn(from, to, played); } catch (e) { if (globalThis.console) console.error('cc-sim clock listener failed', e); } }
     if (to === hi() && timer) clock.pause();
     return to;
   }
@@ -110,6 +113,9 @@ export function createClock({ store, bounds = FALLBACK_BOUNDS, timers = globalTh
       return clock.now();
     },
     playing: () => Boolean(timer),
+    playedTo: () => (typeof store.playedTo === 'function' ? store.playedTo() : store.clock().playedTo || null),
+    // behind() -> the playedTo mark while the clock is earlier than it, else null.
+    behind: () => { const p = clock.playedTo(), n = store.clock().now; return p && n < p ? p : null; },
     onAdvance(fn) { listeners.add(fn); return () => listeners.delete(fn); },
     realDataFor: date => realDataFor(date, b),
     // Every day in the window with what is real for it (for the slider's marks).

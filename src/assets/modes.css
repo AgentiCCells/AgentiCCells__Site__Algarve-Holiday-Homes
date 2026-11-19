@@ -107,3 +107,12 @@ a.d:hover{text-decoration:underline}
 .pd-bar{gap:8px;padding:6px 10px}
 }
 @media (min-width:1500px){.mode-app .modebar{flex-wrap:nowrap}}
+/* round 4: the bar that offers to put a simulation back after a tour was stopped (PROPOSAL.md 1.2) */
+.tour-left{background:#FFF6D6;color:#1F2328;border-bottom:1px solid #C9A400;padding:6px 16px;font-size:.875rem}
+.tour-left[hidden]{display:none}
+.tour-left p{margin:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.k.assum{background:#DDF0F4;color:#0E4A5C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .k.assum{background:#134652;color:#DDF0F4}}
+:root[data-theme="dark"] .k.assum{background:#134652;color:#DDF0F4}
+.clock-behind{display:block;white-space:normal;font-weight:400;font-size:.7rem}
+.clock-behind[hidden]{display:none}

@@ -5,7 +5,7 @@
 // and the joke-picture row. Reads live from data.promptugal.news; sends nothing. Code Apache-2.0.
 // developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2.
 import { D, T, esc, FAIL, FAIL_EVENTS, CAPTION, imgName, altFor, picture, placeAlt, stay, avail, stayWords, bindStay,
-  live, homeToday, src, shortSrc, failNote, bindRetry, ipmaTerms, eventItems, TOWN, range, one } from './kit.js';
+  live, homeToday, src, shortSrc, failNote, bindRetry, ipmaTerms, eventItems, TOWN, range, one, rateHtml, rateNote, levelHtml } from './kit.js';
 import { chimney } from '/assets/js/houses.js';
 
 const $ = id => document.getElementById(id);
@@ -58,7 +58,7 @@ ${postmark(h.id, h.data?.forecast_name || h.place, t)}
 <h3 id="pc-${esc(h.id)}"><a href="${esc(a.link)}">${esc(h.name)}</a></h3>
 <p class="pc-place">${esc(h.place)}</p>
 <p class="pc-line">${esc(h.short || '')}</p>
-<p class="pc-meta">Sleeps ${esc(h.sleeps)} · <b>EUR ${esc(h.price_eur_invented)}</b> a night (invented)</p>
+<p class="pc-meta">Sleeps ${esc(h.sleeps)} · <b>EUR ${rateHtml(h)}</b> a night (invented)${rateNote(h)}</p>
 <p class="pc-avail ${a.free ? 'is-free' : 'is-taken'}">${esc(a.text)}</p>
 </div></article>
 ${shortSrc(t.res)}</li>`;
@@ -74,7 +74,7 @@ ${shortSrc(t.res)}</li>`;
 <p class="pc-line">From each town's own agenda, as published; check every event with its organiser.</p>
 ${evHtml}</div></article>
 ${src(ev.faro.res)}</li>`);
-  $('pc-grid').innerHTML = cards.join('');
+  $('pc-grid').innerHTML = levelHtml('li') + cards.join('');
   $('pc-wish').innerHTML = list.map(h => `<li><figure>${picture(imgName(h, 'funny'), altFor(h, 'funny'), { sizes: '(min-width: 900px) 220px, 50vw' })}<figcaption>${esc(h.name)}, not quite in ${esc(h.place.replace(/^near /, ''))}. AI-generated joke picture.</figcaption></figure></li>`).join('');
 }
 

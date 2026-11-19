@@ -44,10 +44,20 @@ export const TOURIST_TAX = Object.freeze([
   { municipality: 'loule', from: '2024-11-01', months: [4, 5, 6, 7, 8, 9, 10], eur: 2, cap: 5, min_age: 16, source: 'Regulamento 786/2024', sure: 'high', urls: [SOURCES.loule, SOURCES.louleReg] },
   { municipality: 'loule', from: '2024-11-01', months: [11, 12, 1, 2, 3], eur: 1, cap: 5, min_age: 16, source: 'Regulamento 786/2024', sure: 'high', urls: [SOURCES.loule, SOURCES.louleReg] },
 ]);
+// Round 4 (PROPOSAL.md 6.3, S4): "found on 18 November 2026", the date in words.
+export const CHECKED_WORDS = '18 November 2026';
 export const NO_TAX = Object.freeze({
-  tavira: { note: `none found as of ${CHECKED}`, urls: [SOURCES.tavira] },
-  lagos: { note: `none found as of ${CHECKED}`, urls: [SOURCES.lagos] },
-  'vila-do-bispo': { note: `none found as of ${CHECKED}`, urls: [SOURCES.vilaDoBispo] },
+  tavira: { note: `found on ${CHECKED_WORDS}`, urls: [SOURCES.tavira] },
+  lagos: { note: `found on ${CHECKED_WORDS}`, urls: [SOURCES.lagos] },
+  'vila-do-bispo': { note: `found on ${CHECKED_WORDS}`, urls: [SOURCES.vilaDoBispo] },
+});
+// How sure, per municipality, for the tourist tax (LEGAL-PT.md 2.3; PROPOSAL.md 6.3).
+export const TAX_SURE = Object.freeze({
+  faro: 'high (rates, age, date); low (7-night cap)',
+  loule: 'high',
+  tavira: 'medium (none found)',
+  lagos: 'medium (none found); one older guide lists Lagos as charging: low',
+  'vila-do-bispo': 'medium (none found)',
 });
 
 // rate(m, d) -> the row in force for municipality m on date d, or null (no tax found).
@@ -153,9 +163,10 @@ export function checklist(home, { bookings = [], guests = {}, now } = {}) {
       { id: 'capacity', label: `Capacity within limits (sleeps ${home.sleeps}; at most 30 guests and 9 bedrooms)`, ok: (home.sleeps || 0) <= 30, source: SOURCES.dl76 },
       { id: 'condominium', label: 'Condominium: no authorisation needed since November 2024; opposition resolutions recorded: none', ok: true, source: SOURCES.regime },
       { id: 'tourist-tax', label: tax, ok: true, source: NO_TAX[m] ? NO_TAX[m].urls[0] : (m === 'faro' ? SOURCES.faro : SOURCES.loule) },
-      { id: 'municipal-rules', label: `Municipal AL regulation or contention area for ${home.municipality}: none found as of ${CHECKED} (unknown: check the câmara)`, ok: null, source: null },
+      { id: 'municipal-rules', label: `Municipal AL regulation or contention area for ${home.municipality}: none found on ${CHECKED_WORDS} (unknown: check the câmara)`, ok: null, source: null },
       { id: 'registration', label: `Guest bulletins: ${pending.length} pending, ${late.length} late`, ok: late.length === 0, source: null },
     ],
+    taxSure: TAX_SURE[m] || 'unknown',
     duties, ...meta(Object.values(SOURCES)),
   };
 }

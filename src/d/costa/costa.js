@@ -5,7 +5,7 @@
 // events. Reads live from data.promptugal.news; sends nothing. Code Apache-2.0.
 // developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2.
 import { D, T, esc, FAIL, FAIL_EVENTS, CAPTION, imgName, altFor, picture, stay, avail, stayWords, bindStay,
-  live, homeToday, src, failNote, bindRetry, ipmaTerms, warnWords, eventItems, TOWN, range, one } from './kit.js';
+  live, homeToday, src, failNote, bindRetry, ipmaTerms, warnWords, eventItems, TOWN, range, one, rateHtml, rateNote, levelHtml } from './kit.js';
 
 const $ = id => document.getElementById(id);
 // West to east, numbered as the pins; callout boxes in viewBox units: x, y and whether y is the box's top or bottom.
@@ -69,10 +69,10 @@ async function render() {
 <td data-k="Sea" class="co-fig">${sf}</td>
 <td data-k="UV" class="co-fig">${uf}</td>
 <td data-k="Your dates" class="${a.free ? 'co-free' : 'co-taken'}">${a.free ? `<b>Free</b> (simulated)<small>${a.nights} nights, EUR ${a.total} (invented)</small>` : `<b>Taken</b> (simulated)<small>from ${esc(D.fmtDay(a.first || s.from))}</small>`}</td>
-<td data-k="A night" class="co-fig">EUR ${esc(h.price_eur_invented)}<small>invented</small></td>
+<td data-k="A night" class="co-fig">EUR ${rateHtml(h)}<small>invented${rateNote(h)}</small></td>
 </tr>`;
   }).join('');
-  $('co-table').innerHTML = `<table class="co-tbl"><caption class="sr-only">The five invented homes from west to east, with IPMA's figures for today and simulated availability</caption>
+  $('co-table').innerHTML = `${levelHtml()}<table class="co-tbl"><caption class="sr-only">The five invented homes from west to east, with IPMA's figures for today and simulated availability</caption>
 <thead><tr><th scope="col"><span class="sr-only">Picture</span></th><th scope="col">Home</th><th scope="col">Forecast place</th><th scope="col">Today</th><th scope="col">Sea</th><th scope="col">UV</th><th scope="col">Your dates</th><th scope="col">A night</th></tr></thead>
 <tbody>${rows}</tbody></table>
 <p class="co-capt">Pictures: ${CAPTION.house}</p>

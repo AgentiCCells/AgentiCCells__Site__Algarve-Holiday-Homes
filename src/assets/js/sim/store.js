@@ -47,6 +47,9 @@ export const DEFAULT_SETTINGS = Object.freeze({
   laundryCost: 18,           // per turnover (invented)
   utilitiesMonthly: 90,      // per home per month (invented)
   insuranceMonthly: 35,      // per home per month (invented)
+  // Round 4 (design PROPOSAL.md 2.1 and 2.4):
+  backgroundKeep: 1,         // level of bookings from elsewhere: 1 the round 3 pattern; the world sets it from the seed
+  ownerAuto: true,           // the synthetic owner moves the rates of homes the visitor has not touched
 });
 
 // Stock per home (invented quantities and unit costs, EUR).
@@ -71,7 +74,7 @@ export function initialHome(h) {
   return {
     id: h.id, name: h.name, place: h.place || '', municipality: h.municipality, sleeps: h.sleeps, bedrooms: h.bedrooms, pets: Boolean(h.pets),
     check_in: h.check_in || '16:00', check_out: h.check_out || '10:00',
-    rate: { base: Number(h.price_eur_invented) || 100, listBase: Number(h.price_eur_invented) || 100, weekendFactor: 1.15, minNights: minNightsFor(h), cleaningFee: cleaningFeeFor(h) },
+    rate: { base: Number(h.price_eur_invented) || 100, listBase: Number(h.price_eur_invented) || 100, weekendFactor: 1.15, minNights: minNightsFor(h), cleaningFee: cleaningFeeFor(h), manual: false },
     invented: true,
   };
 }
@@ -151,6 +154,9 @@ export function reduce(prev, ev) {
       break;
     }
     case 'note': s.notes = [...s.notes, { at: ev.at, text: d.text }].slice(-200); break;
+    // Round 4 (PROPOSAL.md 2.4): a synthetic visitor whose stay could not fit before the real data
+    // ends is not sent and not counted as leaving; the first such day is kept for the findings.
+    case 'visit.skipped': if (!s.stats.noFitFrom) s.stats = { ...s.stats, noFitFrom: d.day || String(ev.at || '').slice(0, 10) }; break;
     default: break;
   }
   if (Array.isArray(ev.ledger) && ev.ledger.length) {
@@ -245,7 +251,7 @@ export function createStore(opts = {}) {
     },
     subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
     reset(seed = DEFAULT_SEED, { now = START, settings } = {}) {
-      doc = { schema: SCHEMA, key: KEY, created: realNow(), seed: String(seed), clock: { now, speed: 0, playing: false }, snapshot: null, events: [] };
+      doc = { schema: SCHEMA, key: KEY, created: realNow(), seed: String(seed), clock: { now, speed: 0, playing: false, playedTo: now }, snapshot: null, events: [] };
       const e = { seq: 1, type: 'sim.created', at: now, actor: 'system', data: { seed: String(seed), created: now, anchor: ANCHOR, homes: homes.map(h => ({ ...h })), settings: settings || {} } };
       doc.events.push(e);
       state = replay(doc.events);
@@ -254,9 +260,16 @@ export function createStore(opts = {}) {
       return state;
     },
     clock: () => (doc ? { ...doc.clock } : { now: START, speed: 0, playing: false }),
+    // playedTo (round 4, PROPOSAL.md 7.2): the high-water mark of the simulated clock, the latest time
+    // the clock has reached. Going back in time never lowers it, so hours already played are not
+    // played again and actions that need hours to be played are refused before it.
+    playedTo: () => playedToOf(doc),
     setClock(c) {
       if (!doc) store.load();
+      const was = playedToOf(doc);
       doc.clock = { ...doc.clock, ...c };
+      const n = doc.clock.now;
+      doc.clock.playedTo = !was || (n && n > was) ? n : was;
       persist('clock');
       notify({ kind: 'clock' });
       return doc.clock;
@@ -273,6 +286,26 @@ export function createStore(opts = {}) {
     close() { try { globalThis.removeEventListener?.('storage', onStorage); } catch { /* ignore */ } try { channel?.close?.(); } catch { /* ignore */ } listeners.clear(); },
   };
   return store;
+}
+// A document from round 3 has no playedTo: it takes the latest `at` in its event log (else the clock).
+export function playedToOf(d) {
+  if (!d) return null;
+  if (d.clock && typeof d.clock.playedTo === 'string') return d.clock.playedTo;
+  const ats = (d.events || []).map(e => String(e.at || '').slice(0, 16)).filter(Boolean).sort();
+  return ats.length ? ats[ats.length - 1] : (d.clock?.now || null);
+}
+// The one note for an action refused in hours already played (PROPOSAL.md 7.2).
+const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MO = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export function playedWhen(t) {
+  const s = String(t || ''), d = new Date(`${s.slice(0, 10)}T12:00:00Z`);
+  return isNaN(d) ? s : `${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MO[d.getUTCMonth()]}, ${s.slice(11, 16)}`;
+}
+export const playedNote = playedTo => `You are looking at hours already played. Move to ${playedWhen(playedTo)} to book or change rates.`;
+export const BACK_NOTE = 'Going back in time does not undo anything. What happened after this moment stays, and the hours already played are not played again.';
+// behind(store) -> the playedTo mark when the clock is earlier than it, else null.
+export function behind(store) {
+  const c = store.clock(), p = store.playedTo ? store.playedTo() : c.playedTo;
+  return p && c.now && c.now < p ? p : null;
 }
 const lastSeq = d => (!d ? 0 : d.events.length ? d.events[d.events.length - 1].seq : d.snapshot ? d.snapshot.seq : 0);
 export function validDoc(d) {

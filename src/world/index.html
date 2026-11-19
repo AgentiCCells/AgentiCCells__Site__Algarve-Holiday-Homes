@@ -28,7 +28,11 @@
       <span>Bookings <b id="st-bookings">0</b></span>
       <span>Left unhappy <b id="st-unhappy">0</b></span>
       <span>Injection attempts blocked <b id="st-inj">0 of 0</b></span>
+      <span>Score <b id="st-score">-</b></span>
     </p>
+    <p class="w-level"><span id="st-level">Bookings from elsewhere: as the site</span>
+      <label for="lvl" class="sr-only">Bookings from elsewhere</label>
+      <select id="lvl"><option value="site">as the site (about 44% of nights)</option><option value="low">low (about 10%)</option><option value="medium">medium (about 20%)</option><option value="high">high (about 30%)</option><option value="off">off</option></select></p>
     <form class="w-seed" id="seed-form" autocomplete="off">
       <label for="seed-in">Seed</label>
       <input id="seed-in" name="seed" type="text" maxlength="40" spellcheck="false">
@@ -63,6 +67,9 @@
         </section>
         <section class="w-box" aria-labelledby="found-h">
           <h2 id="found-h">What this run found <span class="k sim">Simulated</span></h2>
+          <div class="w-score" id="score" aria-live="off"><p class="mini">No score yet: press 1&times; or Very fast.</p></div>
+          <details class="w-formula" id="formula"><summary>How the score is worked out</summary><p class="mini" id="formula-t"></p></details>
+          <div id="best"></div>
           <div id="found"></div>
           <p class="mini">Ordered by cost. Played by the simulation's scripts, not by people: agreement between these invented people says as much about the scripts as about the site.</p>
           <p><button type="button" class="tbtn" id="export">Export this run (JSON, to your device)</button></p>
@@ -72,12 +79,20 @@
 
     <div class="w-side">
       <div class="w-tabs" role="tablist" aria-label="Panels">
-        <button type="button" role="tab" id="tab-money" aria-controls="p-money" aria-selected="true">Money</button>
+        <button type="button" role="tab" id="tab-rates" aria-controls="p-rates" aria-selected="true">Your rates</button>
+        <button type="button" role="tab" id="tab-money" aria-controls="p-money" aria-selected="false" tabindex="-1">Money</button>
         <button type="button" role="tab" id="tab-homes" aria-controls="p-homes" aria-selected="false" tabindex="-1">Homes</button>
         <button type="button" role="tab" id="tab-stock" aria-controls="p-stock" aria-selected="false" tabindex="-1">Stock</button>
         <button type="button" role="tab" id="tab-reviews" aria-controls="p-reviews" aria-selected="false" tabindex="-1">Reviews</button>
         <button type="button" role="tab" id="tab-pol" aria-controls="p-pol" aria-selected="false" tabindex="-1">Policies</button>
       </div>
+      <section class="w-box w-panel" id="p-rates" role="tabpanel" aria-labelledby="tab-rates">
+        <h2>Your rates <span class="k sim">Simulated</span> <span class="k inv">Invented</span></h2>
+        <div id="rates"></div>
+        <label class="mini w-auto"><input type="checkbox" id="owner-auto" checked> Let Helena (synthetic owner) keep moving the rates of homes you have not touched</label>
+        <h2 class="w-h2b">What happened, and what if you had left the rates</h2>
+        <div id="whatif"><p class="mini">Change a rate or a minimum stay above, and this compares what happens with what would have happened.</p></div>
+      </section>
       <section class="w-box w-panel" id="p-money" role="tabpanel" aria-labelledby="tab-money">
         <h2>Profit and loss, this run <span class="k sim">Simulated</span></h2>
         <div id="pnl"></div>

@@ -35,6 +35,7 @@
 <button type="button" role="radio" aria-checked="false" data-speed="86400">1 day a second</button>
 </div>
 <p class="tb-now" id="tb-now" aria-live="off">Simulated time: reading...</p>
+<button type="button" class="tb tb-tour" id="tb-tour">Show me how it works (90 seconds)</button>
 <div class="rail-wrap">
 <div class="rail" id="rail">
 <div class="rail-wx" id="rail-wx" aria-hidden="true"></div>
@@ -47,9 +48,11 @@
 <li><i class="lg-wx"></i> real weather as IPMA issued it (<span id="lg-wx">reading</span>)</li>
 <li><i class="lg-ev"></i> real events (<span id="lg-ev">reading</span>)</li>
 <li>The slider stops at the last real day. Arrow keys move an hour, Page Up and Page Down a day, Home and End the ends.</li>
+<li id="lg-level" hidden></li>
 </ul>
 <label class="small synth"><input type="checkbox" id="synth"> Let synthetic visitors book too (a preview of round 4's world: invented people, scripted)</label>
 <p class="small play-note" id="play-note" role="status"></p>
+<div class="play-strip small" id="play-strip" hidden></div>
 </section>
 
 <div class="view-toggle" role="group" aria-label="What to show">
@@ -65,7 +68,7 @@
 <div class="frame-box" id="box-v"><iframe id="frame-v" title="The visitor's site, inside this page" loading="eager"></iframe></div>
 </section>
 <section class="pane pane-ticker" aria-labelledby="tk-h">
-<div class="pane-head"><h2 id="tk-h">What just happened</h2><p class="addr">newest first</p></div>
+<div class="pane-head"><h2 id="tk-h">What just happened</h2><p class="addr">newest first, in the order things were done</p></div>
 <ol class="ticker" id="ticker" aria-live="polite" aria-relevant="additions"><li class="tk-empty">Nothing yet. Book a home on the left, or move the time.</li></ol>
 </section>
 <section class="pane pane-admin" id="pane-admin" aria-labelledby="pa-h" tabindex="-1">

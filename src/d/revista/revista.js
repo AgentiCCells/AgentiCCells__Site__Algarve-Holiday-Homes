@@ -5,7 +5,7 @@
 // (address and this tab, through data.js). Code Apache-2.0.
 // developer.algarve-holiday-homes@AgentiCCells.dinis (instance B), 2026-11-18, round 2.
 import { D, T, esc, FAIL, FAIL_EVENTS, CAPTION, imgName, altFor, picture, stay, avail, stayWords,
-  bindStay, live, src, failNote, bindRetry, ipmaTerms, warnWords, dateline, eventItems, TOWN, range, one } from './kit.js';
+  bindStay, live, src, failNote, bindRetry, ipmaTerms, warnWords, dateline, eventItems, TOWN, range, one, rateHtml, rateNote, levelHtml } from './kit.js';
 
 const $ = id => document.getElementById(id);
 const AREA = { salt: 'Tavira · the east', lagoon: 'Faro · the lagoon', hill: 'Loulé · the hills', harbour: 'Lagos · the west', cape: 'Sagres · the far west' };
@@ -44,7 +44,7 @@ async function renderFeatures() {
   $('rv-for').textContent = `for ${stayWords(s)}`;
   if (!list.length) { $('rv-features').innerHTML = '<p class="fail">The list of homes could not be read just now. <a href="/homes/">See the homes page</a>.</p>'; return; }
   $('rv-issue-list').innerHTML = list.map(h => `<li><a href="#rv-f-${esc(h.id)}">${esc(h.name)}, ${esc(h.place)}</a><span>sleeps ${esc(h.sleeps)}</span></li>`).join('');
-  $('rv-features').innerHTML = list.map((h, i) => {
+  $('rv-features').innerHTML = levelHtml() + list.map((h, i) => {
     const a = avail(h, s);
     const pair = i === 0 ? `<div class="rv-pair">
 <figure class="rv-fig">${picture(imgName(h, 'inside'), altFor(h, 'inside'), { sizes: '(min-width: 900px) 330px, 50vw' })}<figcaption>Inside. ${CAPTION.inside}</figcaption></figure>
@@ -58,7 +58,7 @@ ${pair}
 <p class="rv-kicker">${esc(AREA[h.id] || h.place)}</p>
 <h3 id="rv-f-${esc(h.id)}-h" class="rv-h2"><a href="${esc(a.link)}">${esc(h.name)}</a></h3>
 <p class="rv-standfirst">${esc(h.short || '')}</p>
-<p class="rv-facts"><span><b>${esc(h.sleeps)}</b> guests</span><span><b>${esc(h.bedrooms)}</b> bedroom${h.bedrooms === 1 ? '' : 's'}</span><span><b>EUR ${esc(h.price_eur_invented)}</b> a night (invented)</span></p>
+<p class="rv-facts"><span><b>${esc(h.sleeps)}</b> guests</span><span><b>${esc(h.bedrooms)}</b> bedroom${h.bedrooms === 1 ? '' : 's'}</span><span><b>EUR ${rateHtml(h)}</b> a night (invented)${rateNote(h)}</span></p>
 <p class="rv-body">${esc(h.description || '')}</p>
 <p class="rv-avail ${a.free ? 'is-free' : 'is-taken'}"><span class="rv-avail-k">${a.free ? 'Free' : 'Taken'}</span> ${esc(a.text)}</p>
 <p class="rv-readon"><a href="${esc(a.link)}">Read on: calendar, weather and events for ${esc(h.name.replace(/^The /, 'the '))}</a></p>

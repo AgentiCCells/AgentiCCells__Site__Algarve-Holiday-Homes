@@ -12,10 +12,15 @@ import { SEASON } from '../sim/booking.js';
 import { taxRow } from '../sim/legal.js';
 import { irs } from '../sim/legal.js';
 import { bookingsList } from '../sim/store.js';
+import { costLines, blankLines, LINE_KEYS, linesTotal, documentedDefault, normalise, defaults, houseValueOf, yieldOf } from '../sim/assumptions.js';
 
 export const HISTORY_END = '2026-11-16';
 export const SESSION_FROM = '2026-11-17';
 const DIM = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+// Guests aged 16 or over per stay, used only by the history's tourist tax (round 4, PROPOSAL.md 3.5;
+// INVENTED). Round 3 counted round(sleeps x 0.6), so a flat for two paid for one guest.
+export const HISTORY_GUESTS = Object.freeze({ lagoon: 2, salt: 3, harbour: 3, cape: 3, hill: 4 });
+export const HISTORY_GUESTS_WORDS = 'The history assumes Lagoon 2, Salt 3, Harbour 3, Cape 3, Hill 4 guests aged 16 or over per stay';
 const blank = () => ({ revenue: 0, vat: 0, commission: 0, cleaning: 0, supplies: 0, running: 0, touristTax: 0, nights: 0 });
 const addInto = (a, b) => { for (const k of Object.keys(a)) a[k] = round2(a[k] + (b[k] || 0)); return a; };
 
@@ -38,7 +43,7 @@ export function historyMonth(S, homeId, m) {
   const running = round2((S.settings.utilitiesMonthly + S.settings.insuranceMonthly) * days / DIM[m - 1] + (r() < 0.3 ? 40 + r() * 180 : 0));
   // Tourist tax (passed on): guests aged 16+ (invented: about 60 percent of beds) per night, up to the cap per stay.
   const row = taxRow(h.municipality, `2026-${String(m).padStart(2, '0')}-15`);
-  const touristTax = row ? round2(stays * Math.round(h.sleeps * 0.6) * Math.min(stayLen, row.cap) * row.eur) : 0;
+  const touristTax = row ? round2(stays * (HISTORY_GUESTS[homeId] ?? Math.round(h.sleeps * 0.6)) * Math.min(stayLen, row.cap) * row.eur) : 0;
   return { revenue, vat, commission, cleaning, supplies, running, touristTax, nights };
 }
 
@@ -67,20 +72,48 @@ export function sessionLines(S, { homeId = null, month = null, to = null } = {})
   return out;
 }
 
-// lines(S, homeId, month, to) -> history + session for one home (or all) and one month (or year to date).
-export function lines(S, { homeId = null, month = null, to = '2026-12-31' } = {}) {
+// The number of days of a period (PROPOSAL.md 3.2): year to date is 1 January to `to`; a month is
+// its days up to `to` (0 for a month after it).
+export function periodDays({ month = null, to = '2026-12-31' } = {}) {
+  const tm = Number(String(to).slice(5, 7)), td = Number(String(to).slice(8, 10));
+  if (!month) return DIM.slice(0, tm - 1).reduce((a, b) => a + b, 0) + td;
+  return month < tm ? DIM[month - 1] : month === tm ? td : 0;
+}
+// lines(S, { homeId, month, to, assumptions }) -> history + session for one home (or all) and one
+// month (or year to date), with the owner's cost assumptions (sim/assumptions.js; the decided
+// defaults when none are given) as lines of their own.
+export function lines(S, { homeId = null, month = null, to = '2026-12-31', assumptions = null } = {}) {
   const ids = homeId ? [homeId] : S.homeOrder;
   const months = month ? [month] : Array.from({ length: 12 }, (_, i) => i + 1);
-  const t = blank();
-  for (const id of ids) for (const m of months) if (m <= 11) addInto(t, historyMonth(S, id, m));
-  addInto(t, sessionLines(S, { homeId, month, to }));
-  return finish(t, S.settings);
+  const a = assumptions ? normalise(assumptions) : defaults();
+  const days = periodDays({ month, to });
+  const t = blank(), extra = blankLines();
+  for (const id of ids) {
+    const one = blank();
+    for (const m of months) if (m <= 11) addInto(one, historyMonth(S, id, m));
+    addInto(one, sessionLines(S, { homeId: id, month, to }));
+    const l = costLines(a, id, days, round2(one.revenue - one.vat));
+    for (const k of LINE_KEYS) extra[k] = round2(extra[k] + l[k]);
+    addInto(t, one);
+  }
+  // Session lines without a home (none today) still count in the total.
+  if (!homeId) { const all = sessionLines(S, { month, to }), per = blank(); for (const id of ids) addInto(per, sessionLines(S, { homeId: id, month, to })); for (const k of Object.keys(t)) t[k] = round2(t[k] + (all[k] - per[k])); }
+  t.extra = extra;
+  t.days = days;
+  t.houseValue = houseValueOf(a, ids);
+  return finish(t, S.settings, a);
 }
-export function finish(t, settings) {
-  t.costs = round2(t.commission + t.cleaning + t.supplies + t.running);
+export function finish(t, settings, assumptions = null) {
+  const a = assumptions ? normalise(assumptions) : defaults();
+  if (!t.extra) t.extra = blankLines();
+  t.costs = round2(t.commission + t.cleaning + t.supplies + t.running);      // the round 3 spending
+  t.extraTotal = linesTotal(t.extra);
   t.netRevenue = round2(t.revenue - t.vat);
-  t.profit = round2(t.netRevenue - t.costs);
-  t.irs = irs({ gross: Math.max(0, t.netRevenue), coef: settings.irsCoef, startYear: settings.irsStartYear, expenses: t.costs, marginalRate: settings.marginalRate });
+  t.profit = round2(t.netRevenue - t.costs - t.extraTotal);
+  t.documentedDefault = documentedDefault(t.costs, t.extra);
+  t.documented = Number.isFinite(a.business.documented) ? a.business.documented : t.documentedDefault;
+  t.irs = irs({ gross: Math.max(0, t.netRevenue), coef: settings.irsCoef, startYear: settings.irsStartYear, expenses: t.documented, marginalRate: settings.marginalRate });
+  if (t.days && t.houseValue !== undefined) { t.grossYield = yieldOf(t.netRevenue, t.days, t.houseValue); t.netYield = yieldOf(t.profit, t.days, t.houseValue); }
   return t;
 }
 // The months that have figures up to the simulated today (1..12).

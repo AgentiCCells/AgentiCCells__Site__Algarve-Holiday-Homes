@@ -145,3 +145,25 @@ body.has-ccf .dock{bottom:44px}
   .found{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){.fig.res{transition:none}.bub{transition:none}}
+/* ---------- round 4: Your rates, what if, the score and best runs (team/rounds/4/design/PROPOSAL.md 2 and 4) ----------
+   developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19. */
+.w-level{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin:4px 0 0;font-size:.8125rem;color:var(--ink-2)}
+.w-level select{font:inherit;font-size:.8125rem;padding:2px 6px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink)}
+.w-tscroll{overflow-x:auto;max-width:100%}
+.w-rates,.w-cmp,.w-parts,.w-best{width:100%;border-collapse:collapse;font-size:.8125rem}
+.w-rates th,.w-rates td,.w-cmp th,.w-cmp td,.w-parts th,.w-parts td,.w-best th,.w-best td{text-align:left;padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.w-rates td{white-space:nowrap}
+.w-rates button{font:inherit;font-size:.75rem;border:1px solid var(--ink-2);background:var(--surface);color:var(--ink);border-radius:4px;padding:1px 6px;cursor:pointer;min-width:2rem;min-height:1.8rem}
+.w-rates button:disabled{opacity:.5;cursor:not-allowed}
+.w-rates input{width:4.6rem;font:inherit;font-size:.8125rem;padding:2px 4px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink)}
+.w-played{background:#FFF6D6;color:#1F2328;border:1px solid #C9A400;border-radius:6px;padding:6px 8px;font-size:.8125rem}
+.w-played button{font:inherit;font-size:.75rem;margin-left:4px}
+.w-auto{display:block;margin:8px 0}
+.w-h2b{margin-top:12px!important}
+.w-h3{font-size:.8125rem;margin:10px 0 4px}
+.w-score-big{margin:0 0 6px;font-size:.9rem}.w-score-big b{font-size:1.9rem;line-height:1}
+.w-formula{margin:4px 0 8px;font-size:.8125rem}.w-formula summary{cursor:pointer}
+.k.assum{background:#DDF0F4;color:#0E4A5C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .k.assum{background:#134652;color:#DDF0F4}:root:not([data-theme="light"]) .w-played{background:#5A4410;color:#FFF0C7}}
+:root[data-theme="dark"] .k.assum{background:#134652;color:#DDF0F4}
+:root[data-theme="dark"] .w-played{background:#5A4410;color:#FFF0C7}

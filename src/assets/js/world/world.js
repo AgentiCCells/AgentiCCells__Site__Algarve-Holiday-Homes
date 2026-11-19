@@ -10,13 +10,16 @@
 // Reads this site's files and data.promptugal.news; sends nothing. Code Apache-2.0.
 // Written by developer.algarve-holiday-homes@AgentiCCells.dinis (instance F), 2026-11-18, round 3.
 
-import { bookingsList, START } from '../sim/store.js';
+import { bookingsList, START, BACK_NOTE, playedNote } from '../sim/store.js';
 import { FALLBACK_BOUNDS, loadBounds } from '../sim/clock.js';
 import { createWorld, loadCast, PROFILES } from '../sim/personas.js';
 import { figureFor } from '../sim/figure.js';
 import { pnl } from '../sim/money.js';
 import { nightTakenBy } from '../sim/booking.js';
-import { SAFE_ACTIONS } from '../sim/abp.js';
+import { createShadow } from '../sim/shadow.js';
+import { score, measures, injections, FORMULA, RANGE_WORDS, NOT_REAL, LEVELS, levelOfSeed, levelOfKeep, readScores, addScore } from '../sim/score.js';
+import * as A from '../sim/assumptions.js';
+import { WORDS as DEMAND_WORDS } from '../sim/demand.js';
 import { esc, addDays, dayOf, daysBetween, toMs } from '../sim/util.js';
 import { mountFrame, kindBadge, decisionChip } from './frame.js';
 
@@ -33,7 +36,11 @@ const HOME_Y = 338, FEET_Y = 392;
 const SLOTS = [64, -64, 84, -84, 46, -46];
 
 // ---------- state ----------
-let store, clock, world, cast, homesFile = [], bounds = FALLBACK_BOUNDS;
+let store, clock, guard, world, cast, homesFile = [], bounds = FALLBACK_BOUNDS;
+// Round 4 (PROPOSAL.md 2.3 and 4): the shadow world for "what if you had left the rates", and the score.
+let shadow = null, shadowFrom = null, savedRun = null, vfShadowMs = 0, lastNow = null, backTimer = null;
+const WEST_EAST = ['cape', 'harbour', 'hill', 'lagoon', 'salt'];
+const assumptions = () => A.read().doc;
 let speed = 0, vfTimer = null, vfStart = 0, vfFromDay = null;
 let selected = null, dirty = true, lastRender = 0, lastAdvance = 0, carry = 0;
 const forecast = { ok: null, byCity: {} }; // ok: null reading, true read, false failed
@@ -44,14 +51,31 @@ boot().catch(e => { const n = $('w-note'); if (n) n.textContent = `The world cou
 async function boot() {
   try { const r = await fetch('/data/homes.json'); if (r.ok) homesFile = (await r.json()).homes || []; } catch { /* the store's own list is used */ }
   const sim = await mountFrame('world', { homes: homesFile.length ? homesFile : null });
-  store = sim.store; clock = sim.clock;
+  store = sim.store; clock = sim.clock; guard = sim.guard;
   cast = await loadCast();
   world = createWorld({ store, clock, cast, weatherFor: regionWeather }).attach();
   world.onEvents(onWorldEvents);
+  shadow = createShadow({ opts: world.opts });
+  world.onHours(hours => {
+    if (!shadow.active) return;
+    const t0 = performance.now();
+    shadow.advance(hours);
+    if (speed === 'vf') { vfShadowMs += performance.now() - t0; if (performance.now() - vfStart > 8000 && vfShadowMs > 0) { shadow.stop('slow'); note('The comparison was stopped to keep the page quick.'); } }
+  });
+  lastNow = clock.now();
   drawBackground();
   drawRail();
   wire();
-  store.subscribe((s, info) => { dirty = true; if (info.kind === 'reset') { stopVF(); clearActors(); drawRail(); } });
+  store.subscribe((s, info) => {
+    dirty = true;
+    if (info.kind === 'reset' || info.kind === 'import') { stopVF(); clearActors(); drawRail(); shadow.stop(); savedRun = null; }
+    // Going back in time (round 4, PROPOSAL.md 7.2): said for 6 seconds; nothing is undone or replayed.
+    const n = clock.now();
+    if (lastNow && n < lastNow && info.kind !== 'reset' && info.kind !== 'import') { note(BACK_NOTE); clearTimeout(backTimer); backTimer = setTimeout(() => { if ($('w-note').textContent === BACK_NOTE) note(''); }, 6000); }
+    lastNow = n;
+  });
+  $('formula-t').textContent = `${FORMULA} ${RANGE_WORDS}`;
+  if (innerWidth >= 1000) $('formula').open = true;
   setSpeed(0);
   dirty = true;
   requestAnimationFrame(frame);
@@ -84,6 +108,23 @@ function wire() {
   $('seed-form').addEventListener('submit', e => { e.preventDefault(); const v = $('seed-in').value.trim(); if (v) newRun(v); });
   $('seed-new').addEventListener('click', () => newRun(`cc-${String(Math.floor(Math.random() * 9000) + 1000)}`));
   $('export').addEventListener('click', exportRun);
+  $('lvl').addEventListener('change', e => setLevel(e.target.value));
+  $('owner-auto').addEventListener('change', e => {
+    const d = guard('owner', 'setting.set', { target: 'ownerAuto', by: 'you' });
+    if (d.decision === 'allow') store.dispatch({ type: 'setting.set', actor: 'owner', data: { key: 'ownerAuto', value: e.target.checked, by: 'you' } });
+    note(e.target.checked ? 'Helena (synthetic owner) moves the rates of homes you have not touched, at 08:00 each simulated day.' : 'Helena (synthetic owner) moves no rates now.');
+  });
+  $('rates').addEventListener('click', e => {
+    const b = e.target.closest('button[data-rate]'); if (!b) return;
+    const h = store.getState().homes[b.dataset.home]; if (!h) return;
+    const k = b.dataset.rate;
+    if (k === 'go') { const p = store.playedTo(); if (p) clock.setTime(p); return; }
+    if (k === 'down' || k === 'up') changeRate(h.id, { base: Math.round(h.rate.base * (k === 'up' ? 1.1 : 0.9)) });
+    else if (k === 'min-' || k === 'min+') changeRate(h.id, { minNights: h.rate.minNights + (k === 'min+' ? 1 : -1) });
+  });
+  $('rates').addEventListener('change', e => { const i = e.target.closest('input[data-base]'); if (i) changeRate(i.dataset.base, { base: Math.round(Number(i.value)) }); });
+  $('whatif').addEventListener('click', e => { if (e.target.closest('[data-compare-now]')) { shadow.start(store.getState(), clock.now()); shadowFrom = clock.now(); dirty = true; note('The comparison starts again from now.'); } });
+  $('best').addEventListener('click', e => { const b = e.target.closest('button[data-seed]'); if (b) { newRun(b.dataset.seed); return; } if (e.target.closest('[data-new-seed]')) $('seed-new').click(); });
   const tabs = [...document.querySelectorAll('.w-tabs [role=tab]')];
   const pick = t => {
     for (const x of tabs) { const on = x === t; x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1; $(x.getAttribute('aria-controls')).classList.toggle('on', on); }
@@ -95,10 +136,34 @@ function wire() {
   pick(tabs[0]);
 }
 
+// A rate or minimum-stay change by the viewer, as the owner (rule O4), tagged by: 'you'. Refused in hours
+// already played (PROPOSAL.md 7.2). The first one in a run forks the shadow world from the state before it.
+function changeRate(id, change) {
+  const p = clock.behind();
+  if (p) { note(playedNote(p)); return; }
+  const h = store.getState().homes[id];
+  const base = change.base ?? h.rate.base, minNights = change.minNights ?? h.rate.minNights;
+  if (!(base >= 20 && base <= 2000) || !(minNights >= 1 && minNights <= 14)) { note('A base between EUR 20 and 2,000 a night, and 1 to 14 minimum nights.'); dirty = true; return; }
+  const d = guard('owner', 'rate.set', { who: 'owner', target: `${id}: base ${h.rate.base} to ${base}, min ${h.rate.minNights} to ${minNights}`, by: 'you' });
+  if (d.decision !== 'allow') { note(`Refused: ${d.reason}`); return; }
+  if (!shadow.active && !shadow.stopped) { shadow.start(store.getState(), clock.now()); shadowFrom = clock.now(); }
+  store.dispatch({ type: 'home.rate', actor: 'owner', data: { homeId: id, rate: { base, minNights, manual: true }, by: 'you', why: 'set by you' } });
+  bubble({ x: HOME_X[id], y: HOME_Y - 6 }, `New rate ${eur(base)}${minNights !== h.rate.minNights ? `, minimum ${minNights}` : ''} (you)`, 'info', performance.now(), 2400);
+  note(`${homeName(id)}: base ${eur(base)} a night, minimum ${minNights} night${minNights === 1 ? '' : 's'}, from the next simulated hour (set by you; invented prices).`);
+}
+// The level of bookings from elsewhere (PROPOSAL.md 2.4): one setting for the whole site.
+function setLevel(level, why = 'you') {
+  const lv = LEVELS[level] || LEVELS.site;
+  const d = guard('owner', 'setting.set', { target: 'backgroundKeep', by: why === 'seed' ? undefined : 'you' });
+  if (d.decision === 'allow') store.dispatch({ type: 'setting.set', actor: 'owner', data: { key: 'backgroundKeep', value: lv.keep, by: why } });
+  if (why !== 'seed') note(`Bookings from elsewhere: ${lv.words}. This changes which nights are taken by bookings from elsewhere across the window, on every page of this site in this browser; bookings already made stay. Reset sets it back.`);
+}
 function newRun(seed) {
   setSpeed(0);
   clearActors();
   store.reset(seed);
+  shadow.stop(); shadowFrom = null; savedRun = null; vfShadowMs = 0;
+  setLevel(levelOfSeed(seed), 'seed');
   selected = null;
   $('profile').innerHTML = '<h2 id="profile-h">A person in the world</h2><p class="mini">Choose someone in the row of people below.</p>';
   note(`New run with seed ${seed}: the simulation in this browser was reset to ${fmtDay(dayOf(START))}.`);
@@ -119,7 +184,7 @@ const atEnd = () => toMs(clock.now()) >= toMs(`${clock.bounds().to}T23:00`);
 // Very fast: one whole day a tick, no walking figures; the panels redraw after every day.
 function startVF() {
   clearActors();
-  vfStart = performance.now(); vfFromDay = clock.today();
+  vfStart = performance.now(); vfFromDay = clock.today(); vfShadowMs = 0;
   const tick = () => {
     if (speed !== 'vf') return;
     if (atEnd()) { finishVF(); return; }
@@ -400,14 +465,85 @@ function render(force) {
   $('st-inj').textContent = `${inj.blocked} of ${inj.tried}`;
   if (document.activeElement !== $('seed-in')) $('seed-in').value = s.seed || '';
   drawResidents(s);
+  const sc = score(s, { from: dayOf(s.created || START), today, assumptions: assumptions() });
+  $('st-score').textContent = sc.empty ? '-' : `${sc.total} (${atEnd() ? 'final' : 'so far'})`;
+  const keep = s.settings.backgroundKeep ?? 1, lv = levelOfKeep(keep);
+  $('st-level').textContent = `Bookings from elsewhere: ${LEVELS[lv].words}${lv !== 'site' && s.seed && levelOfSeed(s.seed) === lv ? ' (chosen by the seed)' : ''}`;
+  if (document.activeElement !== $('lvl')) $('lvl').value = lv;
+  if (document.activeElement !== $('owner-auto')) $('owner-auto').checked = s.settings.ownerAuto !== false;
   renderPnl(s); renderOcc(s, today); renderStock(s); renderReviews(s); renderPolicies(s); renderFound(s, bookings, inj); updateRail(s);
+  renderRates(s); renderWhatIf(s, today); renderScore(s, sc, n, total);
   if (selected) renderProfile(selected);
 }
 
-function injections(s) {
-  // An attempt: an action (not a public answer or a quote) whose instruction came from untrusted or instruction-like text.
-  const fl = s.policyLog.filter(e => !SAFE_ACTIONS.includes(e.action) && ((e.flagged && e.flagged.length) || (e.provenance || []).some(p => !p.trusted && p.role === 'instruction')));
-  return { tried: fl.length, blocked: fl.filter(e => e.decision === 'deny').length, list: fl };
+// ---------- round 4 panels: Your rates, what happened and what if, the score ----------
+function renderRates(s) {
+  const p = clock.behind();
+  const rows = WEST_EAST.filter(id => s.homes[id]).map(id => {
+    const h = s.homes[id], r = h.rate, dis = p ? ' disabled' : '';
+    return `<tr><th scope="row">${esc(homeName(id))}</th><td><button type="button" data-rate="down" data-home="${id}" aria-label="${esc(homeName(id))}: base 10 percent lower"${dis}>-10%</button> <input type="number" min="20" max="2000" step="1" value="${esc(r.base)}" data-base="${id}" aria-label="${esc(homeName(id))}: base a night, EUR"${dis}> <button type="button" data-rate="up" data-home="${id}" aria-label="${esc(homeName(id))}: base 10 percent higher"${dis}>+10%</button></td><td><button type="button" data-rate="min-" data-home="${id}" aria-label="${esc(homeName(id))}: one minimum night fewer"${dis || (r.minNights <= 1 ? ' disabled' : '')}>-</button> <b>${esc(r.minNights)}</b> <button type="button" data-rate="min+" data-home="${id}" aria-label="${esc(homeName(id))}: one minimum night more"${dis || (r.minNights >= 14 ? ' disabled' : '')}>+</button></td><td class="mini">${r.manual ? 'set by you' : 'set by Helena (synthetic owner)'}</td></tr>`;
+  }).join('');
+  const html = `${p ? `<p class="w-played">${esc(playedNote(p))} <button type="button" data-rate="go" data-home="salt">Go there</button></p>` : ''}<div class="w-tscroll"><table class="w-rates"><thead><tr><th scope="col">Home</th><th scope="col">Base a night (EUR)</th><th scope="col">Minimum nights</th><th scope="col">Set by</th></tr></thead><tbody>${rows}</tbody></table></div><p class="mini">Invented prices. A change takes effect from the next simulated hour, as the owner (rule O4). ${esc(DEMAND_WORDS)} <span class="k assum">Assumption</span></p>`;
+  const box = $('rates');
+  if (box.dataset.html !== html && !box.contains(document.activeElement)) { box.innerHTML = html; box.dataset.html = html; }
+}
+const words = (a, b, unit, { pct = false, money = false } = {}) => {
+  if (a === null || b === null || a === undefined || b === undefined) return 'not yet';
+  const d = pct ? Math.round((a - b) * 100) : money ? Math.round(a - b) : a - b;
+  if (!d) return 'the same';
+  const n = Math.abs(d);
+  return `${money ? eur(n) : n}${pct ? ' points' : unit ? ` ${unit}` : ''} ${d > 0 ? 'more' : 'less'}`;
+};
+const pc = v => (v === null || v === undefined ? '-' : `${Math.round(v * 100)}%`);
+function renderWhatIf(s, today) {
+  const box = $('whatif');
+  if (!shadow.active) {
+    box.innerHTML = shadow.stopped === 'slow' ? '<p class="mini">The comparison was stopped to keep the page quick. Change a rate again after a new seed to compare.</p>'
+      : bookingsList(s).length && Object.values(s.homes).some(h => h.rate.manual) && !shadowFrom ? '<p class="mini">The comparison is kept in this tab only and started again from your next change.</p>'
+      : '<p class="mini">Change a rate or a minimum stay above, and this compares what happens with what would have happened.</p>';
+    return;
+  }
+  const a = assumptions();
+  const real = measures(s, { fromAt: shadow.startedAt, today, assumptions: a });
+  const what = measures(shadow.state, { fromAt: shadow.startedAt, today, assumptions: a });
+  const row = (m, x, y, d) => `<tr><th scope="row">${m}</th><td>${x}</td><td>${y}</td><td>${d}</td></tr>`;
+  box.innerHTML = `<p class="mini">Since your first change on ${esc(fmtDay(dayOf(shadow.startedAt)))}, ${esc(String(shadow.startedAt).slice(11, 16))} (simulated). Same synthetic visitors, same hours, same weather in both; only the rates differ. Kept in this tab only. <button type="button" class="tbtn" data-compare-now>Compare from now</button></p>
+<div class="w-tscroll"><table class="w-cmp"><thead><tr><th scope="col">Measure</th><th scope="col">What happened</th><th scope="col">If you had left them</th><th scope="col">Difference</th></tr></thead><tbody>
+${row('Visitors who got a quote', real.quoted, what.quoted, words(real.quoted, what.quoted))}
+${row('Booked', real.booked, what.booked, words(real.booked, what.booked))}
+${row('Conversion', pc(real.conversion), pc(what.conversion), words(real.conversion, what.conversion, '', { pct: true }))}
+${row('Nights sold', real.sold, what.sold, words(real.sold, what.sold))}
+${row('Occupancy of nights you could sell', pc(real.occupancy), pc(what.occupancy), words(real.occupancy, what.occupancy, '', { pct: true }))}
+${row('Revenue net of VAT', eur(real.revenue), eur(what.revenue), words(real.revenue, what.revenue, '', { money: true }))}
+${row('Profit before income tax (your cost assumptions)', eur(real.profit), eur(what.profit), words(real.profit, what.profit, '', { money: true }))}
+</tbody></table></div>
+<p class="mini">One night range for every measure: from the comparison's start up to the simulated today. Conversion = visits that booked / visits that got at least one quote. Nights sold = nights taken by this run's synthetic visitors. Occupancy of nights you could sell = nights sold / home-nights not taken by bookings from elsewhere or calendar feeds. Revenue and profit: the ledger and your cost assumptions over the same range. Simulated, not financial advice.</p>`;
+}
+function renderScore(s, sc, n, total) {
+  const box = $('score');
+  if (sc.empty) { box.innerHTML = '<p class="mini">No score yet: press 1&times; or Very fast.</p>'; renderBest(s); return; }
+  const P = sc.parts, fp = A.fingerprint(assumptions(), s.settings);
+  const final = atEnd();
+  box.innerHTML = `<p class="w-score-big"><b>${sc.total}</b> of 100 <span class="k sim">Simulated</span> <span class="mini">${final ? 'final' : `so far, day ${n} of ${total}`}</span></p>
+<table class="w-parts"><thead><tr><th scope="col">Part</th><th scope="col">Measure</th><th scope="col">Points</th></tr></thead><tbody>
+<tr><th scope="row">Occupancy</th><td>${Math.round((P.occupancy.value || 0) * 100)}% of the nights you could sell</td><td>${Math.round(P.occupancy.points)} of 35</td></tr>
+<tr><th scope="row">Rating</th><td>${P.rating.value === null ? 'no reviews yet' : `${P.rating.value.toFixed(1)} average from ${P.rating.count} review${P.rating.count === 1 ? '' : 's'}`}</td><td>${Math.round(P.rating.points)} of 25</td></tr>
+<tr><th scope="row">Profit</th><td>${P.profit.value === null ? 'no revenue yet' : `${Math.round(P.profit.value * 100)}% margin, ${eur(P.profit.profit)}`}</td><td>${Math.round(P.profit.points)} of 30</td></tr>
+<tr><th scope="row">Policies</th><td>${P.policy.tried ? `${P.policy.blocked} of ${P.policy.tried} attempts blocked` : 'nothing tried yet'}</td><td>${Math.round(P.policy.points)} of 10</td></tr>
+</tbody></table><p class="mini">Costs: ${esc(A.costsWord(fp))}. ${esc(NOT_REAL)}</p>`;
+  if (final && savedRun !== `${s.seed}|${s.created}`) {
+    savedRun = `${s.seed}|${s.created}`;
+    const kept = addScore({ id: savedRun, score: sc.total, seed: s.seed, level: levelOfKeep(s.settings.backgroundKeep), rates: Object.values(s.homes).some(h => h.rate.manual) ? 'you' : 'Helena (synthetic owner)', costs: fp, date: new Date().toISOString().slice(0, 10), parts: Object.fromEntries(Object.entries(P).map(([k, v]) => [k, Math.round(v.points * 10) / 10])) });
+    bestKept = kept.kept;
+  }
+  renderBest(s);
+}
+let bestKept = true;
+function renderBest(s) {
+  const r = readScores(), fp = A.fingerprint(assumptions(), s.settings);
+  const list = r.list;
+  const rows = list.map(x => `<tr><td><b>${esc(x.score)}</b></td><td><code>${esc(x.seed)}</code></td><td>${esc(x.level)}</td><td>rates: ${esc(x.rates)}</td><td>${esc(A.costsWord(x.costs))}${x.costs !== fp ? '<br><span class="mini">other costs: not directly comparable</span>' : ''}</td><td>${esc(x.date)}</td><td><button type="button" class="tbtn" data-seed="${esc(x.seed)}">Play this seed again</button></td></tr>`).join('');
+  $('best').innerHTML = `<h3 class="w-h3">Best runs <span class="mini">(this browser only)</span></h3>${!r.kept || !bestKept ? '<p class="mini">This browser is not keeping scores; this run\'s score is shown above only.</p>' : ''}${list.length ? `<div class="w-tscroll"><table class="w-best"><thead><tr><th scope="col">Score</th><th scope="col">Seed</th><th scope="col">Bookings from elsewhere</th><th scope="col">Rates</th><th scope="col">Costs</th><th scope="col">Played</th><th scope="col"><span class="sr-only">Again</span></th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="mini">A run is added here when it reaches the end of the real-data window.</p>'}<p><button type="button" class="tbtn" data-new-seed>Try to beat it: New seed</button></p>`;
 }
 
 function renderPnl(s) {
@@ -476,7 +612,7 @@ function renderFound(s, bookings, inj) {
   const avg = bookings.length ? bookings.reduce((t, b) => t + (b.quote?.price || 0), 0) / bookings.length : 400;
   const items = [];
   const left = Object.entries(s.stats.left || {}).filter(([r]) => r !== 'injection refused');
-  const why = { 'dates taken': 'the dates they wanted were taken', 'minimum stay': 'the minimum stay was longer than their trip', 'too many guests': 'no home sleeps their group', price: 'the total was over their budget', 'no dates left in the window': 'no dates left in the real-data window', 'nothing suitable': 'nothing suitable' };
+  const why = { 'dates taken': 'the dates they wanted were taken', 'minimum stay': 'the minimum stay was longer than their trip', 'too many guests': 'no home sleeps their group', price: 'the price put them off, or the total was over their budget', 'no dates left in the window': 'no dates left in the real-data window', 'nothing suitable': 'nothing suitable' };
   for (const [r, n] of left) items.push({ cat: 'Blocks a sale', cost: n * avg, text: `${n} visitor${n === 1 ? '' : 's'} left because ${why[r] || r} (about ${eur(n * avg)} of stays, estimated at this run's average).` });
   const repairs = -s.ledger.filter(e => e.kind === 'repairs').reduce((t, e) => t + e.amount, 0);
   const refunds = -s.ledger.filter(e => e.kind === 'refund').reduce((t, e) => t + e.amount, 0);
@@ -485,6 +621,7 @@ function renderFound(s, bookings, inj) {
   const low = s.reviews.filter(r => r.rating <= 3);
   if (low.length) items.push({ cat: 'Costs trust', cost: 0, text: `${low.length} review${low.length === 1 ? '' : 's'} at 3 or below: ${low.slice(-2).map(r => `${r.authorName} "${String(r.text).slice(0, 50)}..."`).join('; ')}` });
   if (inj.tried) items.push({ cat: 'Held', cost: -1, text: `${inj.blocked} of ${inj.tried} prompt-injection attempts blocked; no money moved, no data shared.` });
+  if (s.stats.noFitFrom) items.push({ cat: 'The window closes', cost: -2, text: `From ${fmtDay(s.stats.noFitFrom)} visitors whose stay could not fit before the real data ends on ${fmtDay(clock.bounds().to)} were not sent (not counted as leaving).` });
   items.sort((a, b) => b.cost - a.cost);
   $('found').innerHTML = items.length ? `<dl class="found">${items.map(i => `<dt>${esc(i.cat)}</dt><dd>${esc(i.text)}</dd>`).join('')}</dl>` : '<p class="mini">Nothing yet. Press 1&times; or Very fast.</p>';
 }
@@ -563,7 +700,10 @@ ${c.line ? `<p><b>Arrives asking:</b> "${esc(c.line)}"</p>` : ''}</div></div>
 }
 
 function exportRun() {
-  const blob = new Blob([store.exportJSON()], { type: 'application/json' });
+  const s = store.getState(), doc = JSON.parse(store.exportJSON());
+  const sc = score(s, { from: dayOf(s.created || START), today: clock.today(), assumptions: assumptions() });
+  doc.score = { total: sc.total, parts: Object.fromEntries(Object.entries(sc.parts).map(([k, v]) => [k, { points: Math.round(v.points * 10) / 10, value: v.value }])), costs: A.fingerprint(assumptions(), s.settings), formula: FORMULA, note: NOT_REAL };
+  const blob = new Blob([JSON.stringify(doc, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `cinco-chamines-world-${(store.getState().seed || 'run').replace(/[^\w-]/g, '')}.json`;

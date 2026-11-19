@@ -11,6 +11,7 @@ import { getSource, sourceLine, forecastFor, warningsFor, seaFor, uvFor, stayDat
   homes, today, addDays, daysBetween, fmtDay, esc, isDay, forget } from './data.js';
 import { sim, ownBookings, markEmbed, chrome, eur } from './stay/sim-page.js';
 import { paintRates } from './sim/price.js';
+import { levelLine } from './sim/score.js';
 
 const RT = today(); // the real today: "The Algarve now"
 let T = RT;         // the simulated today: availability and the dates offered
@@ -73,7 +74,7 @@ async function updateCards() {
       : `Free for your dates (simulated): ${qt.nightCount} nights, ${eur(qt.guestPays)} in all (invented)`;
   }
   if (homesFor) homesFor.textContent = from && to
-    ? `For ${fmtDay(from)} to ${fmtDay(to)} (${daysBetween(from, to)} nights${guests ? `, ${guests} guests` : ''}). Availability is simulated: it comes from the simulation in your browser, the same one the admin side reads.`
+    ? `For ${fmtDay(from)} to ${fmtDay(to)} (${daysBetween(from, to)} nights${guests ? `, ${guests} guests` : ''}). Availability is simulated: it comes from the simulation in your browser, the same one the admin side reads.${SIM && levelLine(SIM.store.getState().settings.backgroundKeep) ? ` ${levelLine(SIM.store.getState().settings.backgroundKeep)}` : ''}`
     : homesFor.textContent;
 }
 
