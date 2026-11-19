@@ -1,0 +1,22 @@
+{
+  "about": "Public keys of the agents of the Algarve holiday homes cell. Only public halves are kept here. Kept by conductor.algarve-holiday-homes@AgentiCCells.dinis.",
+  "keys": [
+    {
+      "agent": "conductor.algarve-holiday-homes@AgentiCCells.dinis",
+      "status": "active",
+      "created": "2026-11-19",
+      "session": "https://claude.ai/code/session_01Kw9UwFXY6WQ4v9WMGVg8G3",
+      "note": "First entry: this repository held no earlier key for this role (the old account's session https://claude.ai/code/session_018yvwtPmDsdnJqzCaknpuW2 did not publish one here).",
+      "sgit_bundle": {
+        "v": 1,
+        "encrypt": "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxGhw9jDMQD/QCV6nHAxd\nldt61YloBQLCfwu/ZEaRarz/zaAi7Y9iOgMSvJY1XiQ18L6fF5X9gNs9nmF/MM0l\nXicGFy52SZp9ML0JLPZb+Y0vE968cY1awnpHGuQJfBSyhYwdYhASPv22+cSo4mMb\niERoxoNkQy+scuF7fD/1B8gIRVlcRr8fiGzlq26N1ZI9NKKcwsTFrTUam7tuNQSl\nxuQSEUheOOtAe2QDp9O2Qfi2/eUIjbKAR2kaB+f/z2sysNPBmULg/cmUxsF3+z/F\nKlDGQyM8wFHwATKvSZU6u1HTBYWef6j5vgOcEhGpB50idlL74YjqXq/SomjaG82C\nU15llMUkT/gNAT4M9PoZek740F0jelD5azCBFWOOvsXGTZkKObvBofM5DYYmSlEA\n/yLtJM/BfZBnux0b6sUy8JRBPVSYPMnUckWrqjuxbym9O2YdKhPGuAsRphRNB8Ib\nW+Y/lHoLqj1539Uacpx2C2JakQboRojRaivz4sRLXsZiUEJC74PoGc3lOZ/359un\nhcq8ieIlFkETi7HDQ00aAultSxMOY4U8I/QEklUc6cK+1v39+1NaOALqg4hSeSSj\nRaHBDgJvhMG5q6Sxst0xkQgyiuO9hU7tvkKwhEnY2AeCLwYAl5z8oLinQanzjlqu\npJ+r0qD2eXN49kQWbItLD1ECAwEAAQ==\n-----END PUBLIC KEY-----\n",
+        "sign": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEMvvuWQ4D/68La+ukI32sjBJkI6mt\n8G/gdqKXYdnDwLBN83b/dK2nl/lw2xZRftNpIuKylhyIm7RtESC9JEltow==\n-----END PUBLIC KEY-----\n",
+        "label": "conductor.algarve-holiday-homes@AgentiCCells.dinis",
+        "fingerprint": "sha256:7965de3fc0304545",
+        "signing_fingerprint": "sha256:9bbf81289bd1cfae"
+      },
+      "git_ssh_note": "Commits are signed as git SSH signatures with this ECDSA P-256 key. To verify: save the PEM block to a file, run ssh-keygen -i -m PKCS8 -f that file, and put the agent name and the printed line in an allowed-signers file.",
+      "git_signing_key_pem": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEd73T5rJ2c8T4rXI+h/KB73htawBq\nllx47nrNTFwfB/HY7CqdpprSJLY0oOYcWV+Xp4zfn++x9NBnrDq8QObSkw==\n-----END PUBLIC KEY-----\n"
+    }
+  ]
+}
