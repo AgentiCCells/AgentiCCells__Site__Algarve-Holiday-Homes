@@ -74,6 +74,13 @@ export function alertsFor(S, ctx) {
     if (dd && Number(dd.rain_pct) >= 60 && guests.length)
       out.push({ l: 'W', t: `Rain ${dd.rain_pct}% at ${homeName(S, id)} today`, x: `IPMA, ${esc(w.place?.name || '')}: ${esc(dd.weather)}. ${guests.length} booking${guests.length > 1 ? 's' : ''} in house: suggest indoor plans.`, k: `${badge('real', 'REAL WEATHER')} ${sourceLine(w.res, { terms: false })}`, a: '' , raw: true });
   }
+  // When IPMA's forecast could not be read, say so instead of leaving the weather alerts out (review S7).
+  const failed = ids.map(id => ctx.weather?.[id]).filter(w => w?.res?.error);
+  if (failed.length || ctx.weatherError) {
+    const why = ctx.weatherError || failed[0].res.error;
+    const some = !ctx.weatherError && failed.length < ids.length ? ' for some homes' : '';
+    out.push({ l: 'W', t: 'Weather alerts could not be read', x: `IPMA's forecast (read through data.promptugal.news) could not be read just now (${esc(why)}), so no weather alert is shown${some}. That does not mean the weather is fine. Reload the page to try again.`, k: failed[0] ? sourceLine(failed[0].res, { terms: false }) : '', a: '', raw: true });
+  }
   return out;
 }
 
@@ -261,7 +268,7 @@ ${i.status === 'resolved' ? `<p class="small">Resolved ${esc(fmtSim(i.resolvedAt
 export function messages(S, ctx) {
   const th = guestThreads(S, ctx.home).reverse();
   const body = th.length ? th.map(x => {
-    const ms = x.ms.map(m => `<div class="bub ${m.from === 'guest' ? 'in' : 'out'}"><p class="small">${esc(m.from === 'guest' ? (x.b ? guestName(S, x.b) : m.who || 'a guest') : m.from === 'owner' ? 'You (the owner, simulated)' : m.from)} · ${esc(fmtSim(m.at, { year: false }))}</p>${m.from === 'guest' ? quote(m.text, m.flagged) : `<p>${esc(m.text)}</p>`}</div>`).join('');
+    const ms = x.ms.map(m => `<div class="bub ${m.from === 'guest' ? 'in' : 'out'}"><p class="small">${esc(m.from === 'guest' ? (x.b ? guestName(S, x.b) : m.who || 'a guest') : m.from === 'owner' ? 'You (the owner, simulated)' : m.from)} · ${esc(fmtSim(m.at, { year: false }))}${m.held ? ' <span class="k untr">HELD BY THE POLICY: NOT PASSED ON</span>' : ''}</p>${m.from === 'guest' ? quote(m.text, m.flagged) : `<p>${esc(m.text)}</p>`}</div>`).join('');
     return `<article class="thread"><h3>${x.b ? `${esc(guestName(S, x.b))} ${isYours(S, x.b) ? badge('yours') : badge('invented')} · ${esc(homeName(S, x.b.homeId))}, ${esc(day(x.b.from))} to ${esc(day(x.b.to))}` : 'Other messages'}</h3>${ms}${lastDecision(S, `message ${x.id}`)}
 <div class="form-row"><label class="grow">Reply <textarea name="reply" rows="2" maxlength="600" data-keep="reply-${esc(x.id)}"></textarea></label></div><div class="acts"><button type="button" class="btn-s dark" data-act="reply" data-id="${esc(x.id)}">Send reply</button> <button type="button" class="btn-s" data-act="assistant-act" data-kind="message" data-id="${esc(x.id)}">Let the host's assistant act on the guest's words</button></div></article>`;
   }).join('') : empty('No messages yet. A guest can write from their stay page; synthetic guests write in World mode; or load the example activity on Today.');
@@ -271,11 +278,11 @@ export function messages(S, ctx) {
 // ---------- Reviews ----------
 export function reviews(S, ctx) {
   const rs = S.reviews.filter(r => ctx.home === 'all' || r.homeId === ctx.home).slice().reverse();
-  const avg = HOME_IDS.map(id => { const x = S.reviews.filter(r => r.homeId === id); return x.length ? `${SHORT[id]} ${(x.reduce((a, r) => a + r.rating, 0) / x.length).toFixed(1)} (${x.length})` : `${SHORT[id]} none`; }).join(' · ');
+  const avg = HOME_IDS.map(id => { const x = S.reviews.filter(r => r.homeId === id && !r.held); return x.length ? `${SHORT[id]} ${(x.reduce((a, r) => a + r.rating, 0) / x.length).toFixed(1)} (${x.length})` : `${SHORT[id]} none`; }).join(' · ');
   const body = rs.length ? rs.map(r => {
     const replies = S.messages.filter(m => m.kind === 'review-reply' && m.reviewId === r.id);
     const b = S.bookings[r.bookingId];
-    return `<article class="thread"><h3>${r.rating} of 5 · ${esc(homeName(S, r.homeId))} · ${esc(r.authorName || 'a guest')} ${badge('invented')} ${badge('simulated', 'SIMULATED REVIEW')}</h3><p class="small">${b ? `Stay ${esc(day(b.from))} to ${esc(day(b.to))} · ` : ''}posted ${esc(fmtSim(r.at, { year: false }))}</p>${quote(r.text, r.flagged)}
+    return `<article class="thread"><h3>${r.rating ? `${r.rating} of 5` : 'No rating'} · ${esc(homeName(S, r.homeId))} · ${esc(r.authorName || 'a guest')} ${badge('invented')} ${badge('simulated', 'SIMULATED REVIEW')}${r.held ? ' <span class="k untr">HELD BY THE POLICY: NOT PUBLISHED</span>' : ''}</h3><p class="small">${b ? `Stay ${esc(day(b.from))} to ${esc(day(b.to))} · ` : ''}posted ${esc(fmtSim(r.at, { year: false }))}</p>${quote(r.text, r.flagged)}
 ${replies.map(m => `<div class="bub out"><p class="small">Your public reply · ${esc(fmtSim(m.at, { year: false }))}</p><p>${esc(m.text)}</p></div>`).join('')}${lastDecision(S, `review ${r.id}`)}
 <div class="form-row"><label class="grow">Reply <textarea name="rreply" rows="2" maxlength="600" data-keep="rreply-${esc(r.id)}"></textarea></label></div><div class="acts"><button type="button" class="btn-s" data-act="draft-reply" data-id="${esc(r.id)}">Draft a reply with the assistant</button> <button type="button" class="btn-s dark" data-act="publish-reply" data-id="${esc(r.id)}">Publish reply</button>${r.flagged ? ` <button type="button" class="btn-s" data-act="assistant-act" data-kind="review" data-id="${esc(r.id)}">Let the host's assistant act on this review</button>` : ''}</div></article>`;
   }).join('') : empty('No reviews yet. Guests review after check-out (World mode), or load the example activity on Today.');

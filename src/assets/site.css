@@ -28,6 +28,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.55 var(--f);over
 img,svg{max-width:100%}
 a{color:var(--accent)}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+/* date inputs: the browser focuses the fields inside them, so :focus-visible may not match the input itself (review S8) */
+input[type="date"]:focus,input[type="date"]:focus-within{outline:3px solid var(--sea);outline-offset:2px}
 code{font-family:var(--mono);font-size:.9em}
 .sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .skip{position:absolute;left:-999px;top:0;background:var(--surface);color:var(--ink);padding:var(--s2) var(--s4);z-index:20}

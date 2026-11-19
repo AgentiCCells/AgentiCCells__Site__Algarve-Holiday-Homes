@@ -176,7 +176,13 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
   dlg.className = 'reset-dlg'; dlg.setAttribute('aria-labelledby', 'reset-h');
   dlg.innerHTML = `<h2 id="reset-h">Reset the simulation?</h2><p>Your bookings, plan, messages and the admin's changes in this browser are deleted. Real data is read again.</p><div class="row"><button type="button" class="tbtn reset" data-do="reset">Reset</button> <button type="button" class="tbtn" data-do="keep">Keep</button></div>`;
   doc.body.appendChild(dlg);
-  const doReset = () => { clock.pause(); store.reset(); };
+  // Reset also clears the visitor's plan (localStorage cc.stay.v1) and the dates this tab kept
+  // (sessionStorage cc-stay, review S11).
+  const doReset = () => {
+    clock.pause(); store.reset();
+    try { globalThis.localStorage?.removeItem('cc.stay.v1'); } catch { /* blocked */ }
+    try { globalThis.sessionStorage?.removeItem('cc-stay'); } catch { /* blocked */ }
+  };
   tools.querySelector('.reset').addEventListener('click', () => {
     if (typeof dlg.showModal === 'function') dlg.showModal();
     else if (globalThis.confirm('Reset the simulation? Your bookings, plan, messages and the admin\'s changes in this browser are deleted.')) doReset();

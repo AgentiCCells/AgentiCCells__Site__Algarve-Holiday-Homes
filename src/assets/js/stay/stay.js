@@ -11,8 +11,8 @@
 // "cc.stay.v1", tied to that simulation and cleared with it. Reads: data.promptugal.news (GET).
 // Sends nothing. Design: team/rounds/3/design/PROPOSAL.md section 2. Code Apache-2.0.
 // developer.algarve-holiday-homes@AgentiCCells.dinis (instance E), 2026-11-18, round 3.
-import { sourceLine, forecastFor, warningsFor, seaFor, uvFor, eventsFor, home as getHome, fmtDay, fmtLocal, addDays, daysBetween, esc, forget, WEATHER_CLASS_URL } from '../data.js';
-import { sim, ownBookings, currentStay, markEmbed, isEmbedded, chrome, kb, db, fmtSim, eur, ownLifecycle } from './sim-page.js';
+import { sourceLine, forecastFor, warningsFor, seaFor, uvFor, eventsFor, home as getHome, fmtDay, fmtLocal, addDays, daysBetween, esc, forget, WEATHER_CLASS_URL, eventsLineOpts } from '../data.js';
+import { sim, ownBookings, currentStay, markEmbed, isEmbedded, chrome, kb, db, fmtSim, eur, ownLifecycle, keepRefused } from './sim-page.js';
 import { SUGGESTIONS, GETTING_THERE, GETTING_THERE_NOTE, checkInFor, ISSUE_KINDS, URGENCY, RAIN_SWAP, looksOutdoor, glyphOf, planText, planICS, sortPlan, drierDay } from './content.js';
 import { untrusted, detectInjection } from '../sim/abp.js';
 import { hid, toMs, dayOf } from '../sim/util.js';
@@ -25,7 +25,7 @@ const plural = (n, a, b = `${a}s`) => `${n} ${n === 1 ? a : b}`;
 const days = (from, to) => { const out = []; for (let d = from; d <= to; d = addDays(d, 1)) out.push(d); return out; };
 
 let SIM = null;
-const V = { id: null, day: null, tab: 'events', home: null, data: {}, dataFor: null, created: null, lastSeq: 0, draft: { msg: '', issueText: '', issueKind: 'hot water', urgency: 'medium', rating: 5, review: '' }, notice: '' };
+const V = { id: null, day: null, tab: 'events', home: null, data: {}, dataFor: null, created: null, lastSeq: 0, draft: { msg: '', issueText: '', issueKind: 'hot water', urgency: 'medium', rating: 5, review: '' }, notice: '', rvNotice: '' };
 
 const live = document.createElement('p');
 live.className = 'sr-only'; live.setAttribute('aria-live', 'polite'); live.setAttribute('role', 'status');
@@ -270,7 +270,7 @@ function eventsCard(b, d) {
       return `<li><span class="ev-t">${esc(t)}</span><span class="ev-b">${e.url ? `<a href="${esc(e.url)}">${esc(e.name)}</a>` : esc(e.name)}<span class="small">${e.venue ? `${esc(e.venue)} · ` : ''}${esc(e.source_name)}</span></span>${has ? '<span class="in-plan">In plan</span>' : `<button type="button" class="btn ghost small" data-add-ev="${esc(id)}" data-key="add-${esc(id)}">Add</button>`}</li>`;
     }).join('')}</ul>${list.length > 12 ? `<p class="small">${list.length - 12} more on this day; see the agenda.</p>` : ''}`
       : `<p class="status empty">No events found in the ${esc(town)} agenda for this day. An empty list means no source lists one, not that nothing is on.</p>`;
-    body += `${V.home?.data?.events_note ? `<p class="small">${esc(V.home.data.events_note)}</p>` : ''}<p class="small">Titles as the agendas publish them. Check times with the organiser.</p>${sourceLine(ev.res)}`;
+    body += `${V.home?.data?.events_note ? `<p class="small">${esc(V.home.data.events_note)}</p>` : ''}<p class="small">Titles as the agendas publish them. Check times with the organiser.</p>${sourceLine(ev.res, eventsLineOpts(V.home?.data?.events_place))}`;
   }
   return `<section class="card" aria-labelledby="ev-h"><h2 id="ev-h">On nearby that day ${kb('real', 'REAL EVENTS')}</h2>${body}</section>`;
 }
@@ -359,7 +359,7 @@ function sideColumn(b, h, today) {
   const st = SIM.store.getState();
   const msgs = st.messages.filter(m => m.bookingId === b.id).slice(-8);
   const issues = Object.values(st.issues).filter(i => i.bookingId === b.id);
-  const reviewed = st.reviews.find(r => r.bookingId === b.id);
+  const reviewed = st.reviews.find(r => r.bookingId === b.id && !r.held);
   const canReview = today >= b.to || b.status === 'checked-out';
   const active = ['paid', 'checked-in'].includes(b.status);
   return `<section class="card" aria-labelledby="ci-h"><h2 id="ci-h">Check-in ${kb('inv')}</h2>
@@ -371,7 +371,7 @@ ${gt ? `<ol class="gt"><li><b>By car:</b> ${esc(gt.car)}</li><li><b>By train or 
 </section>
 <section class="card" aria-labelledby="need-h"><h2 id="need-h">Need something?</h2>
 <h3>Message the host ${kb('sim')}</h3>
-${msgs.length ? `<ol class="thread">${msgs.map(m => `<li class="${m.from === 'guest' ? 'me' : 'host'}"><span class="small">${m.from === 'guest' ? 'You' : 'Host (simulated)'} · ${esc(fmtSim(m.at))}</span>${esc(m.text)}</li>`).join('')}</ol>` : '<p class="small">No messages yet. The simulated host answers on a script about 20 simulated minutes later.</p>'}
+${msgs.length ? `<ol class="thread">${msgs.map(m => `<li class="${m.from === 'guest' ? 'me' : 'host'}"><span class="small">${m.from === 'guest' ? 'You' : 'Host (simulated)'} · ${esc(fmtSim(m.at))}${m.held ? ' · held by the policy: not passed on' : ''}</span>${esc(m.text)}</li>`).join('')}</ol>` : '<p class="small">No messages yet. The simulated host answers on a script about 20 simulated minutes later.</p>'}
 ${active ? `<form id="msg-form" class="mini-form" autocomplete="off" novalidate><label for="msg-text">Your message</label><textarea id="msg-text" rows="2" maxlength="300" placeholder="Kept in this browser only">${esc(V.draft.msg)}</textarea><button type="submit" class="btn small">Send to the host (simulated)</button></form>` : '<p class="small">Messages open while the stay is booked or under way.</p>'}
 <h3>Report an issue ${kb('sim')}</h3>
 ${issues.length ? `<ul class="issues">${issues.map(i => `<li><b>${esc(i.type)}</b> (${esc(i.severity)}): ${esc(i.status === 'resolved' ? 'fixed' : i.status === 'open' ? 'new' : i.status)}${i.resolvedAt ? `, ${esc(fmtSim(i.resolvedAt))}` : ''}</li>`).join('')}</ul>` : ''}
@@ -387,7 +387,7 @@ ${V.notice ? `<p class="notice" role="status">${V.notice}</p>` : ''}
 ${reviewed ? `<p>${kb('sim', 'SIMULATED REVIEW')} You gave ${esc(reviewed.rating)} out of 5: "${esc(reviewed.text)}". It shows in Admin, Reviews.</p>`
     : canReview ? `<form id="rv-form" class="mini-form" autocomplete="off" novalidate><fieldset><legend>Your rating</legend>${[1, 2, 3, 4, 5].map(n => `<label class="rate"><input type="radio" name="rating" value="${n}"${Number(V.draft.rating) === n ? ' checked' : ''}> ${n}</label>`).join('')}</fieldset>
 <label for="rv-text">Your review</label><textarea id="rv-text" rows="3" maxlength="400">${esc(V.draft.review)}</textarea><button type="submit" class="btn small">Post the review (simulated)</button>
-<p class="small">Stored in this browser and shown in Admin, marked simulated.</p></form>`
+<p class="small">Stored in this browser and shown in Admin, marked simulated.</p></form>${V.rvNotice ? `<p class="notice" id="rv-note" tabindex="-1" role="status">${V.rvNotice}</p>` : ''}`
     : `<p class="locked">Opens on ${esc(longDay(b.to))}, the day you leave. Your review is stored in this browser and shown in Admin, marked ${kb('sim')}.</p>`}
 </section>`;
 }
@@ -479,7 +479,12 @@ function wire() {
     e.preventDefault();
     const text = V.draft.msg.trim(); if (!text) { say('Write a message first.'); return; }
     const d = SIM.guard('visitor', 'message.send', guestCtx(b, text, 'guest message'));
-    if (d.decision !== 'allow') { V.notice = `${db(d)} The policy did not pass this message: ${esc(d.reason)} It is logged; nothing was sent.`; render(false); say(`Refused: ${d.reason}`); return; }
+    if (d.decision !== 'allow') {
+      const k = keepRefused(SIM, b, 'message', text);
+      V.notice = `${db(d)} The policy did not pass this message: ${esc(d.reason)} It is logged; nothing was sent.${k ? ` It is kept in this browser as untrusted, flagged text, so Admin, Messages shows it marked; the host's assistant then tried to act on it: ${db(k.host)} ${esc(k.host.reason)}` : ''}`;
+      if (k) V.draft.msg = '';
+      render(false); say(`Refused: ${d.reason}`); return;
+    }
     SIM.store.dispatch({ type: 'message.added', actor: 'visitor', data: { message: { id: hid('m', `${b.id}|${SIM.store.getState().seq}|${text}`), from: 'guest', who: 'visitor', bookingId: b.id, homeId: b.homeId, text, trusted: false, flagged: detectInjection(text).flagged } } });
     V.draft.msg = ''; V.notice = `${db(d)} Sent to the simulated host in Admin (in this browser only).`; render(false); say('Message sent to the simulated host.');
   });
@@ -497,10 +502,15 @@ function wire() {
     e.preventDefault();
     const text = V.draft.review.trim(); if (!text) { say('Write a few words for the review first.'); return; }
     const d = SIM.guard('visitor', 'review.post', guestCtx(b, text, 'guest review'));
-    if (d.decision !== 'allow') { V.notice = `${db(d)} The policy did not pass this review: ${esc(d.reason)}`; render(false); say(`Refused: ${d.reason}`); return; }
+    if (d.decision !== 'allow') {
+      const k = keepRefused(SIM, b, 'review', text, { rating: V.draft.rating });
+      V.rvNotice = `${db(d)} The policy did not pass this review: ${esc(d.reason)} It is not published.${k ? ` It is kept in this browser as untrusted, flagged text, so Admin, Reviews shows it marked; the host's assistant then tried to act on it: ${db(k.host)} ${esc(k.host.reason)} You can write another review.` : ''}`;
+      if (k) V.draft.review = '';
+      render(false); app.querySelector('#rv-note')?.focus?.(); say(`Refused: ${d.reason}`); return;
+    }
     const st = SIM.store.getState();
     SIM.store.dispatch({ type: 'review.added', actor: 'visitor', data: { review: { id: hid('r', b.id), homeId: b.homeId, bookingId: b.id, rating: V.draft.rating, text, author: 'visitor', authorName: st.guests[b.guestId]?.name || 'You', trusted: false, flagged: detectInjection(text).flagged } } });
-    V.draft.review = ''; render(false); say('Review posted in the simulation.');
+    V.draft.review = ''; V.rvNotice = ''; render(false); say('Review posted in the simulation.');
   });
 }
 

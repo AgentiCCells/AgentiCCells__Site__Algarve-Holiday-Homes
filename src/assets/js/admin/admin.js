@@ -194,7 +194,7 @@ const ACTIONS = {
   register: el => act({ actor: 'bookkeeper', action: 'guest.register', label: 'Record the guest bulletin (simulated: nothing was sent to SIBA)', ctx: { target: el.dataset.id }, build: () => ({ ok: true, events: [{ type: 'booking.changed', actor: 'bookkeeper', data: { id: el.dataset.id, fields: { registeredAt: now() } } }] }) }),
   'rate-home': el => { ui.rateHome = el.dataset.home; render(); },
   whatif: () => render(),
-  'rate-apply': el => { const h = S().homes[el.dataset.home]; const base = Math.round(Number(ui.keep[`wi-base-${h.id}`] ?? h.rate.base)), mn = Math.round(Number(ui.keep[`wi-min-${h.id}`] ?? h.rate.minNights)); act({ actor: 'owner', action: 'rate.set', label: `${h.name}: base ${eur(h.rate.base)} to ${eur(base)}, minimum ${h.rate.minNights} to ${mn} nights`, ctx: { target: `${h.id}: base ${h.rate.base} to ${base}, min ${h.rate.minNights} to ${mn}` }, build: () => (base < 20 || base > 2000 || mn < 1 || mn > 14 ? { ok: false, error: 'a base between EUR 20 and 2,000 and 1 to 14 minimum nights' } : { ok: true, events: [{ type: 'home.rate', actor: 'owner', data: { homeId: h.id, rate: { base, minNights: mn } } }], msg: 'Visitors now see the new price in every tab.' }) }); },
+  'rate-apply': el => { const h = S().homes[el.dataset.home]; const base = Math.round(Number(ui.keep[`wi-base-${h.id}`] ?? h.rate.base)), mn = Math.round(Number(ui.keep[`wi-min-${h.id}`] ?? h.rate.minNights)); act({ actor: 'owner', action: 'rate.set', label: `${h.name}: base ${eur(h.rate.base)} to ${eur(base)}, minimum ${h.rate.minNights} to ${mn} nights`, ctx: { target: `${h.id}: base ${h.rate.base} to ${base}, min ${h.rate.minNights} to ${mn}` }, build: () => (base < 20 || base > 2000 || mn < 1 || mn > 14 ? { ok: false, error: 'a base between EUR 20 and 2,000 and 1 to 14 minimum nights' } : { ok: true, events: [{ type: 'home.rate', actor: 'owner', data: { homeId: h.id, rate: { base, minNights: mn } } }], msg: 'Visitors in this browser now see the new base price on the home cards, the home page, the site agent and every quote, in every tab.' }) }); },
   'money-view': el => { ui.moneyView = el.dataset.v; render(); },
   'money-table': () => { ui.tableView = !ui.tableView; render(); },
   'export-pnl': () => act({ actor: 'owner', action: 'data.download', label: 'Export the P&L (a file on your device)', ctx: { target: 'pnl.csv', destination: 'device' }, build: () => { download('cinco-chamines-pnl-simulated.csv', csv(biz.pnlCSV(S(), today())), 'text/csv'); return { ok: true, events: [] }; } }),
@@ -240,9 +240,10 @@ for (const btn of document.querySelectorAll('.adm-filter button')) btn.addEventL
 fetch('/data/homes.json').then(r => (r.ok ? r.json() : null)).then(async j => {
   for (const h of j?.homes || []) {
     if (!HOME_IDS.includes(h.id) || !h.data?.forecast_id) continue;
-    try { ui.weather[h.id] = await forecastFor(h.data.forecast_id); } catch { /* the alert is left out; the forecast could not be read */ }
+    // A failure is kept, so Today says the weather alerts could not be read (review S7).
+    try { ui.weather[h.id] = await forecastFor(h.data.forecast_id); } catch (e) { ui.weather[h.id] = { res: { id: 'ipma-city-forecasts', error: String(e?.message || e) }, days: [] }; }
   }
   schedule();
-}).catch(() => {});
+}).catch(() => { ui.weatherError = 'the list of homes (/data/homes.json) could not be read'; schedule(); });
 
 render();

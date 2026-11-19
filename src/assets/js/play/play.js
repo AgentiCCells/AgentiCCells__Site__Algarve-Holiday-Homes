@@ -67,7 +67,7 @@ function drawRail() {
   $('rail-ev').innerHTML = `<span style="${span(b.events.from, b.events.to)}"></span>`;
   const wxFrom = b.weather.map(r => r.from).sort()[0], wxTo = b.weather.map(r => r.to).sort().pop();
   $('lg-wx').textContent = `${fmtDay(wxFrom)} to ${fmtDay(wxTo)}${b.live.weather ? '' : ', from the researched dates: the live file could not be read'}`;
-  $('lg-ev').textContent = `${fmtDay(b.events.from)} to ${fmtDay(b.events.to)}`;
+  $('lg-ev').textContent = `${fmtDay(b.events.from)} to ${fmtDay(b.events.to)}${b.live.events ? '' : ', from the researched dates: the live file could not be read'}`;
   const ticks = [];
   for (let d = b.from; d <= b.to; d = addDays(d, 7)) ticks.push(`<span style="left:${pct(`${d}T00:00`)}%">${esc(fmtDay(d).slice(4))}</span>`);
   $('ticks').innerHTML = ticks.join('');

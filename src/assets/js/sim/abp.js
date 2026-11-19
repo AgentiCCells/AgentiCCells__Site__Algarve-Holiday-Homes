@@ -48,6 +48,13 @@ export function untrusted(source, text, role = 'instruction') {
 }
 // trusted(source, text): the actor's own principal or standing mandate.
 export const trusted = (source, text = '', role = 'instruction') => ({ source, trusted: true, role, text: String(text), flagged: false, matches: [] });
+// principal(source, text): words the actor's own principal typed (the visitor playing the guest).
+// Trusted as the principal's, but instruction-like text keeps its flag, so an action that would
+// carry it on (message.send, refund.issue, ...) is denied by N-untrusted-instruction (review M1).
+export function principal(source, text = '', role = 'instruction') {
+  const d = detectInjection(text);
+  return { ...trusted(source, text, role), flagged: d.flagged, matches: d.matches };
+}
 
 // ---------- the policies ----------
 const NEVER_ALL = [

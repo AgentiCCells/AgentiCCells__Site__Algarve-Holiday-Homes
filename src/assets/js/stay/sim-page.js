@@ -10,8 +10,8 @@
 import { createStore, bookingsList } from '../sim/store.js';
 import { createClock, loadBounds, FALLBACK_BOUNDS } from '../sim/clock.js';
 import { createBooking } from '../sim/booking.js';
-import { createGuard } from '../sim/abp.js';
-import { addMinutes, toMs } from '../sim/util.js';
+import { createGuard, detectInjection, untrusted } from '../sim/abp.js';
+import { addMinutes, toMs, hid } from '../sim/util.js';
 import { hostReply } from './content.js';
 
 let P = null;
@@ -125,7 +125,7 @@ export function ownLifecycle(S) {
     }
     const s2 = S.store.getState();
     const own = new Set(ownBookings(s2).map(b => b.id));
-    for (const m of s2.messages.filter(x => x.from === 'guest' && x.who === 'visitor' && own.has(x.bookingId))) {
+    for (const m of s2.messages.filter(x => x.from === 'guest' && x.who === 'visitor' && !x.held && own.has(x.bookingId))) {
       if (S.store.getState().messages.some(x => x.replyTo === m.id)) continue;
       const due = addMinutes(m.at, 20);
       if (toMs(now) < toMs(due)) continue;
@@ -133,4 +133,28 @@ export function ownLifecycle(S) {
       if (d.decision === 'allow') S.store.dispatch({ type: 'message.added', at: due, actor: 'owner', data: { message: { id: `${m.id}-r`, replyTo: m.id, from: 'host', who: 'owner', bookingId: m.bookingId, homeId: m.homeId, text: hostReply(m.text), trusted: true, scripted: true } } });
     }
   } finally { busy = false; }
+}
+
+// keepRefused(S, b, kind, text, { rating }) (review S3, round 3): the visitor's own message or review
+// that the policy refused for instruction-like text is kept, in this browser only, as untrusted,
+// flagged text marked "held" (never passed to the host, never published, no scripted reply), so
+// /admin/ shows it marked; then the host's assistant tries to act on it and the guard refuses
+// (DENY N-untrusted-instruction), logged beside it. Nothing is sent anywhere. Returns null when
+// the text is not instruction-like, else { id, host } (host: the host's assistant's decision).
+export function keepRefused(S, b, kind, text, { rating = null } = {}) {
+  const det = detectInjection(text);
+  if (!det.flagged || !b) return null;
+  const st = S.store.getState();
+  let id, target;
+  if (kind === 'review') {
+    id = hid('r', `${b.id}|held|${st.seq}|${text}`); target = `review ${id}`;
+    S.store.dispatch({ type: 'review.added', actor: 'visitor', data: { review: { id, homeId: b.homeId, bookingId: b.id, rating: Number(rating) || null, text, author: 'visitor', authorName: st.guests[b.guestId]?.name || 'You', trusted: false, flagged: true, matches: det.matches, held: true } } });
+  } else {
+    id = hid('m', `${b.id}|held|${st.seq}|${text}`); target = `message ${b.id}`;
+    S.store.dispatch({ type: 'message.added', actor: 'visitor', data: { message: { id, from: 'guest', who: 'visitor', bookingId: b.id, homeId: b.homeId, text, trusted: false, flagged: true, matches: det.matches, held: true } } });
+  }
+  const m = det.matches;
+  const action = m.some(x => /refund|reembols/.test(x)) || kind === 'review' ? 'refund.issue' : m.some(x => /list|hospedes/.test(x)) ? 'share.guest-data' : 'booking.change';
+  const host = S.guard('host-assistant', action, { who: 'host-assistant', target, amount: action === 'refund.issue' ? 400 : undefined, provenance: [untrusted(kind === 'review' ? 'review' : 'message', text)] });
+  return { id, host };
 }

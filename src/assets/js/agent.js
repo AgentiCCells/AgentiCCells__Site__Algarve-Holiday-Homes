@@ -12,6 +12,7 @@ import { LABEL, HOME_WORDS, MESSAGES, SUGGESTED, FALLBACK, INTENTS } from './age
 import * as D from './data.js';
 import { isTaken } from './availability.js';
 import { houseSvg } from './houses.js';
+import { simState, nightFrom } from './sim/price.js';
 
 // ---------- small helpers ----------
 
@@ -210,7 +211,10 @@ const loadCameras = () => camsP || (camsP = fetch('/data/cameras.json').then(r =
 
 const hd = (h, k) => (h.data && h.data[k] !== undefined ? h.data[k] : h[k]);
 const homeById = (homes, id) => homes.find(h => h.id === id);
-const homeLine = h => `[${h.name}](/homes/${h.id}/), ${h.place}: sleeps ${h.sleeps}, from EUR ${h.price_eur_invented} a night (invented)`;
+// The base rate a night: the simulation's in this browser when there is one (an owner may have
+// changed it in /admin/), else homes.json (review M2, round 3).
+const rateOf = h => nightFrom(h.id, simState(), h.price_eur_invented);
+const homeLine = h => `[${h.name}](/homes/${h.id}/), ${h.place}: sleeps ${h.sleeps}, from EUR ${rateOf(h)} a night (invented)`;
 const shortOperator = op => String(op || '').split(' (')[0];
 // "The Salt House" in the middle of a sentence reads "the Salt House".
 const midName = h => String(h.name).replace(/^The /, 'the ');
@@ -253,6 +257,7 @@ async function slot(kind, args, ctx) {
     case 'home': {
       const h = pickHome(args[0]); if (!h) return { needHome: true };
       if (!args[1]) return { text: homeLine(h) + '.' };
+      if (args[1] === 'price_eur_invented') return { text: String(rateOf(h)) };
       const v = h[args[1]];
       return { text: Array.isArray(v) ? v.join(', ') : String(v ?? '') };
     }
@@ -289,8 +294,8 @@ async function slot(kind, args, ctx) {
     case 'price': {
       const h = pickHome(args[0]); if (!h) return { needHome: true };
       const stay = ctx.stay();
-      const total = stay.nights * h.price_eur_invented;
-      return { text: `${h.name}, ${rangeWords(stay.from, stay.leave)}: ${stay.nights} night${stay.nights > 1 ? 's' : ''} x EUR ${h.price_eur_invented} = EUR ${total} (invented price).` };
+      const rate = rateOf(h), total = stay.nights * rate;
+      return { text: `${h.name}, ${rangeWords(stay.from, stay.leave)}: ${stay.nights} night${stay.nights > 1 ? 's' : ''} x EUR ${rate} = EUR ${total} (invented price).` };
     }
     case 'forecast': {
       const h = pickHome(args[0]); if (!h) return { needHome: true };

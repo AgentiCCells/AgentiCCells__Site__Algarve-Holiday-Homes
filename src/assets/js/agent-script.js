@@ -30,6 +30,9 @@
 //   {home:<id|current>:<field>}     A field of that home in homes.json, e.g. {home:current:name},
 //                                   {home:salt:check_in}, {home:current:accessibility}. For
 //                                   features, a comma list. For good_for, a comma list.
+//                                   {home:<id>:price_eur_invented} is the base rate a night of
+//                                   the simulation in this browser when there is one (the owner
+//                                   may change it in /admin/), else the file's price.
 //   {homes:list}                    The five homes, one line each, as {home:<id>}.
 //   {homes:for:<tag>}               Names of homes whose good_for includes <tag> (families,
 //                                   couples, surfers, walkers, groups, no car, step-free access).
@@ -346,31 +349,31 @@ export const INTENTS = [
   {
     id: 'home-salt',
     patterns: ['salt house', '\\bsalt\\b', '\\btavira\\b'],
-    answer: 'The Salt House, Tavira (invented): a low white house with a roof terrace over the salt pans, a short walk from the old town. Sleeps 4 in 2 bedrooms, from EUR 120 a night (invented price). [See the Salt House]({link:home:salt}).',
+    answer: 'The Salt House, Tavira (invented): a low white house with a roof terrace over the salt pans, a short walk from the old town. Sleeps 4 in 2 bedrooms, from EUR {home:salt:price_eur_invented} a night (invented price). [See the Salt House]({link:home:salt}).',
     suggestions: ['Is the Salt House free next week?', 'What is on in Tavira?', 'What is the weather in Tavira?']
   },
   {
     id: 'home-lagoon',
     patterns: ['lagoon house', '\\blagoon\\b', '\\bfaro\\b'],
-    answer: 'The Lagoon House, Faro (invented): a small first-floor flat for two near the lagoon and the old town, step-free to the lift and a short drive from the airport. Sleeps 2, from EUR 85 a night (invented price). [See the Lagoon House]({link:home:lagoon}).',
+    answer: 'The Lagoon House, Faro (invented): a small first-floor flat for two near the lagoon and the old town, step-free to the lift and a short drive from the airport. Sleeps 2, from EUR {home:lagoon:price_eur_invented} a night (invented price). [See the Lagoon House]({link:home:lagoon}).',
     suggestions: ['Is the Lagoon House free this weekend?', 'What is on in Faro?', 'What is the weather in Faro?']
   },
   {
     id: 'home-hill',
     patterns: ['hill house', '\\bhill\\b', '\\bloule\\b', '\\bpool\\b'],
-    answer: 'The Hill House, near Loulé (invented): a country house among carob and almond trees with a private pool and a shaded garden; a car is needed. Sleeps 6 in 3 bedrooms, from EUR 160 a night (invented price). [See the Hill House]({link:home:hill}).',
+    answer: 'The Hill House, near Loulé (invented): a country house among carob and almond trees with a private pool and a shaded garden; a car is needed. Sleeps 6 in 3 bedrooms, from EUR {home:hill:price_eur_invented} a night (invented price). [See the Hill House]({link:home:hill}).',
     suggestions: ['Is the Hill House free in December?', 'Can I bring my dog?', 'What is the weather in Loulé?']
   },
   {
     id: 'home-harbour',
     patterns: ['harbou?r house', '\\bharbou?r\\b', '\\blagos\\b', '\\bmarina\\b'],
-    answer: 'The Harbour House, Lagos (invented): a two-bedroom town house with a courtyard, a few streets from the marina and the old walls. Sleeps 4, from EUR 130 a night (invented price). [See the Harbour House]({link:home:harbour}).',
+    answer: 'The Harbour House, Lagos (invented): a two-bedroom town house with a courtyard, a few streets from the marina and the old walls. Sleeps 4, from EUR {home:harbour:price_eur_invented} a night (invented price). [See the Harbour House]({link:home:harbour}).',
     suggestions: ['Is the Harbour House free from 21 to 28 November?', 'What is on in Lagos?', 'Show me a live camera in Lagos']
   },
   {
     id: 'home-cape',
     patterns: ['cape house', '\\bcape\\b', '\\bsagres\\b', 'vila do bispo'],
-    answer: 'The Cape House, Sagres (invented): a plain, wind-proof house at the south-west tip, for surfers and walkers, with a board store and a drying room; a car helps. Sleeps 5 in 3 bedrooms, from EUR 145 a night (invented price). [See the Cape House]({link:home:cape}).',
+    answer: 'The Cape House, Sagres (invented): a plain, wind-proof house at the south-west tip, for surfers and walkers, with a board store and a drying room; a car helps. Sleeps 5 in 3 bedrooms, from EUR {home:cape:price_eur_invented} a night (invented price). [See the Cape House]({link:home:cape}).',
     suggestions: ['What is the sea like at Sagres?', 'Are there any warnings?', 'Is the Cape House free next week?']
   },
   {

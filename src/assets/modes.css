@@ -18,6 +18,8 @@
 .modes a:hover{background:var(--surface)}
 .modes a[aria-current]{background:var(--ink);color:var(--bg)}
 .modes a.waiting{color:var(--ink-2)}
+/* the current mode before a booking exists: full contrast on the ink pill (review M3), italic to show it waits */
+.modes a.waiting[aria-current]{color:var(--bg);font-style:italic}
 .modes a .mode-hint{font-size:.75rem;color:var(--ink-2)}
 .modes a[aria-current] .mode-hint{color:inherit}
 .mode-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto}
@@ -27,6 +29,8 @@
 .mode-app .site-head{display:flex;flex-wrap:wrap;align-items:center;gap:0 16px;background:var(--surface);border-bottom:1px solid var(--line);padding:6px 16px}
 .mode-app .site-head .bar{margin:0;max-width:none;padding:4px 0;flex:none}
 .mode-app .site-head .nav,.mode-app .site-head .menu{display:none}
+/* the floating "Ask the agent" button covers the mode pages' panels (review S6): hidden there; the footer links to /agent/ */
+html.mode-app .dock{display:none}
 .mode-app .modebar{flex:1 1 30rem;margin:0;max-width:none;padding:4px 0}
 .linklike{font:inherit;background:none;border:0;padding:0;color:inherit;text-decoration:underline;font-weight:600;cursor:pointer}
 

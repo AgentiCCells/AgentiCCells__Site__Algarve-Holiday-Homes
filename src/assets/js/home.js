@@ -10,6 +10,7 @@
 import { getSource, sourceLine, forecastFor, warningsFor, seaFor, uvFor, stayDates, setStayDates, stayQuery,
   homes, today, addDays, daysBetween, fmtDay, esc, isDay, forget } from './data.js';
 import { sim, ownBookings, markEmbed, chrome, eur } from './stay/sim-page.js';
+import { paintRates } from './sim/price.js';
 
 const RT = today(); // the real today: "The Algarve now"
 let T = RT;         // the simulated today: availability and the dates offered
@@ -112,9 +113,9 @@ updateCards();
 sim().then(x => {
   SIM = x;
   T = SIM.clock.today(); LAST = SIM.clock.bounds().to;
-  setLimits(); updateCards(); stayBar();
+  setLimits(); updateCards(); stayBar(); paintRates(SIM.store.getState());
   SIM.bounds.then(b => { LAST = b.to; setLimits(); });
-  SIM.store.subscribe(() => { T = SIM.clock.today(); setLimits(); updateCards(); stayBar(); });
+  SIM.store.subscribe(() => { T = SIM.clock.today(); setLimits(); updateCards(); stayBar(); paintRates(SIM.store.getState()); });
 }).catch(() => { /* the cards stay without availability; the page still works */ });
 
 // ---------- the Algarve now ----------

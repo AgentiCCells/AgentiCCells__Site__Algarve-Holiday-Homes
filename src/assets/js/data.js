@@ -164,7 +164,8 @@ function shortTerms(card) {
 // sourceLine(res, opts) -> HTML string for the line beside a figure: publisher (from the card),
 // source id, read time in UTC and minutes ago, a stale note, the terms and a link to the card.
 // opts.issued: IPMA's issue time to add ("IPMA issued 15:31"); opts.terms === false leaves the
-// terms out (when a terms line follows); opts.publisher overrides the card's publisher (an event's own source).
+// terms out (when a terms line follows); opts.publisher overrides the card's publisher (an event's own source);
+// opts.page and opts.pageLabel override the card's reader page (a town's own agenda).
 export function sourceLine(res, opts = {}) {
   if (!res) return '';
   const u = res.urls || urls(res.id);
@@ -183,9 +184,24 @@ export function sourceLine(res, opts = {}) {
     parts.push(t ? `Terms: ${esc(t)}` : '<em>The source card could not be read; see it before reuse.</em>');
   }
   const links = [`<a href="${esc(u.card)}">Source card</a>`];
-  if (res.card?.reader_page) links.push(`<a href="${esc(res.card.reader_page)}">Publisher's page</a>`);
+  const page = opts.page || res.card?.reader_page;
+  if (page) links.push(`<a href="${esc(page)}">${esc(opts.pageLabel || "Publisher's page")}</a>`);
   parts.push(links.join(' · '));
   return `<p class="src${res.stale ? ' is-stale' : ''}${res.error ? ' is-error' : ''}">${parts.join(' ')}</p>`;
+}
+
+// Each town's own agenda in events-pt, for the events source line (review S5, round 3): the
+// publisher and the page of that town's events, not every publisher in the card. Addresses from
+// the "source" field of each place in events-pt latest.json, read 2026-11-18 (as in agent.js).
+export const TOWN_AGENDA = Object.freeze({
+  tavira: { publisher: 'Câmara Municipal de Tavira', page: 'https://cm-tavira.pt/site/evento/' },
+  faro: { publisher: 'Teatro das Figuras (Faro)', page: 'https://teatrodasfiguras.pt/agenda' },
+  lagos: { publisher: 'Câmara Municipal de Lagos', page: 'https://www.cm-lagos.pt/municipio/eventos' },
+});
+// eventsLineOpts(place) -> the sourceLine options for that town's events.
+export function eventsLineOpts(place) {
+  const a = TOWN_AGENDA[place];
+  return a ? { publisher: a.publisher, page: a.page, pageLabel: `${a.publisher}'s agenda` } : {};
 }
 
 // ---------- the five sources, filtered for a place and a stay ----------

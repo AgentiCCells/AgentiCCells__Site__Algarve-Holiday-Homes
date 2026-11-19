@@ -23,15 +23,13 @@ const MODES = [['/', 'Visitor'], ['/stay/', "Guest's stay"], ['/admin/', 'Admin'
 // With the shared chrome, its getSim() store is used, so the frame and the page share one state.
 export async function mountFrame(mode, { homes = null, chromeUrl = '/assets/js/modes/chrome.js' } = {}) {
   try {
-    // Only ask for the shared chrome if it is there (a HEAD to this site, so a missing file is not an error).
-    const r = await fetch(chromeUrl, { method: 'HEAD', cache: 'no-store' });
-    if (r.ok) {
-      const m = await import(chromeUrl);
-      if (typeof m.mountChrome === 'function' && typeof m.getSim === 'function') {
-        const sim = m.getSim(homes ? { homes } : {});
-        m.mountChrome({ mode, sim });
-        return { shared: true, ...sim };
-      }
+    // Import the shared chrome directly (a plain GET of this site's own module, review S1); if it is
+    // missing, the import fails and the stand-in below is used.
+    const m = await import(chromeUrl);
+    if (typeof m.mountChrome === 'function' && typeof m.getSim === 'function') {
+      const sim = m.getSim(homes ? { homes } : {});
+      m.mountChrome({ mode, sim });
+      return { shared: true, ...sim };
     }
   } catch (e) { /* fall back to the stand-in */ }
   const [{ createStore }, { createClock }, { createGuard }, { createBooking }] = await Promise.all([import('../sim/store.js'), import('../sim/clock.js'), import('../sim/abp.js'), import('../sim/booking.js')]);

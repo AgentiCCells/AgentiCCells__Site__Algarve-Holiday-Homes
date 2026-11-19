@@ -10,6 +10,7 @@
 
 import { scenarioList, runScenario, WHO } from '../sim/agents.js';
 import { detectInjection, untrusted, trusted } from '../sim/abp.js';
+import { injectionTurn, fromGuest } from './guest-turn.js';
 import { bookingsList } from '../sim/store.js';
 import { reorderNeeds, reorderEvent } from '../sim/booking.js';
 import { figure } from '../sim/figure.js';
@@ -245,7 +246,6 @@ function tool(who, action, args = {}, ctx = {}, effect = null, onApprove = null,
   if (d.decision === 'allow' && effect) store.dispatch([].concat(effect()));
   return d;
 }
-const fromGuest = t => ({ provenance: [trusted('guest (the assistant\'s principal)', t)] });
 const fromOwner = t => ({ provenance: [trusted('the owner (the assistant\'s principal)', t)] });
 const toHost = t => ({ provenance: [untrusted('message', t, 'data')] });
 const own = b => (b ? { ownGuestId: b.guestId, subjectGuestId: b.guestId, target: b.id } : {});
@@ -261,11 +261,12 @@ async function guestSays(text) {
   if (!activeBooking() && !document.querySelector('#col-guest .stand-note')) addLine('guest', '<p class="mini stand-note">No booking yet: a stand-in is used and only the policy log is written. Use "Give the guest a booking" above to let the assistants change a real (simulated) booking.</p>', 'sys');
   say('guest', 'guest', text);
   const t = text.toLowerCase(), b = B();
-  const inj = detectInjection(text);
-  if (inj.flagged) {
-    tool('guest-assistant', 'refund.issue', { target: 'all guests', amount: 5000 }, fromGuest(text));
-    tool('guest-assistant', 'message.send', { to: 'host-assistant', text }, fromGuest(text));
-    say('guest', 'guest-assistant', `That reads like an instruction for another system (${inj.matches.join(', ')}). I won't pass it on as an order or act on it. I can help with your own booking.`);
+  // Instruction-like text (review M1): the guest's words keep their flag, so each call they would
+  // drive is denied by N-untrusted-instruction, and the reply says what the log shows.
+  const inj = injectionTurn(text);
+  if (inj) {
+    const ds = inj.calls.map(c => tool(c.who, c.action, c.args, c.ctx));
+    say('guest', 'guest-assistant', inj.reply(ds));
     return;
   }
   if (/previous guest|other guest|who stayed|phone number|guest list|their details|their number/.test(t)) {

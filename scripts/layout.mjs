@@ -37,6 +37,10 @@ ${fig('funny', 'side', '(min-width:1200px) 380px, (min-width:900px) 32vw, 50vw',
 </div>`;
 }
 
+// The headline price: the number from homes.json, which sim/price.js replaces in the browser with
+// the base rate of the visitor's own simulation when there is one (review M2, round 3).
+const rateSpan = h => `<span data-rate-home="${esc(h.id)}" data-rate-file="${esc(h.price_eur_invented)}">${esc(h.price_eur_invented)}</span>`;
+
 // ---------- 1. the five home pages ----------
 const TEMPLATE = '_site/homes/_home.html';
 const homeTwins = new Map();
@@ -49,7 +53,7 @@ if (existsSync(TEMPLATE)) {
     const title = `${h.name}, ${h.place} (made-up example)`;
     const description = `${h.name} in ${h.place}: an invented holiday home of the made-up company Cinco Chaminés. Simulated availability, a demonstration booking that sends nothing, and the real IPMA forecast, warnings, sea, UV and local events for your dates.`;
     const facts = [`Sleeps ${h.sleeps}`, `${h.bedrooms} bedroom${h.bedrooms === 1 ? '' : 's'}`, h.bathrooms ? `${h.bathrooms} bathroom${h.bathrooms === 1 ? '' : 's'}` : '', h.car_needed ? 'A car is needed' : '']
-      .filter(Boolean).map(f => `<li>${esc(f)}</li>`).join('') + `<li><strong>EUR ${esc(h.price_eur_invented)} a night</strong> <span class="inv">(invented)</span></li>`;
+      .filter(Boolean).map(f => `<li>${esc(f)}</li>`).join('') + `<li><strong>From EUR ${rateSpan(h)} a night</strong> <span class="inv">(invented)</span></li>`;
     const features = (h.features || []).map(f => `<li>${esc(f)}</li>`).join('');
     const rules = [
       h.check_in && h.check_out ? `Check-in from ${h.check_in}, check-out by ${h.check_out} (invented).` : '',
@@ -73,7 +77,7 @@ if (existsSync(TEMPLATE)) {
     homeTwins.set(`_site/homes/${h.id}/index.md`, [
       `# ${title}`, '', `> ${description}`, '', `**${DISCLAIMER}**`, '', `Page: ${SITE}/homes/${h.id}/`, '',
       h.description || '', '', ...(h.images ? ['Pictures (each AI-generated, of an invented house; not photographs):', '', ...['hero', 'inside', 'funny'].filter(k => h.images[k]).map(k => `- ![${h.images[k].alt}](${SITE}/assets/img/${h.images[k].src}-800.jpg) ${h.images[k].caption}`), ''] : []), `- Place: ${h.place} (${h.municipality}); position is the town centre, not a house.`,
-      `- Sleeps ${h.sleeps}; ${h.bedrooms} bedrooms; ${h.bathrooms || '?'} bathrooms.`, `- Price: EUR ${h.price_eur_invented} a night (invented).`,
+      `- Sleeps ${h.sleeps}; ${h.bedrooms} bedrooms; ${h.bathrooms || '?'} bathrooms.`, `- Price: from EUR ${h.price_eur_invented} a night (invented; the page shows the base rate of the simulation in your browser once you have one).`,
       `- Features: ${(h.features || []).join(', ')}.`, `- Pets: ${h.pets ? 'yes' : 'no'} (invented). Accessibility: ${h.accessibility || 'not stated'}`, '',
       '## Data this page reads, live in the browser', '',
       `- Forecast: ${API}/ipma-city-forecasts/latest.json, city id ${d.forecast_id} (${d.forecast_name}). ${d.forecast_note || ''}`,
@@ -104,7 +108,7 @@ ${pic}
 <p>${esc(h.place)}. ${esc(h.short || '')}</p>
 ${wide ? `<ul>${(h.features || []).slice(0, 6).map(f => `<li>${esc(f)}</li>`).join('')}</ul>` : ''}
 <p class="meta">Sleeps ${esc(h.sleeps)}, ${esc(h.bedrooms)} bedroom${h.bedrooms === 1 ? '' : 's'}</p>
-<p class="price">EUR ${esc(h.price_eur_invented)} a night <span class="inv">(invented)</span></p>
+<p class="price">From EUR ${rateSpan(h)} a night <span class="inv">(invented)</span></p>
 <p class="avail" hidden></p>
 </div>
 </article></li>`;

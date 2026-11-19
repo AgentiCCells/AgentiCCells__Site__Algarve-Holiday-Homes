@@ -17,11 +17,12 @@
 // Code Apache-2.0. developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-18, round 1;
 // round 3 (instance E): the simulation, the real-data window, the held booking and the pretend payment.
 import { sourceLine, forecastFor, warningsFor, seaFor, uvFor, eventsFor, stayDates, setStayDates, home as getHome,
-  today, addDays, daysBetween, dateRange, fmtDay, fmtLong, fmtLocal, esc, isDay, forget, WEATHER_CLASS_URL } from './data.js';
+  today, addDays, daysBetween, dateRange, fmtDay, fmtLong, fmtLocal, esc, isDay, forget, WEATHER_CLASS_URL, eventsLineOpts } from './data.js';
 import { chimney } from './houses.js';
 import { sim, ownBookings, markEmbed, chrome, kb, db, fmtSim, eur } from './stay/sim-page.js';
 import { nightTakenBy } from './sim/booking.js';
 import { untrusted } from './sim/abp.js';
+import { paintRates } from './sim/price.js';
 
 const RT = today(); // the real today: the live data panel
 let T = RT;         // the simulated today: the calendar and the booking
@@ -73,7 +74,8 @@ async function start() {
   renderBook();
   renderStay();
   SIM.bounds.then(b => { LAST = b.to; if (S.step === 1) refresh(); });
-  SIM.store.subscribe(() => refresh());
+  paintRates(state());
+  SIM.store.subscribe(() => { paintRates(state()); refresh(); });
 }
 
 // The simulation changed (another tab, the admin in /play/, the clock): redraw what depends on it,
@@ -548,7 +550,7 @@ async function eventsBlock(r) {
   const h = `<h3>On in ${esc(town)} ${r.picked ? 'during your stay' : 'in the next five days'}</h3>`;
   if (res.error) return h + failure('the events list', res, null);
   const note = d.events_note ? `<p class="small">${esc(d.events_note)}</p>` : '';
-  if (r.from > addDays(RT, 60)) return `${h}${note}<p class="status empty">Events are listed up to 60 days ahead; not yet for these dates.</p>${sourceLine(res)}`;
+  if (r.from > addDays(RT, 60)) return `${h}${note}<p class="status empty">Events are listed up to 60 days ahead; not yet for these dates.</p>${sourceLine(res, eventsLineOpts(d.events_place))}`;
   const li = e => `<li>${e.url ? `<a href="${esc(e.url)}">${esc(e.name)}</a>` : esc(e.name)}<span class="meta">${esc(evDate(e))}${e.venue ? `, ${esc(e.venue)}` : ''}. Source: ${esc(e.source_name)}. Check details with the organiser.</span></li>`;
   const during = items.filter(e => !e.through), through = items.filter(e => e.through);
   const list = (arr, cap = 10) => arr.length <= cap ? `<ul class="ev">${arr.map(li).join('')}</ul>`
@@ -557,7 +559,7 @@ async function eventsBlock(r) {
   if (during.length) body += list(during);
   if (through.length) body += `<h4>On all through ${r.picked ? 'your stay' : 'these days'}</h4>${list(through, 5)}`;
   if (!items.length) body = `<p class="status empty">No events listed for ${esc(town)} for these dates. An empty list means no source covers the place or the dates, not that nothing is on.</p>`;
-  return h + note + body + sourceLine(res);
+  return h + note + body + sourceLine(res, eventsLineOpts(d.events_place));
 }
 
 start();
