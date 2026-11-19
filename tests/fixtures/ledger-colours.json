@@ -1,0 +1,233 @@
+{
+ "about": "Computed colours of the default admin (Ledger), 52 views; see tests/ledger-record.mjs.",
+ "chromium": "157.0.8103.78",
+ "platform": "linux-x64",
+ "history": [
+  {
+   "at": "2026-11-19T05:32Z",
+   "reason": "Baseline before any round 5 change, on commit db9d993 (PROPOSAL.md 2.9 step 1)"
+  },
+  {
+   "at": "2026-11-19T05:35Z",
+   "reason": "Answer 6, step 1 (team/rounds/5.md, about 08:40 UTC): the needs-action colour (urgent count pill and warn tile edge) moves from #B4530F (pill) and --a-warn (edge) to the ink, #1B232C light and #E9EDF1 dark, with the surface colour as the pill text: #B4530F was 1.01:1 from the allow edge"
+  },
+  {
+   "at": "2026-11-19T05:36Z",
+   "reason": "Answer 6, step 2 (team/rounds/5.md, about 08:40 UTC): the dark-mode danger button text moves from #B42318 (2.41:1 on the dark surface #1C232B) to #FBE1DE (12.78:1); its border keeps the deny red; light mode unchanged"
+  },
+  {
+   "at": "2026-11-19T05:53Z",
+   "reason": "step 4: the Design chooser in the admin title row (12 new elements in every view: the wrapper, its paragraph, label, select with six options, link and note); with those removed in the page, all 52 views equal the previous recording, so per-home check-out times and the pins change no Ledger colour"
+  }
+ ],
+ "views": {
+  "today|390-light": {
+   "elements": 560,
+   "sha256": "edd9e1ba92bd2331339c26dca77a2a9898aefba5"
+  },
+  "bookings|390-light": {
+   "elements": 331,
+   "sha256": "ac0a3e360635cc35d2ee69ad5cc22d24980148a9"
+  },
+  "calendar|390-light": {
+   "elements": 708,
+   "sha256": "ad2a05251e1bcdfec5da7ef3b5c4cd6d7d9d75d6"
+  },
+  "cleaning|390-light": {
+   "elements": 284,
+   "sha256": "ff663851eaeaa6f1d1620262827ad5185ccb9884"
+  },
+  "stock|390-light": {
+   "elements": 560,
+   "sha256": "3ece43963872472e7018103595cde548f0a94b2d"
+  },
+  "issues|390-light": {
+   "elements": 271,
+   "sha256": "61a398f94f3f65ecf2e802a47c6f460a166697e5"
+  },
+  "messages|390-light": {
+   "elements": 268,
+   "sha256": "2174b73845ce34fee2ca9709ddbd4c62f3f03447"
+  },
+  "reviews|390-light": {
+   "elements": 272,
+   "sha256": "59f23af21822010e4361c2380959510ec15a25e8"
+  },
+  "rates|390-light": {
+   "elements": 356,
+   "sha256": "924105ee74682d399d771b5ad6eccbf3ced077b0"
+  },
+  "money|390-light": {
+   "elements": 1012,
+   "sha256": "1038704c5c9629612c05f6b2ac1d94779777519c"
+  },
+  "legality|390-light": {
+   "elements": 1533,
+   "sha256": "69fd184d1ebbc1fc9f34320352feb29d638c92d2"
+  },
+  "integrations|390-light": {
+   "elements": 282,
+   "sha256": "0b29a2dd02c621cd41d28260a57d4f0fc09d0100"
+  },
+  "policies|390-light": {
+   "elements": 1313,
+   "sha256": "c29dcc418d8f80ff60ea35b4fa3fd08dbb683955"
+  },
+  "today|390-dark": {
+   "elements": 560,
+   "sha256": "f79989353a68d18c6d4eb6bcbc8c51dde7e2f049"
+  },
+  "bookings|390-dark": {
+   "elements": 331,
+   "sha256": "bdd68845159cce408db24bece8cb790948171027"
+  },
+  "calendar|390-dark": {
+   "elements": 708,
+   "sha256": "302580859a3442acc41e07b9e77ef2def0f29602"
+  },
+  "cleaning|390-dark": {
+   "elements": 284,
+   "sha256": "f5f4860cceff7099b376dc846d152d9b6e7a65e8"
+  },
+  "stock|390-dark": {
+   "elements": 560,
+   "sha256": "5e2496bbf4a7ca1125170c5435beb5f2473ec9b5"
+  },
+  "issues|390-dark": {
+   "elements": 271,
+   "sha256": "f1874754dc59bffaacb75dacb85406dfb634cf9f"
+  },
+  "messages|390-dark": {
+   "elements": 268,
+   "sha256": "d79416d0371281b0465a760178bebb49c29cfd08"
+  },
+  "reviews|390-dark": {
+   "elements": 272,
+   "sha256": "dabfa3a312e4a30d2f27e610fa7c24aa297def30"
+  },
+  "rates|390-dark": {
+   "elements": 356,
+   "sha256": "237cb6df6a6c6d6ae1d5b5861a1a8c97cb2ee2e6"
+  },
+  "money|390-dark": {
+   "elements": 1012,
+   "sha256": "49389edc2a799c1ffa88fc70658560a078f1b2c0"
+  },
+  "legality|390-dark": {
+   "elements": 1533,
+   "sha256": "922328a8d2c0296df9cff10ed47a45b6bd8db3da"
+  },
+  "integrations|390-dark": {
+   "elements": 282,
+   "sha256": "4af389f9c03da2ab5c5a7a2759954596a1c92204"
+  },
+  "policies|390-dark": {
+   "elements": 1313,
+   "sha256": "9824b5f92711bd9b6f402448eecbce404dbd31fa"
+  },
+  "today|1366-light": {
+   "elements": 560,
+   "sha256": "bae3aca4076c34682708fe69d5bf01ed95ba5498"
+  },
+  "bookings|1366-light": {
+   "elements": 331,
+   "sha256": "78b9f26ab72e32c67ca08cb1aa12a30560ad69d5"
+  },
+  "calendar|1366-light": {
+   "elements": 708,
+   "sha256": "78466368adc0a6054711ab5678656e6143116201"
+  },
+  "cleaning|1366-light": {
+   "elements": 284,
+   "sha256": "152425e5297697e05e2ef40d32c1f0d077ff52f8"
+  },
+  "stock|1366-light": {
+   "elements": 560,
+   "sha256": "5ec5607de3375db9dc6e2e57dc93523e47fc1601"
+  },
+  "issues|1366-light": {
+   "elements": 271,
+   "sha256": "3ae6cf3d8fd6e7e33029f1191a5007470cff55f6"
+  },
+  "messages|1366-light": {
+   "elements": 268,
+   "sha256": "1b23a82b6825994e650a868b43a30a1584be3ae8"
+  },
+  "reviews|1366-light": {
+   "elements": 272,
+   "sha256": "ef6908b8f0d3a5489903c908297923fcf0ac72f9"
+  },
+  "rates|1366-light": {
+   "elements": 356,
+   "sha256": "9b39265ce73686cc1785398e0592de89f2e83680"
+  },
+  "money|1366-light": {
+   "elements": 1012,
+   "sha256": "65d63623348d003cc7c402db7302e4e3f56473ea"
+  },
+  "legality|1366-light": {
+   "elements": 1533,
+   "sha256": "8a961e8458acc1395723df291bb284d8a94c463f"
+  },
+  "integrations|1366-light": {
+   "elements": 282,
+   "sha256": "71cf01cf3323c6b63af5d3641418e0d5741a37dc"
+  },
+  "policies|1366-light": {
+   "elements": 1313,
+   "sha256": "c25f75b20c5cfe44d6eaf76b8ac3464e2796d934"
+  },
+  "today|1366-dark": {
+   "elements": 560,
+   "sha256": "23a3c5ceac93eb1682796e1e820a637baca9587e"
+  },
+  "bookings|1366-dark": {
+   "elements": 331,
+   "sha256": "67bc3631b0c7e462872e0b8175a4298745422443"
+  },
+  "calendar|1366-dark": {
+   "elements": 708,
+   "sha256": "87ce7436f0eae624cfe95b217d8945ef8b466315"
+  },
+  "cleaning|1366-dark": {
+   "elements": 284,
+   "sha256": "e3d0665373c61362bf477f54f9a8c0a5c1454490"
+  },
+  "stock|1366-dark": {
+   "elements": 560,
+   "sha256": "9150295be278c1204981ecbd0c8820e9f1b5e338"
+  },
+  "issues|1366-dark": {
+   "elements": 271,
+   "sha256": "5f1837715763f754ac149e97ee68149cc7a3d80a"
+  },
+  "messages|1366-dark": {
+   "elements": 268,
+   "sha256": "01df5773414babf9106ea1dae134da20a5d40e00"
+  },
+  "reviews|1366-dark": {
+   "elements": 272,
+   "sha256": "3c341e8cc68ed2ee9fa0d0a79caaece8d750d404"
+  },
+  "rates|1366-dark": {
+   "elements": 356,
+   "sha256": "93be96f70e0a76b04f378b91b924b0faf0f83523"
+  },
+  "money|1366-dark": {
+   "elements": 1012,
+   "sha256": "09300fd466af2a94b25e2b7bf9a47ab2d568d67c"
+  },
+  "legality|1366-dark": {
+   "elements": 1533,
+   "sha256": "86052ffe829c671677768afbe3b73eb9f0fd5cd2"
+  },
+  "integrations|1366-dark": {
+   "elements": 282,
+   "sha256": "b2cc9c190ca28f1dec59e02956131c5c65032351"
+  },
+  "policies|1366-dark": {
+   "elements": 1313,
+   "sha256": "618dd63f6b31c713732db61bcd16c75e0c0072cb"
+  }
+ }
+}

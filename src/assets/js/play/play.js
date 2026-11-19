@@ -53,9 +53,30 @@ async function mountAdmin() {
     return;
   }
   box.innerHTML = '<iframe id="frame-a" title="The admin side, inside this page" loading="eager"></iframe>';
-  $('frame-a').src = '/admin/?embed';
-  $('open-a').href = '/admin/';
+  showDesign(currentDesign(), { load: false });
 }
+// ---------- the design of both sides (round 5, PROPOSAL.md 3) ----------
+// The visitor frame shows / or /d/<slug>/; the admin frame /admin/?embed&design=<slug>, light beside a /d/
+// design (those are light only; conductor's answer 2). The choice is kept in "cc.admin.design.v1".
+const DESIGN_KEY = 'cc.admin.design.v1', DNAMES = { ledger: 'Ledger', revista: 'Revista', azulejo: 'Azulejo', linho: 'Linho', costa: 'Costa', postal: 'Postal' };
+function currentDesign() { try { const v = localStorage.getItem(DESIGN_KEY); return DNAMES[v] ? v : 'ledger'; } catch { return 'ledger'; } }
+function showDesign(d, { load = true } = {}) {
+  const sel = $('play-design'); if (sel) sel.value = d;
+  const fa = $('frame-a');
+  if (fa) fa.src = d === 'ledger' ? '/admin/?embed&design=ledger' : `/admin/?embed&design=${d}&theme=light`;
+  $('open-a').href = d === 'ledger' ? '/admin/' : `/admin/?design=${d}`;
+  const head = document.querySelector('.pane-admin .addr'); if (head) head.textContent = `/admin/ · ${DNAMES[d]} design · you are the owner`;
+  const home = document.querySelector('[data-go="/"], [data-go^="/d/"]'); if (home) home.dataset.go = d === 'ledger' ? '/' : `/d/${d}/`;
+  if (load && !currentStayOpen()) goVisitor(d === 'ledger' ? '/' : `/d/${d}/`);
+}
+const currentStayOpen = () => { try { return frameV.contentWindow.location.pathname.startsWith('/stay/'); } catch { return false; } };
+$('play-design')?.addEventListener('change', e => {
+  const d = DNAMES[e.target.value] ? e.target.value : 'ledger';
+  try { if (d === 'ledger') localStorage.removeItem(DESIGN_KEY); else localStorage.setItem(DESIGN_KEY, d); } catch { /* blocked: this view only */ }
+  showDesign(d);
+  say(`Design: ${d === 'ledger' ? 'the main site with the Ledger admin' : `${DNAMES[d]} on both sides`}.`);
+});
+addEventListener('cc-reset', () => showDesign('ledger'));
 document.querySelectorAll('.vt').forEach(b => b.addEventListener('click', () => {
   $('frames').dataset.view = b.dataset.view;
   document.querySelectorAll('.vt').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
@@ -135,7 +156,7 @@ rail.addEventListener('pointerdown', e => {
 });
 
 // ---------- the ticker ----------
-const ACT = { visitor: 'visitor', owner: 'owner', housekeeper: 'housekeeper', bookkeeper: 'bookkeeper', 'host-assistant': "host's assistant", 'guest-assistant': "guest's assistant", 'agent.cinco-chamines': 'site agent', system: 'the simulation' };
+const ACT = { visitor: 'visitor', owner: 'owner', housekeeper: 'housekeeper', bookkeeper: 'bookkeeper', "host-assistant": "Claude, the host's assistant (simulated)", "guest-assistant": "Claude, the guest's assistant (simulated)", 'agent.cinco-chamines': 'site agent', system: 'the simulation' };
 const who = a => ACT[a] || a || 'the simulation';
 function summary(ev, st) {
   const d = ev.data || {};
@@ -284,7 +305,8 @@ async function start() {
   try { wantsTour = new URLSearchParams(location.search).get('tour') === '1'; } catch { /* no address */ }
   if (wantsTour) SIM.bounds.then(() => tour.open());
   const stay = currentStay(SIM.store.getState());
-  goVisitor(stay ? `/stay/?booking=${encodeURIComponent(stay.id)}` : '/');
+  const dz = currentDesign(); if ($('play-design')) $('play-design').value = dz;
+  goVisitor(stay ? `/stay/?booking=${encodeURIComponent(stay.id)}` : dz === 'ledger' ? '/' : `/d/${dz}/`);
   mountAdmin();
   // Real rain chances for the engine's reviews (Faro, IPMA): null where no real forecast exists.
   const wx = new Map();

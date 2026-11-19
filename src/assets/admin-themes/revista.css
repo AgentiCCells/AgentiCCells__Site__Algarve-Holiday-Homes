@@ -1,0 +1,47 @@
+/* admin-themes/revista.css: the admin of Cinco Chaminés (a made-up example) in the Revista, the editor's desk design (round 5,
+   team/rounds/5/design/PROPOSAL.md; mock-up mockup-admin-themes.html). Tokens for light and dark, then layout
+   rules on existing classes only. Meaning colours (allow, ask, deny, real, simulated, invented, the warn and ok
+   chips, how sure, booking kinds) are not changed here, labels are never hidden or set under 12 px, and no text
+   is added but Costa's pin numbers. System fonts only. Code Apache-2.0.
+   developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19, round 5. */
+:root[data-design="revista"]{--a-bg:#FAF8F3;--a-surface:#FFFFFF;--a-ink:#1C1B19;--a-ink2:#5C5850;--a-line:#D8D1C3;--a-side:#F0ECE3;--a-side-ink:#1C1B19;--a-side-lab:#5C5850;--a-active:#FAF8F3;--a-mark:#8E3A1E;
+ --a-accent:#8E3A1E;--a-pill:#E2DACB;--a-pill-ink:#1C1B19;--a-hot:#1C1B19;--a-hot-ink:#FAF8F3;--a-today:#F3EBDD;--band-bg:#EFE3C2;--band-ink:#1C1B19;
+ --f-head:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua","URW Palladio L",Caladea,Georgia,serif;
+ --f-text:"Avenir Next","Segoe UI",Inter,"Helvetica Neue",Arial,sans-serif;--f-num:var(--f-head);--rad:0;--row:7px;--kv:1.7rem}
+@media (prefers-color-scheme:dark){:root[data-design="revista"]:not([data-theme="light"]){--a-bg:#1A1917;--a-surface:#22201D;--a-ink:#F2EEE6;--a-ink2:#B8B1A4;--a-line:#3D3933;--a-side:#141311;--a-side-ink:#E8E2D6;--a-side-lab:#ADA697;--a-active:#2A2723;--a-mark:#EBA683;
+ --a-accent:#EBA683;--a-pill:#3D3933;--a-pill-ink:#F2EEE6;--a-hot:#F2EEE6;--a-hot-ink:#1A1917;--a-today:#2E2A24;--band-bg:#3A3220;--band-ink:#F2EEE6}}
+:root[data-design="revista"][data-theme="dark"]{--a-bg:#1A1917;--a-surface:#22201D;--a-ink:#F2EEE6;--a-ink2:#B8B1A4;--a-line:#3D3933;--a-side:#141311;--a-side-ink:#E8E2D6;--a-side-lab:#ADA697;--a-active:#2A2723;--a-mark:#EBA683;
+ --a-accent:#EBA683;--a-pill:#3D3933;--a-pill-ink:#F2EEE6;--a-hot:#F2EEE6;--a-hot-ink:#1A1917;--a-today:#2E2A24;--band-bg:#3A3220;--band-ink:#F2EEE6}
+:root[data-design="revista"] .adm-side{border-right:3px double var(--a-ink)}
+:root[data-design="revista"] .adm-side a[aria-current]{border-left-color:var(--a-mark);font-style:italic}
+:root[data-design="revista"] .adm-title{border-bottom:3px double var(--a-ink);padding-bottom:10px}
+:root[data-design="revista"] .adm-title h1{font-size:2rem;font-weight:400}
+:root[data-design="revista"] .kpis{gap:0;border-top:1px solid var(--a-ink);border-bottom:1px solid var(--a-ink)}
+:root[data-design="revista"] .kpi{border:0;border-left:1px solid var(--a-line);background:transparent;padding:10px 14px}
+:root[data-design="revista"] .kpi:first-child{border-left:0}
+:root[data-design="revista"] .kpi.warn{border-left:1px solid var(--a-line);box-shadow:inset 0 3px 0 var(--a-hot)}
+:root[data-design="revista"] .kl{text-transform:uppercase;letter-spacing:.08em;font-size:.75rem}
+:root[data-design="revista"] .kv{font-weight:400}
+:root[data-design="revista"] .panel{border:0;border-top:2px solid var(--a-ink);padding:10px 0 4px;background:transparent}
+:root[data-design="revista"] .pnh h2{font-size:1.2rem;font-weight:400;font-style:italic}
+:root[data-design="revista"] .tbl thead th{border-bottom:3px double var(--a-ink);text-transform:uppercase;letter-spacing:.06em;font-size:.75rem}
+:root[data-design="revista"] .src,:root[data-design="revista"] .disclaimer{font-family:var(--f-head);font-style:italic}
+:root[data-design="revista"] .res{border-radius:0;border:1px solid var(--a-ink);border-left:5px solid #B42318}
+/* shared by every theme: the design's own faces, density, radius, panel header band and site chrome */
+:root[data-design="revista"]{--a-theme-ok:revista;--a-hot-edge:var(--a-hot);--a-side-cur-ink:var(--a-side-ink);--a-side-focus:var(--a-side-ink);--a-side-rule:var(--a-side-lab);--bg:var(--a-bg);--surface:var(--a-surface);--ink:var(--a-ink);--ink-2:var(--a-ink2);--line:var(--a-line);--accent:var(--a-accent)}
+:root[data-design="revista"] .adm,:root[data-design="revista"] .adm-content{font-family:var(--f-text)}
+:root[data-design="revista"] .adm h1,:root[data-design="revista"] .adm h2,:root[data-design="revista"] .adm h3{font-family:var(--f-head)}
+:root[data-design="revista"] .kv{font-family:var(--f-num);font-size:var(--kv)}
+:root[data-design="revista"] .tbl th,:root[data-design="revista"] .tbl td{padding:var(--row) 8px}
+:root[data-design="revista"] .panel,:root[data-design="revista"] .kpi,:root[data-design="revista"] .res{border-radius:var(--rad)}
+:root[data-design="revista"] .panel .pnh{background:var(--a-head,transparent);color:var(--a-head-ink,inherit)}
+:root[data-design="revista"] .panel .pnh h2{color:inherit}
+:root[data-design="revista"] .panel .pnh a{color:inherit;text-decoration:underline}
+:root[data-design="revista"] .adm-side a:focus-visible{outline-color:var(--a-side-ink)}
+:root[data-design="revista"] .adm :focus-visible{outline:3px solid var(--a-ink);outline-offset:2px}
+:root[data-design="revista"] .adm-side a[aria-current]{color:var(--a-side-ink)}
+:root[data-design="revista"] .adm-who{border-top-color:var(--a-side-lab);color:var(--a-side-lab)}
+@media (max-width:900px){:root[data-design="revista"] .adm-side{border-right:0}:root[data-design="revista"] .adm-side a{border-radius:0;margin:0}}
+@media (max-width:640px){:root[data-design="revista"] .kpis{gap:0}:root[data-design="revista"] .kpi:nth-child(odd){border-left:0}:root[data-design="revista"] .kpi{border-bottom:1px solid var(--a-line)}}
+/* Round 5 build: the 8- and 9-tile rows are narrow above 1200 px; a smaller figure keeps each number on one line, inside its tile. */
+@media (min-width:1201px){:root[data-design="revista"] .kpis.k8 .kv,:root[data-design="revista"] .kpis.k9 .kv{font-size:1.15rem}}

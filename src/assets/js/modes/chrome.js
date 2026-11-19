@@ -55,7 +55,8 @@ export function fmtSim(t, { time = true, year = true } = {}) {
 }
 // Short names for the actors in the policy log.
 export const ACTOR_NAMES = Object.freeze({
-  'agent.cinco-chamines': 'site agent', 'guest-assistant': 'guest\'s assistant', 'host-assistant': 'host\'s assistant',
+  // Round 5 (conductor's answer 1): the assistants as /agents/ names them; the guest (a person) stays apart.
+  'agent.cinco-chamines': 'site agent', 'guest-assistant': 'Claude, the guest\'s assistant (simulated)', 'host-assistant': 'Claude, the host\'s assistant (simulated)',
   housekeeper: 'housekeeper', owner: 'owner', bookkeeper: 'bookkeeper', visitor: 'visitor',
 });
 export const actorName = e => ACTOR_NAMES[e?.policy] || ACTOR_NAMES[e?.actor] || String(e?.actor || 'unknown');
@@ -146,7 +147,7 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
 <li>${badge('invented')}<span>The company Cinco Chaminés, the five homes, prices, rules, check-in details, suggestions of places to eat, every person.</span></li>
 <li>${badge('ai')}<span>Every picture of a home or of the Algarve (an image model); no photograph.</span></li>
 </ul>
-<p class="foot">State is kept in this browser only (localStorage). Reset clears it. Taxes and rules shown are a simulation, not legal or tax advice. The assistants are scripted, not a live model. <a href="/behind-the-scenes/">How it was made</a></p>
+<p class="foot">State is kept in this browser only (localStorage: the simulation, your stay plan, your cost assumptions, your best scores, your admin design "cc.admin.design.v1" and a tour's saved copy). Reset clears it. Taxes and rules shown are a simulation, not legal or tax advice. The assistants are scripted, not a live model. <a href="/behind-the-scenes/">How it was made</a></p>
 <button type="button" class="tbtn about-close">Close</button>`;
   bar.insertAdjacentElement('afterend', about);
   const aboutBtn = tools.querySelector('.about');
@@ -243,8 +244,9 @@ export function mountChrome({ mode = 'visitor', sim = null, band = true } = {}) 
   return { ...S, embed, unmount: () => { for (const c of cleanups) c(); } };
 }
 // ---------- Reset and the keys this site keeps (round 4, PROPOSAL.md 0.3) ----------
-export const RESET_WORDS = 'This deletes, in this browser only: your simulation (bookings, messages, the admin\'s changes), your stay plan, your cost assumptions, your best scores, and a tour\'s saved copy if one is waiting. Real data is read again.';
-export const KEPT_KEYS = Object.freeze(['cc.stay.v1', 'cc.assumptions.v1', 'cc.world.scores.v1', 'cc.tour.backup.v1']);
+// Round 5 (conductor's answer 4): Reset clears the admin design too.
+export const RESET_WORDS = 'This deletes, in this browser only: your simulation (bookings, messages, the admin\'s changes), your stay plan, your cost assumptions, your best scores, your admin design, and a tour\'s saved copy if one is waiting. Real data is read again.';
+export const KEPT_KEYS = Object.freeze(['cc.stay.v1', 'cc.assumptions.v1', 'cc.world.scores.v1', 'cc.tour.backup.v1', 'cc.admin.design.v1']);
 export function tourBackup() { try { return globalThis.localStorage?.getItem('cc.tour.backup.v1') || null; } catch { return null; } }
 export function clearTourBackup() { try { globalThis.localStorage?.removeItem('cc.tour.backup.v1'); } catch { /* blocked */ } }
 // resetAll(store): the simulation back to its first day (every setting to its default, so the level

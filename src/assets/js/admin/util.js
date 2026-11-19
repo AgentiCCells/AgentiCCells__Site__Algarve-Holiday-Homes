@@ -12,6 +12,8 @@ export { esc, fmtSim, badge, decisionBadge, actorName, bookingsList, ACTIVE, add
 
 export const HOME_IDS = ['salt', 'lagoon', 'hill', 'harbour', 'cape'];
 export const SHORT = { salt: 'Salt', lagoon: 'Lagoon', hill: 'Hill', harbour: 'Harbour', cape: 'Cape' };
+// Each home's pin number (round 5, PROPOSAL.md 2.7): one data-pin attribute in every design; only Costa shows it.
+export const PIN = Object.freeze({ salt: 1, lagoon: 2, hill: 3, harbour: 4, cape: 5 });
 export const eur = (n, dp = 0) => `${Number(n) < 0 ? '-' : ''}€${Math.abs(Number(n) || 0).toLocaleString('en-GB', { minimumFractionDigits: dp, maximumFractionDigits: dp })}`;
 export const pct = n => `${Math.round((Number(n) || 0) * 100)}%`;
 export const homeName = (S, id) => S.homes[id]?.name || id;
@@ -97,7 +99,7 @@ export function occupancyGrid(S, ids, from, days, { now, realDay = () => false, 
       }
       return `<div class="oc-b ${cls}" style="grid-column:${sg.start + 2} / span ${sg.n};grid-row:${r + 2}" title="${esc(title)}"><span>${sg.n > 1 || cls !== 'bg' ? esc(label) : ''}</span></div>`;
     }).join('');
-    return `<div class="oc-name" style="grid-row:${r + 2}"${id === 'lagoon' ? ' data-tour="occ-lagoon"' : ''}>${esc(homeName(S, id))}</div>${cells}${bars}`;
+    return `<div class="oc-name" style="grid-row:${r + 2}" data-pin="${PIN[id] || ''}"${id === 'lagoon' ? ' data-tour="occ-lagoon"' : ''}>${esc(homeName(S, id))}</div>${cells}${bars}`;
   }).join('');
   return `<div class="oc-scroll" tabindex="0" role="region" aria-label="Occupancy, ${days} days from ${esc(day(from))}"><div class="oc" style="grid-template-columns:8.5rem repeat(${days}, minmax(2.1rem, 1fr))">${head}${rows}</div></div>
 <p class="oc-legend"><span class="sw yours"></span>your booking ${Object.values(S.bookings).some(b => isTour(S, b)) ? '<span class="sw tour"></span>the tour\'s booking ' : ''}<span class="sw direct"></span>direct (simulated) <span class="sw platform"></span>booking platform or calendar feed (simulated) <span class="sw block"></span>blocked by the owner <span class="sw bg"></span>booked elsewhere (simulated background) <span class="ul">underline: real weather exists</span></p>`;

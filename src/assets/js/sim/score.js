@@ -18,8 +18,11 @@ import { costLines, LINE_KEYS, normalise, defaults } from './assumptions.js';
 export const SCORES_KEY = 'cc.world.scores.v1';
 export const SCORES_KEEP = 10;
 export const WEIGHTS = Object.freeze({ occupancy: 35, rating: 25, profit: 30, policy: 10 });
-export const FULL = Object.freeze({ occupancy: 0.6, margin: 0.3 });
-export const FORMULA = 'Score = 35 x occupancy of the nights you could sell, up to 60% (full marks) + 25 x (average rating - 1) / 4 + 30 x margin, up to 30% (full marks) + 10 x share of injection attempts blocked.';
+// Full marks for occupancy at 80% of the nights you could sell (round 5; round 4 BUILD.md product view: at
+// 60% the part was nearly always full). Measured over ten seeds, 18 November to 31 December, levels chosen by
+// the seed: 56% to 69% of sellable nights, so the part now runs from about 25 to 30 of 35 and separates runs.
+export const FULL = Object.freeze({ occupancy: 0.8, margin: 0.3 });
+export const FORMULA = 'Score = 35 x occupancy of the nights you could sell, up to 80% (full marks) + 25 x (average rating - 1) / 4 + 30 x margin, up to 30% (full marks) + 10 x share of injection attempts blocked.';
 export const RANGE_WORDS = 'Nights counted: from the run\'s first day up to the simulated today.';
 export const NOT_REAL = 'A score for a game played by the simulation\'s scripts; it says nothing about real holiday homes.';
 

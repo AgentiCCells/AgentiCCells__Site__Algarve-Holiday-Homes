@@ -23,6 +23,7 @@ import { WORDS as DEMAND_WORDS } from '../sim/demand.js';
 import { esc, addDays, dayOf, daysBetween, toMs } from '../sim/util.js';
 import { mountFrame, kindBadge, decisionChip } from './frame.js';
 
+
 const $ = id => document.getElementById(id);
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const eur = n => `€${Math.round(Number(n) || 0).toLocaleString('en-GB')}`;
@@ -39,6 +40,8 @@ const SLOTS = [64, -64, 84, -84, 46, -46];
 let store, clock, guard, world, cast, homesFile = [], bounds = FALLBACK_BOUNDS;
 // Round 4 (PROPOSAL.md 2.3 and 4): the shadow world for "what if you had left the rates", and the score.
 let shadow = null, shadowFrom = null, savedRun = null, vfShadowMs = 0, lastNow = null, backTimer = null;
+// The assistants as /agents/ names them (round 5, conductor's answer 1); kept here so the stand-in frame still works.
+const ACTOR_NAMES = { 'host-assistant': 'Claude, the host\'s assistant (simulated)', 'guest-assistant': 'Claude, the guest\'s assistant (simulated)', 'agent.cinco-chamines': 'the site\'s agent' };
 const WEST_EAST = ['cape', 'harbour', 'hill', 'lagoon', 'salt'];
 const assumptions = () => A.read().doc;
 let speed = 0, vfTimer = null, vfStart = 0, vfFromDay = null;
@@ -122,6 +125,8 @@ function wire() {
     if (k === 'down' || k === 'up') changeRate(h.id, { base: Math.round(h.rate.base * (k === 'up' ? 1.1 : 0.9)) });
     else if (k === 'min-' || k === 'min+') changeRate(h.id, { minNights: h.rate.minNights + (k === 'min+' ? 1 : -1) });
   });
+  // A typed base is kept on change; the row redraws when focus leaves the field (round 4 RECHECK.md item 1).
+  $('rates').addEventListener('focusout', () => setTimeout(() => renderRates(store.getState()), 0));
   $('rates').addEventListener('change', e => { const i = e.target.closest('input[data-base]'); if (i) changeRate(i.dataset.base, { base: Math.round(Number(i.value)) }); });
   $('whatif').addEventListener('click', e => { if (e.target.closest('[data-compare-now]')) { shadow.start(store.getState(), clock.now()); shadowFrom = clock.now(); dirty = true; note('The comparison starts again from now.'); } });
   $('best').addEventListener('click', e => { const b = e.target.closest('button[data-seed]'); if (b) { newRun(b.dataset.seed); return; } if (e.target.closest('[data-new-seed]')) $('seed-new').click(); });
@@ -611,7 +616,7 @@ function renderPolicies(s) {
     const fl = (e.provenance || []).find(p => p.flagged || (!p.trusted && p.role === 'instruction'));
     const who = cast.byId[e.who]?.name || e.who || e.actor;
     const then = e.decision === 'deny' ? 'refused; nothing changed' : 'handed to a person';
-    return `<li>${decisionChip(e)} <b>${esc(who)}</b> &rarr; ${esc(e.actor)}: <code>${esc(e.action)}</code>${e.amount ? ` EUR ${esc(e.amount)}` : ''}${fl ? `<q>${esc(fl.excerpt)}</q>` : ''} <span class="mini">${esc(then)}.</span></li>`;
+    return `<li>${decisionChip(e)} <b>${esc(who)}</b> &rarr; ${esc(ACTOR_NAMES[e.policy] || ACTOR_NAMES[e.actor] || e.actor)}: <code>${esc(e.action)}</code>${e.amount ? ` EUR ${esc(e.amount)}` : ''}${fl ? `<q>${esc(fl.excerpt)}</q>` : ''} <span class="mini">${esc(then)}.</span></li>`;
   }).join('')}</ul>` : '<p class="mini">No refusals yet. Run the world: the injection tester will try.</p>';
 }
 

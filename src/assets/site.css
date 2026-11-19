@@ -342,6 +342,7 @@ p code,li code,td code,th code,dd code{overflow-wrap:anywhere}
 .dpic{border-bottom:1px solid var(--line);background:var(--taken)}
 .dpic img{display:block;width:100%;height:auto;aspect-ratio:800/527;object-fit:cover;object-position:top}
 .dpic a{display:block}
+.dadm{margin:12px 0 0}.dadm img{display:block;width:100%;height:auto;aspect-ratio:800/527;object-fit:cover;object-position:top;border:1px solid var(--line)}.dadm figcaption{margin-top:6px}
 .db{padding:var(--s4);display:flex;flex-direction:column;flex:1}
 .db h2{font-size:1.25rem;margin:0 0 var(--s2)}
 .db p{margin:0 0 var(--s2)}

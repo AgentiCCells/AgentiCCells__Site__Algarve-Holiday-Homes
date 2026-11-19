@@ -1,0 +1,45 @@
+/* admin-themes/azulejo.css: the admin of Cinco Chaminés (a made-up example) in the Azulejo, the tile board design (round 5,
+   team/rounds/5/design/PROPOSAL.md; mock-up mockup-admin-themes.html). Tokens for light and dark, then layout
+   rules on existing classes only. Meaning colours (allow, ask, deny, real, simulated, invented, the warn and ok
+   chips, how sure, booking kinds) are not changed here, labels are never hidden or set under 12 px, and no text
+   is added but Costa's pin numbers. System fonts only. Code Apache-2.0.
+   developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19, round 5. */
+:root[data-design="azulejo"]{--a-bg:#F6F8FC;--a-surface:#FFFFFF;--a-ink:#14306E;--a-ink2:#3D4F75;--a-line:#B9C8E6;--a-side:#14306E;--a-side-ink:#FFFFFF;--a-side-lab:#C9D6F0;--a-active:#1F4FA3;--a-mark:#FFFFFF;
+ --a-accent:#1F4FA3;--a-head:#1F4FA3;--a-head-ink:#FFFFFF;--a-pill:#DCE6F7;--a-pill-ink:#14306E;--a-hot:#14306E;--a-hot-ink:#FFFFFF;--a-today:#DCE6F7;--band-bg:#DCE6F7;--band-ink:#14306E;
+ --f-head:Optima,Candara,"Gill Sans","Gill Sans MT","Noto Sans","Segoe UI",Carlito,sans-serif;
+ --f-text:"Gill Sans","Gill Sans MT",Calibri,Carlito,"Segoe UI",system-ui,sans-serif;--f-num:var(--f-head);--rad:2px;--row:6px;
+ --tile:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23fff'/%3E%3Cg fill='%231F4FA3'%3E%3Cpath d='M0 0h12a12 12 0 0 1-12 12zM48 0v12a12 12 0 0 1-12-12zM0 48v-12a12 12 0 0 1 12 12zM48 48h-12a12 12 0 0 1 12-12z'/%3E%3Cpath d='M24 8l4 12 12 4-12 4-4 12-4-12-12-4 12-4z'/%3E%3C/g%3E%3Ccircle cx='24' cy='24' r='3' fill='%23fff'/%3E%3Cpath d='M24 0v5M24 43v5M0 24h5M43 24h5' stroke='%231F4FA3' stroke-width='2'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme:dark){:root[data-design="azulejo"]:not([data-theme="light"]){--a-bg:#0D1630;--a-surface:#142146;--a-ink:#E8EEFA;--a-ink2:#B3C1E0;--a-line:#2C3E6E;--a-side:#0A1126;--a-side-ink:#E8EEFA;--a-side-lab:#A9B9DC;--a-active:#22408A;--a-mark:#A8C1F5;
+ --a-accent:#A8C1F5;--a-head:#22408A;--a-head-ink:#FFFFFF;--a-pill:#22408A;--a-pill-ink:#FFFFFF;--a-hot:#E8EEFA;--a-hot-ink:#0D1630;--a-today:#1A2A55;--band-bg:#1A2A55;--band-ink:#E8EEFA}}
+:root[data-design="azulejo"][data-theme="dark"]{--a-bg:#0D1630;--a-surface:#142146;--a-ink:#E8EEFA;--a-ink2:#B3C1E0;--a-line:#2C3E6E;--a-side:#0A1126;--a-side-ink:#E8EEFA;--a-side-lab:#A9B9DC;--a-active:#22408A;--a-mark:#A8C1F5;
+ --a-accent:#A8C1F5;--a-head:#22408A;--a-head-ink:#FFFFFF;--a-pill:#22408A;--a-pill-ink:#FFFFFF;--a-hot:#E8EEFA;--a-hot-ink:#0D1630;--a-today:#1A2A55;--band-bg:#1A2A55;--band-ink:#E8EEFA}
+:root[data-design="azulejo"] .adm-main{position:relative;padding-top:30px}
+:root[data-design="azulejo"] .adm-main::before{content:"";position:absolute;left:0;right:0;top:0;height:14px;background:var(--tile) 0 0/14px 14px}
+:root[data-design="azulejo"] .adm-title h1,:root[data-design="azulejo"] .adm-gt,:root[data-design="azulejo"] .kl{text-transform:uppercase;letter-spacing:.08em}
+:root[data-design="azulejo"] .kpi{border:2px solid var(--a-accent);position:relative;padding-right:22px}
+@media (prefers-color-scheme:dark){:root[data-design="azulejo"]:not([data-theme="light"]) .kpi{border-color:#3E5FA8}}
+:root[data-design="azulejo"][data-theme="dark"] .kpi{border-color:#3E5FA8}
+:root[data-design="azulejo"] .kpi::after{content:"";position:absolute;right:-2px;top:-2px;width:16px;height:16px;background:var(--a-accent);border-bottom-left-radius:16px}
+:root[data-design="azulejo"] .kpi.warn{border-left-width:6px;border-left-color:var(--a-hot)}
+:root[data-design="azulejo"] .panel{padding:0 0 10px;overflow:hidden}
+:root[data-design="azulejo"] .panel>*:not(.pnh){margin-left:14px;margin-right:14px}
+:root[data-design="azulejo"] .pnh{padding:7px 14px;margin-bottom:10px}
+:root[data-design="azulejo"] .pnh h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em}
+:root[data-design="azulejo"] .tbl thead th{background:var(--a-today);color:var(--a-ink)}
+/* shared by every theme: the design's own faces, density, radius, panel header band and site chrome */
+:root[data-design="azulejo"]{--a-theme-ok:azulejo;--a-hot-edge:var(--a-hot);--a-side-cur-ink:var(--a-side-ink);--a-side-focus:var(--a-side-ink);--a-side-rule:var(--a-side-lab);--bg:var(--a-bg);--surface:var(--a-surface);--ink:var(--a-ink);--ink-2:var(--a-ink2);--line:var(--a-line);--accent:var(--a-accent)}
+:root[data-design="azulejo"] .adm,:root[data-design="azulejo"] .adm-content{font-family:var(--f-text)}
+:root[data-design="azulejo"] .adm h1,:root[data-design="azulejo"] .adm h2,:root[data-design="azulejo"] .adm h3{font-family:var(--f-head)}
+:root[data-design="azulejo"] .kv{font-family:var(--f-num);font-size:var(--kv)}
+:root[data-design="azulejo"] .tbl th,:root[data-design="azulejo"] .tbl td{padding:var(--row) 8px}
+:root[data-design="azulejo"] .panel,:root[data-design="azulejo"] .kpi,:root[data-design="azulejo"] .res{border-radius:var(--rad)}
+:root[data-design="azulejo"] .panel .pnh{background:var(--a-head,transparent);color:var(--a-head-ink,inherit)}
+:root[data-design="azulejo"] .panel .pnh h2{color:inherit}
+:root[data-design="azulejo"] .panel .pnh a{color:inherit;text-decoration:underline}
+:root[data-design="azulejo"] .adm-side a:focus-visible{outline-color:var(--a-side-ink)}
+:root[data-design="azulejo"] .adm :focus-visible{outline:3px solid var(--a-ink);outline-offset:2px}
+:root[data-design="azulejo"] .adm-side a[aria-current]{color:var(--a-side-ink)}
+:root[data-design="azulejo"] .adm-who{border-top-color:var(--a-side-lab);color:var(--a-side-lab)}
+@media (max-width:900px){:root[data-design="azulejo"] .adm-side{border-right:0}:root[data-design="azulejo"] .adm-side a{border-radius:0;margin:0}}
+@media (max-width:900px){:root[data-design="azulejo"] .adm-main{padding-top:26px}}
+:root[data-design="azulejo"] .panel>svg.chart{width:calc(100% - 28px)}

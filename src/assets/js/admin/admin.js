@@ -20,6 +20,47 @@ import * as A from '../sim/assumptions.js';
 import { playedNote, behind } from '../sim/store.js';
 
 const sim = mountChrome({ mode: 'admin' });
+
+// ---------- the admin's design (round 5, team/rounds/5/design/PROPOSAL.md 2.4 to 2.6) ----------
+// design-boot.js has set data-design before the first paint; the chooser changes it and keeps the choice
+// in localStorage "cc.admin.design.v1" (Reset removes it). Inside /play/ (?embed) /play/ chooses.
+export const DESIGNS = Object.freeze({ ledger: 'Ledger', revista: 'Revista', azulejo: 'Azulejo', linho: 'Linho', costa: 'Costa', postal: 'Postal' });
+const DESIGN_KEY = 'cc.admin.design.v1';
+function setDesign(slug, { store: keep = true, say = true } = {}) {
+  const d = DESIGNS[slug] ? slug : 'ledger';
+  document.documentElement.dataset.design = d;
+  const sel = document.getElementById('adm-design'); if (sel) sel.value = d;
+  const link = document.getElementById('adm-design-link'); if (link) link.href = d === 'ledger' ? '/' : `/d/${d}/`;
+  if (keep) { try { if (d === 'ledger') localStorage.removeItem(DESIGN_KEY); else localStorage.setItem(DESIGN_KEY, d); } catch { /* blocked: this view only */ } }
+  if (say) showDesign(d);
+  if (d !== 'ledger') requestAnimationFrame(() => checkThemeFile(d));
+}
+function showDesign(d) {
+  const r = document.getElementById('adm-result');
+  if (r) r.innerHTML = `<div class="res res-info">Admin design: ${DESIGNS[d]}. ${d === 'ledger' ? 'The visitor\'s matching design is the main site at /.' : `The visitor's matching design is at /d/${d}/.`} <button type="button" class="res-x" data-act="dismiss" aria-label="Dismiss">Close</button></div>`;
+}
+// A theme file that did not arrive (404, slow, blocked): show Ledger and say so (2.6).
+function checkThemeFile(d) {
+  const ok = getComputedStyle(document.documentElement).getPropertyValue('--a-theme-ok').trim();
+  if (ok === d || document.documentElement.dataset.design !== d) return;
+  document.documentElement.dataset.design = 'ledger';
+  const sel = document.getElementById('adm-design'); if (sel) sel.value = 'ledger';
+  const r = document.getElementById('adm-result');
+  if (r) r.innerHTML = `<div class="res res-info">The ${DESIGNS[d]} styles could not be loaded; showing the main admin design. <button type="button" class="res-x" data-act="dismiss" aria-label="Dismiss">Close</button></div>`;
+}
+{
+  const sel = document.getElementById('adm-design');
+  const embedded = new URLSearchParams(location.search).has('embed');
+  if (embedded) document.querySelector('.adm-design')?.setAttribute('hidden', '');
+  const cur = document.documentElement.dataset.design || 'ledger';
+  setDesign(cur, { store: false, say: false });
+  if (!sim.persistent) document.getElementById('adm-design-note')?.removeAttribute('hidden');
+  sel?.addEventListener('change', () => setDesign(sel.value));
+  addEventListener('load', () => { if (document.documentElement.dataset.design !== 'ledger') checkThemeFile(document.documentElement.dataset.design); });
+  // Reset (this tab: the cc-reset event; another tab or frame: the storage event) goes back to Ledger.
+  addEventListener('cc-reset', () => { if (!new URLSearchParams(location.search).get('design')) setDesign('ledger', { store: false, say: false }); });
+  addEventListener('storage', e => { if (e.key === DESIGN_KEY || e.key === null) { const v = (() => { try { return localStorage.getItem(DESIGN_KEY); } catch { return null; } })(); if (!new URLSearchParams(location.search).get('design')) setDesign(v && DESIGNS[v] ? v : 'ledger', { store: false, say: false }); } });
+}
 const { store, clock, guard } = sim;
 const $ = s => document.querySelector(s);
 const content = $('#adm-content'), result = $('#adm-result');
@@ -62,6 +103,7 @@ function render() {
   try { html = fn(S, ctx); } catch (e) { console.error(e); html = `<p class="empty">This section could not be drawn (${esc(e.message)}). The simulation in this browser may be from an older version: Reset clears it.</p>`; }
   const y = r.sec === lastSec ? window.scrollY : 0;
   content.innerHTML = html;
+  fitCharts(content);
   for (const el of content.querySelectorAll('[data-keep]')) if (Object.hasOwn(ui.keep, el.dataset.keep)) { if (el.type === 'checkbox') el.checked = ui.keep[el.dataset.keep] === 'true'; else el.value = ui.keep[el.dataset.keep]; }
   for (const a of document.querySelectorAll('.adm-side a')) { if (a.dataset.sec === r.sec) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }
   const c = ops.counts(S, ctx);
@@ -85,6 +127,24 @@ function render() {
   lastArg = r.arg;
   lastSec = r.sec;
 }
+// The 12 px floor in the charts (round 5, PROPOSAL.md 4.1): an SVG drawing scales with its box, so each
+// label gets the size that renders at 12 px or more, and x-axis labels that would then collide are hidden
+// in turn (every bar keeps its value in its title and in the table view).
+export function fitCharts(root) {
+  for (const svg of root.querySelectorAll('svg.chart')) {
+    const m = svg.getScreenCTM?.(); const k = m ? Math.hypot(m.a, m.b) : 1;
+    if (!k) continue;
+    const texts = [...svg.querySelectorAll('text')];
+    for (const t of texts) { t.style.fontSize = ''; t.style.visibility = ''; const fs = parseFloat(getComputedStyle(t).fontSize) || 12; if (fs * k < 12) t.style.fontSize = `${(12.2 / k).toFixed(2)}px`; }
+    const xs = texts.filter(t => t.classList.contains('ax') && t.getAttribute('text-anchor') === 'middle').sort((a, b) => Number(a.getAttribute('x')) - Number(b.getAttribute('x')));
+    let last = -Infinity;
+    for (const t of xs) {
+      const x = Number(t.getAttribute('x')), w = (parseFloat(getComputedStyle(t).fontSize) || 12) * 0.62 * t.textContent.length;
+      if (x - w / 2 < last + 4) t.style.visibility = 'hidden'; else last = x + w / 2;
+    }
+  }
+}
+addEventListener('resize', () => fitCharts(content));
 let queued = false, deferred = false;
 function schedule() {
   if (queued) return;
@@ -156,8 +216,10 @@ function loadExamples() {
     const id = e.booking.id;
     if (p.enquiry) continue;
     S = store.getState(); const pay = buildPay(S, id, { now: at0, actor: 'visitor' }); if (pay.ok) store.dispatch(pay.events);
-    if (from <= t) { S = store.getState(); const ci = buildCheckIn(S, id, { now: `${from}T16:00`, actor: 'owner' }); if (ci.ok) store.dispatch(ci.events); }
-    if (to < t) { S = store.getState(); const co = buildCheckOut(S, id, { now: `${to}T10:00`, actor: 'owner' }); if (co.ok) store.dispatch(co.events); }
+    // Each home's own check-in and check-out times (round 5; round 4 RECHECK.md item 3), no fixed 16:00.
+    const hm = S.homes[p.home] || {};
+    if (from <= t) { S = store.getState(); const ci = buildCheckIn(S, id, { now: `${from}T${hm.check_in || '16:00'}`, actor: 'owner' }); if (ci.ok) store.dispatch(ci.events); }
+    if (to < t) { S = store.getState(); const co = buildCheckOut(S, id, { now: `${to}T${hm.check_out || '10:00'}`, actor: 'owner' }); if (co.ok) store.dispatch(co.events); }
     if (p.msg) store.dispatch({ type: 'message.added', actor: 'visitor', data: { by: 'example', message: { id: hid('m', `${id}|ex`), from: 'guest', who: p.name, bookingId: id, text: p.msg, trusted: false, flagged: detectInjection(p.msg).flagged, by: 'example' } } });
     if (p.issue) store.dispatch({ type: 'issue.raised', actor: 'visitor', data: { by: 'example', issue: { id: hid('i', `${id}|ex`), homeId: p.home, bookingId: id, type: p.issue[0], severity: p.issue[1], cost: p.issue[2], reportedBy: 'guest', text: p.issue[3], trusted: false, by: 'example' } } });
   }

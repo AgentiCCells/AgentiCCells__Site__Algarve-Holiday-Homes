@@ -84,7 +84,7 @@ html.tour-on .band{position:relative;z-index:9500}
 .tour-card{position:fixed;z-index:9600;width:360px;max-width:calc(100vw - 16px);background:#fff;color:#1F2328;border:2px solid #1F2328;border-radius:10px;padding:14px 16px 12px;box-shadow:0 14px 36px rgba(0,0,0,.35);font-size:.875rem;line-height:1.45}
 .tour-card.centre,.tour-dlg{left:50%!important;top:50%!important;transform:translate(-50%,-50%);width:440px}
 .tour-hd{display:flex;align-items:center;gap:8px;font-size:.75rem;color:#545A62;margin-bottom:4px;flex-wrap:wrap}
-.tour-hd .k{font-size:11px;font-weight:700;text-transform:uppercase;border-radius:4px;padding:1px 6px;background:#E0E8FB;color:#1E3A8A}
+.tour-hd .k{font-size:12px;font-weight:700;text-transform:uppercase;border-radius:4px;padding:1px 6px;background:#E0E8FB;color:#1E3A8A}
 .tour-next-in{margin-left:auto}
 .tour-prog{height:3px;background:#ECEDEF;border-radius:2px;margin:4px 0 10px}
 .tour-prog span{display:block;height:3px;width:0;background:#1F2328;border-radius:2px}
@@ -109,3 +109,7 @@ html.tour-on .band{position:relative;z-index:9500}
 .tour-card .tour-acts{margin-top:12px}
 .tour-dlg p.tour-small{margin:8px 0 12px!important}
 @media (max-width:700px){.tour-dlg{overflow-y:auto;padding-bottom:16px}}
+/* round 5: the design of both sides (PROPOSAL.md 3) */
+.play-design{margin:0 0 var(--s2);display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.875rem;font-weight:600}
+.play-design select{font:inherit;font-weight:400;padding:4px 6px;border:1px solid var(--ink-2);border-radius:var(--r);background:var(--surface);color:var(--ink);max-width:100%}
+.play-designs-note{margin:var(--s2) 0 0;color:var(--ink-2)}

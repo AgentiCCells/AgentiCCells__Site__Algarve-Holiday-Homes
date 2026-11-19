@@ -1,0 +1,46 @@
+/* admin-themes/postal.css: the admin of Cinco Chaminés (a made-up example) in the Postal, the sorting office design (round 5,
+   team/rounds/5/design/PROPOSAL.md; mock-up mockup-admin-themes.html). Tokens for light and dark, then layout
+   rules on existing classes only. Meaning colours (allow, ask, deny, real, simulated, invented, the warn and ok
+   chips, how sure, booking kinds) are not changed here, labels are never hidden or set under 12 px, and no text
+   is added but Costa's pin numbers. System fonts only. Code Apache-2.0.
+   developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19, round 5. */
+:root[data-design="postal"]{--a-bg:#F3E9D8;--a-surface:#FFFDF8;--a-ink:#2A1F17;--a-ink2:#5E4B3C;--a-line:#DCCDB4;--a-side:#A3361F;--a-side-ink:#FFFFFF;--a-side-lab:#FBE3DA;--a-active:#7F2716;--a-mark:#F2D27A;
+ --a-accent:#A3361F;--a-head:#F2D27A;--a-head-ink:#2A1F17;--a-pill:#FFFDF8;--a-pill-ink:#2A1F17;--a-hot:#2A1F17;--a-hot-ink:#FFFDF8;--a-today:#F7EBCB;--band-bg:#F2D27A;--band-ink:#2A1F17;
+ --f-head:Rockwell,"Roboto Slab","Zilla Slab","DejaVu Serif",Georgia,serif;
+ --f-text:Charter,"Bitstream Charter",Cambria,Caladea,Georgia,serif;--f-num:var(--f-head);--rad:3px;--row:6px;--kv:1.4rem}
+@media (prefers-color-scheme:dark){:root[data-design="postal"]:not([data-theme="light"]){--a-bg:#1E1712;--a-surface:#2A211A;--a-ink:#F5EBDD;--a-ink2:#C9B6A2;--a-line:#4A3A2D;--a-side:#4A1A10;--a-side-ink:#F5EBDD;--a-side-lab:#E3C3B6;--a-active:#6E2A1A;--a-mark:#E3B341;
+ --a-accent:#F0A08A;--a-head:#3E300C;--a-head-ink:#FBEFC8;--a-pill:#F5EBDD;--a-pill-ink:#2A1F17;--a-hot:#F2D27A;--a-hot-ink:#2A1F17;--a-today:#3E300C;--band-bg:#3E300C;--band-ink:#FBEFC8}}
+:root[data-design="postal"][data-theme="dark"]{--a-bg:#1E1712;--a-surface:#2A211A;--a-ink:#F5EBDD;--a-ink2:#C9B6A2;--a-line:#4A3A2D;--a-side:#4A1A10;--a-side-ink:#F5EBDD;--a-side-lab:#E3C3B6;--a-active:#6E2A1A;--a-mark:#E3B341;
+ --a-accent:#F0A08A;--a-head:#3E300C;--a-head-ink:#FBEFC8;--a-pill:#F5EBDD;--a-pill-ink:#2A1F17;--a-hot:#F2D27A;--a-hot-ink:#2A1F17;--a-today:#3E300C;--band-bg:#3E300C;--band-ink:#FBEFC8}
+:root[data-design="postal"] .adm-side a[aria-current]{border-left-color:var(--a-mark)}
+:root[data-design="postal"] .adm-gt,:root[data-design="postal"] .kl,:root[data-design="postal"] .tbl thead th{font-family:"Avenir Next Condensed","Arial Narrow","Liberation Sans Narrow",Arial,sans-serif;text-transform:uppercase;letter-spacing:.06em}
+:root[data-design="postal"] .kpi{position:relative;border:1px solid var(--a-line);box-shadow:0 1px 0 var(--a-line),0 3px 8px rgba(42,31,23,.08);padding-bottom:22px}
+:root[data-design="postal"] .kpi::after{content:"";position:absolute;right:6px;bottom:6px;width:14px;height:17px;background:radial-gradient(circle at 50% 50%,#E3B341 0 5px,transparent 6px),#F2D27A;outline:2px dashed #FFFDF8;outline-offset:-3px;border:1px solid #C99A24}
+:root[data-design="postal"] .kpi.warn{border-left:5px solid var(--a-hot)}
+:root[data-design="postal"] .kv{font-weight:700;overflow-wrap:normal;white-space:nowrap}
+:root[data-design="postal"] .panel{padding:0 0 10px;border-width:1px;box-shadow:0 3px 10px rgba(42,31,23,.08)}
+@media (prefers-color-scheme:dark){:root[data-design="postal"]:not([data-theme="light"]) .panel,:root[data-design="postal"]:not([data-theme="light"]) .kpi{box-shadow:none}}
+:root[data-design="postal"][data-theme="dark"] .panel,:root[data-design="postal"][data-theme="dark"] .kpi{box-shadow:none}
+:root[data-design="postal"] .panel>*:not(.pnh){margin-left:14px;margin-right:14px}
+:root[data-design="postal"] .pnh{padding:7px 14px;margin-bottom:10px;border-bottom:2px dashed var(--a-accent)}
+:root[data-design="postal"] .pnh h2{font-size:1.05rem}
+:root[data-design="postal"] .res{border-left-width:8px}
+/* shared by every theme: the design's own faces, density, radius, panel header band and site chrome */
+:root[data-design="postal"]{--a-theme-ok:postal;--a-hot-edge:var(--a-hot);--a-side-cur-ink:var(--a-side-ink);--a-side-focus:var(--a-side-ink);--a-side-rule:var(--a-side-lab);--bg:var(--a-bg);--surface:var(--a-surface);--ink:var(--a-ink);--ink-2:var(--a-ink2);--line:var(--a-line);--accent:var(--a-accent)}
+:root[data-design="postal"] .adm,:root[data-design="postal"] .adm-content{font-family:var(--f-text)}
+:root[data-design="postal"] .adm h1,:root[data-design="postal"] .adm h2,:root[data-design="postal"] .adm h3{font-family:var(--f-head)}
+:root[data-design="postal"] .kv{font-family:var(--f-num);font-size:var(--kv)}
+:root[data-design="postal"] .tbl th,:root[data-design="postal"] .tbl td{padding:var(--row) 8px}
+:root[data-design="postal"] .panel,:root[data-design="postal"] .kpi,:root[data-design="postal"] .res{border-radius:var(--rad)}
+:root[data-design="postal"] .panel .pnh{background:var(--a-head,transparent);color:var(--a-head-ink,inherit)}
+:root[data-design="postal"] .panel .pnh h2{color:inherit}
+:root[data-design="postal"] .panel .pnh a{color:inherit;text-decoration:underline}
+:root[data-design="postal"] .adm-side a:focus-visible{outline-color:var(--a-side-ink)}
+:root[data-design="postal"] .adm :focus-visible{outline:3px solid var(--a-ink);outline-offset:2px}
+:root[data-design="postal"] .adm-side a[aria-current]{color:var(--a-side-ink)}
+:root[data-design="postal"] .adm-who{border-top-color:var(--a-side-lab);color:var(--a-side-lab)}
+@media (max-width:900px){:root[data-design="postal"] .adm-side{border-right:0}:root[data-design="postal"] .adm-side a{border-radius:0;margin:0}}
+
+:root[data-design="postal"] .panel>svg.chart{width:calc(100% - 28px)}
+/* Round 5 build: the 8- and 9-tile rows are narrow above 1200 px; a smaller figure keeps each number on one line, inside its tile. */
+@media (min-width:1201px){:root[data-design="postal"] .kpis.k8 .kv,:root[data-design="postal"] .kpis.k9 .kv{font-size:1.05rem}}

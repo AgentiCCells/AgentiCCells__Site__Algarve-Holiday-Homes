@@ -127,12 +127,12 @@ export function step(state, now, opts = {}) {
     }
   }
 
-  // 10:00 check-outs, reviews, the host's assistant reads each review
-  if (hour === 10) {
-    for (const b of bookingsList(s).filter(x => x.status === 'checked-in' && x.to === day)) {
-      emit(buildCheckOut(s, b.id, { now: at(0), actor: 'visitor' }).events);
-      emit(review(s, b, { r, at, guard, weatherFor, nameOf, budgetOf: id => cast.byId[id]?.budget_eur }));
-    }
+  // Check-outs at each home's own check-out time (round 5; round 4 RECHECK.md item 3), reviews, and the
+  // host's assistant reads each review. A stay still in at a later hour of its last day checks out then.
+  const homeHour = (id, k, dflt) => Number(String(s.homes[id]?.[k] || dflt).slice(0, 2));
+  for (const b of bookingsList(s).filter(x => x.status === 'checked-in' && x.to === day && hour >= homeHour(x.homeId, 'check_out', '10:00'))) {
+    emit(buildCheckOut(s, b.id, { now: at(0), actor: 'visitor' }).events);
+    emit(review(s, b, { r, at, guard, weatherFor, nameOf, budgetOf: id => cast.byId[id]?.budget_eur }));
   }
   // 11:00 the housekeeper cleans, logs stock and reorders
   if (hour === 11) {
@@ -159,7 +159,9 @@ export function step(state, now, opts = {}) {
     }
   }
   // Check-ins at each home's own check-in time (round 4 review S9; 16:00 for a home without one).
-  for (const b of bookingsList(s).filter(x => x.status === 'paid' && x.from === day && hour === Number(String(s.homes[x.homeId]?.check_in || '16:00').slice(0, 2)))) emit(buildCheckIn(s, b.id, { now: at(0), actor: 'visitor' }).events);
+  // A same-day booking made after the check-in hour checks in at the next hour (round 4 RECHECK.md item 2),
+  // as ownLifecycle does for the visitor's own booking.
+  for (const b of bookingsList(s).filter(x => x.status === 'paid' && x.from === day && hour >= homeHour(x.homeId, 'check_in', '16:00'))) emit(buildCheckIn(s, b.id, { now: at(0), actor: 'visitor' }).events);
   // 18:00 the bookkeeper sends guest bulletins (simulated, nothing sent)
   if (hour === 18) {
     for (const b of bookingsList(s).filter(x => x.status === 'checked-in' && x.registrationDue && !x.registeredAt)) {

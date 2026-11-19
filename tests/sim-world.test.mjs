@@ -70,14 +70,15 @@ test('personas: a fixed seed over 30 simulated days gives the same world, with b
 test('personas: weather from the real data shapes ratings; a missing forecast changes nothing', () => {
   const store = S.createStore({ storage: S.memoryStorage(), channel: null, homes, listenStorageEvents: false });
   let st = store.reset('weather', { settings: { background: false } });
-  // a paid stay ending today, then the 10:00 step checks it out and reviews it
+  // a paid stay ending today, then the check-out step (11:00 at The Cape House) checks it out and reviews it
   const ev = [
     { type: 'guest.added', at: '2026-11-18T09:00', data: { guest: { id: 'g1', name: 'Rafa and Jo (invented)', country: 'PT' } } },
     { type: 'booking.created', at: '2026-11-18T09:00', data: { booking: { id: 'b1', homeId: 'cape', guestId: 'g1', from: '2026-11-18', to: '2026-11-21', guests: { adults: 2, children: [], total: 2 }, channel: 'direct', status: 'checked-in', persona: 'surf-couple', quote: { price: 400, guestPays: 400, touristTax: 0, vat: 22.64, commission: 0 } } } },
   ];
   store.dispatch(ev); st = store.getState();
-  const rainy = P.step(st, '2026-11-21T10:00', { cast, weatherFor: () => ({ rain_pct: 90 }) }).find(e => e.type === 'review.added');
-  const none = P.step(st, '2026-11-21T10:00', { cast, weatherFor: () => null }).find(e => e.type === 'review.added');
+  // Round 5: each home checks out at its own time; The Cape House's check-out is 11:00.
+  const rainy = P.step(st, '2026-11-21T11:00', { cast, weatherFor: () => ({ rain_pct: 90 }) }).find(e => e.type === 'review.added');
+  const none = P.step(st, '2026-11-21T11:00', { cast, weatherFor: () => null }).find(e => e.type === 'review.added');
   assert.ok(rainy && none);
   assert.ok(rainy.data.review.rating < none.data.review.rating || none.data.review.rating === 1);
   assert.match(rainy.data.review.text, /as IPMA had forecast/);

@@ -90,7 +90,7 @@ test('tour 1.7: the step actions on a memory store: the tour\'s booking, check-i
   const f = T.facts(st, r.booking.id, events);
   assert.equal(st.bookings[r.booking.id].status, 'checked-out');
   assert.equal(f.checkIn, `${dates.arrival}T15:00`, 'at The Lagoon House\'s own check-in time (review S9)');
-  assert.equal(f.checkOut, `${dates.departure}T10:00`);
+  assert.equal(f.checkOut, `${dates.departure}T11:00`, 'at The Lagoon House\'s own check-out time (round 5; round 4 RECHECK.md item 3)');
   assert.equal(f.cleaned, `${dates.departure}T11:30`);
   assert.ok(f.used.includes('linen sets') && f.used.includes('towels'), f.used.join());
   assert.equal(f.net, Math.round((f.price / 1.06) * 100) / 100, 'net of VAT from the booking\'s own ledger lines');
@@ -254,7 +254,7 @@ test('3.5: the history taxes the invented guests per stay: Lagoon EUR 4.00 a nig
 });
 
 // ---------- 4: the score and the fingerprint ----------
-test('4.1: the score\'s corners: no reviews, no revenue, nothing tried, full marks at 60% and 30%', () => {
+test('4.1: the score\'s corners: no reviews, no revenue, nothing tried, full marks at 80% (round 5) and 30%', () => {
   const X = sim();
   const s0 = Sc.score(X.store.getState(), { today: '2026-11-18' });
   assert.equal(s0.parts.rating.points, 0, 'no reviews yet');
@@ -268,7 +268,9 @@ test('4.1: the score\'s corners: no reviews, no revenue, nothing tried, full mar
   assert.equal(s.total, Math.round(Object.values(s.parts).reduce((t, p) => t + p.points, 0)));
   assert.ok(s.parts.occupancy.points <= 35 && s.parts.rating.points <= 25 && s.parts.profit.points <= 30 && s.parts.policy.points <= 10);
   if (s.parts.policy.tried) assert.equal(s.parts.policy.points, 10 * s.parts.policy.blocked / s.parts.policy.tried);
-  assert.match(Sc.FORMULA, /35 x occupancy of the nights you could sell, up to 60% \(full marks\)/);
+  // Round 5: full marks for occupancy moved from 60% to 80% (round 4 BUILD.md: the part was nearly always full).
+  assert.match(Sc.FORMULA, /35 x occupancy of the nights you could sell, up to 80% \(full marks\)/);
+  assert.equal(Sc.FULL.occupancy, 0.8);
   assert.ok(world);
 });
 
@@ -422,7 +424,8 @@ test('S2: going back does not replay hours; bookings and rates are refused befor
 
 // ---------- Reset; no booking-platform names ----------
 test('0.3: Reset says in words what goes and clears every key this site keeps', () => {
-  assert.equal(CH.RESET_WORDS, 'This deletes, in this browser only: your simulation (bookings, messages, the admin\'s changes), your stay plan, your cost assumptions, your best scores, and a tour\'s saved copy if one is waiting. Real data is read again.');
+  // Round 5 (conductor's answer 4, team/rounds/5.md): Reset clears the admin design too, and says so.
+  assert.equal(CH.RESET_WORDS, 'This deletes, in this browser only: your simulation (bookings, messages, the admin\'s changes), your stay plan, your cost assumptions, your best scores, your admin design, and a tour\'s saved copy if one is waiting. Real data is read again.');
   const X = sim({ settings: { backgroundKeep: 0.45 } });
   const ss = S.memoryStorage();
   for (const k of CH.KEPT_KEYS) X.storage.setItem(k, 'x');
@@ -431,7 +434,7 @@ test('0.3: Reset says in words what goes and clears every key this site keeps', 
   for (const k of CH.KEPT_KEYS) assert.equal(X.storage.getItem(k), null, k);
   assert.equal(ss.getItem('cc-stay'), null);
   assert.equal(X.store.getState().settings.backgroundKeep, 1, 'Reset sets the level back to 1');
-  assert.deepEqual([...CH.KEPT_KEYS].sort(), ['cc.assumptions.v1', 'cc.stay.v1', 'cc.tour.backup.v1', 'cc.world.scores.v1']);
+  assert.deepEqual([...CH.KEPT_KEYS].sort(), ['cc.admin.design.v1', 'cc.assumptions.v1', 'cc.stay.v1', 'cc.tour.backup.v1', 'cc.world.scores.v1'], 'round 5: cc.admin.design.v1 added (answer 4)');
 });
 
 test('re-check item 1: no source shown names a booking platform, in its words or its address', () => {
@@ -483,7 +486,8 @@ test('S5, S6, S8, S9: costs carried to a new seed, yields over valued homes, boo
   // S7
   assert.match(biz.money(st, { today: '2026-11-16', home: 'all', keep: {}, moneyView: 'ytd', assumptions: A.defaults(), clock: sim().clock }), /aria-label="House value \(EUR\), The Salt House"/);
   // S8
-  assert.equal(ops.triedWords({ actor: 'host-assistant', policy: 'host-assistant', action: 'share.guest-data', target: 'message b-o3dghf' }), 'The host\'s assistant tried to share the guest list (a message on booking b-o3dghf)');
+  // Round 5 (conductor's answer 1): the assistant is named as /agents/ names it.
+  assert.equal(ops.triedWords({ actor: 'host-assistant', policy: 'host-assistant', action: 'share.guest-data', target: 'message b-o3dghf' }), 'Claude, the host\'s assistant (simulated) tried to share the guest list (a message on booking b-o3dghf)');
   // S9
   const Y = sim({ now: '2026-11-18T09:00' });
   P.createWorld({ store: Y.store, clock: Y.clock, cast: { ...cast, visitors: [] } }).attach();

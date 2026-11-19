@@ -10,10 +10,10 @@
 --real:#DCF2E3;--real-bg:#1D4D30;--sim:#E0E8FB;--sim-bg:#24345F;--inv:#FCEBD6;--inv-bg:#5A3416;--ai:#EEE3F8;--ai-bg:#46285F;--untr:#F7B3AA}
 
 /* badges: four kinds, three decisions (PROPOSAL.md 0) */
-.wm .k,.ccf .k{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:4px;padding:1px 6px;vertical-align:middle;white-space:nowrap;line-height:1.5}
+.wm .k,.ccf .k{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:4px;padding:1px 6px;vertical-align:middle;white-space:nowrap;line-height:1.5}
 .k.real{background:var(--real-bg);color:var(--real)}.k.sim{background:var(--sim-bg);color:var(--sim)}
 .k.inv{background:var(--inv-bg);color:var(--inv)}.k.ai{background:var(--ai-bg);color:var(--ai)}.k.untr{background:var(--deny-bg);color:var(--deny)}
-.wm .d,.ccf .d,.ccf-drawer .d{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;border-radius:4px;padding:1px 6px;white-space:nowrap;line-height:1.5}
+.wm .d,.ccf .d,.ccf-drawer .d{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:700;border-radius:4px;padding:1px 6px;white-space:nowrap;line-height:1.5}
 .d.allow{background:var(--allow-bg);color:var(--allow)}.d.ask{background:var(--ask-bg);color:var(--ask)}.d.deny{background:var(--deny-bg);color:var(--deny)}
 .wm .mini{font-size:.8125rem;color:var(--ink-2);margin:.25rem 0}
 .wm .src{font-size:.75rem;color:var(--ink-2);margin:.4rem 0 0}

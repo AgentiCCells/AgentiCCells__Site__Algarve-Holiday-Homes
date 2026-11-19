@@ -6,8 +6,14 @@
 <title>Admin, the back office (made-up example) | Cinco Chaminés</title>
 <meta name="description" content="The simulated back office of an invented holiday-home business: bookings, calendar, rates, stock, cleaning, issues, reviews, money, Portuguese rules and the agents' policies, all in your browser. A made-up example; not legal or tax advice.">
 <meta name="share-image" content="/assets/share/admin.png">
+<script src="/assets/js/admin/design-boot.js"></script>
 <link rel="stylesheet" href="/assets/admin.css">
 <!--HEAD-->
+<link rel="stylesheet" href="/assets/admin-themes/revista.css">
+<link rel="stylesheet" href="/assets/admin-themes/azulejo.css">
+<link rel="stylesheet" href="/assets/admin-themes/linho.css">
+<link rel="stylesheet" href="/assets/admin-themes/costa.css">
+<link rel="stylesheet" href="/assets/admin-themes/postal.css">
 <script type="module" src="/assets/js/admin/admin.js"></script>
 </head>
 <body data-sources="ipma-city-forecasts">
@@ -38,7 +44,9 @@
 <main class="adm-main">
 <div class="adm-title">
 <div><h1 id="adm-h">Admin</h1><p class="adm-sub" id="adm-sub">The back office of an invented business, simulated in your browser.</p></div>
+<div class="adm-tools"><p class="adm-design"><label for="adm-design">Design</label> <select id="adm-design"><option value="ledger">Ledger (main)</option><option value="revista">Revista</option><option value="azulejo">Azulejo</option><option value="linho">Linho</option><option value="costa">Costa</option><option value="postal">Postal</option></select> <a id="adm-design-link" href="/">See the matching visitor design</a></p><p class="adm-design-note small" id="adm-design-note" hidden>Kept for this page only: this browser is not keeping data.</p>
 <div class="adm-filter" role="group" aria-label="Show homes"><button type="button" data-home="all" aria-pressed="true">All five</button><button type="button" data-home="salt" aria-pressed="false">Salt</button><button type="button" data-home="lagoon" aria-pressed="false">Lagoon</button><button type="button" data-home="hill" aria-pressed="false">Hill</button><button type="button" data-home="harbour" aria-pressed="false">Harbour</button><button type="button" data-home="cape" aria-pressed="false">Cape</button></div>
+</div>
 </div>
 <div class="adm-result" id="adm-result" role="status" aria-live="polite"></div>
 <div id="adm-content" class="adm-content">

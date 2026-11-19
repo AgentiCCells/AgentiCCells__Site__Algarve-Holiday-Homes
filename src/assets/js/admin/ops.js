@@ -172,7 +172,7 @@ export const RULE_WORDS = Object.freeze({
 });
 export const ruleWords = e => RULE_WORDS[e.rule] || (/-limit$/.test(e.rule || '') ? 'over a money limit' : e.reason || '');
 const SOURCE_WORDS = { message: 'a guest message', review: 'a review', 'guest-note': 'a guest\'s booking note', 'event-title': 'an event title', event: 'an event title', ical: 'a calendar feed line', 'agents-chat': 'the guest\'s assistant\'s chat', 'issue report': 'an issue report' };
-const ACTOR_WORDS = { 'agent.cinco-chamines': 'The site\'s agent', 'guest-assistant': 'The guest\'s assistant', 'host-assistant': 'The host\'s assistant', housekeeper: 'The housekeeper (synthetic)', owner: 'The owner', bookkeeper: 'The bookkeeper (synthetic)', visitor: 'A visitor' };
+const ACTOR_WORDS = { 'agent.cinco-chamines': 'The site\'s agent', 'guest-assistant': 'Claude, the guest\'s assistant (simulated)', 'host-assistant': 'Claude, the host\'s assistant (simulated)', housekeeper: 'The housekeeper (synthetic)', owner: 'The owner', bookkeeper: 'The bookkeeper (synthetic)', visitor: 'A visitor' };
 export function triedWords(e) {
   const who = ACTOR_WORDS[e.policy] || ACTOR_WORDS[e.actor] || 'An actor';
   const amt = e.amount != null && e.amount !== '' ? ` EUR ${Number(e.amount).toLocaleString('en-GB')}` : '';

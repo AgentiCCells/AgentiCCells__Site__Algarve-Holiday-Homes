@@ -58,12 +58,12 @@ html.mode-app .dock{display:none}
 .band-warn{display:inline}
 
 /* the four kinds and three decisions (section 0) */
-.k{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:4px;padding:1px 6px;vertical-align:middle;white-space:nowrap;line-height:1.5}
+.k{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:4px;padding:1px 6px;vertical-align:middle;white-space:nowrap;line-height:1.5}
 .k.real{background:var(--real-bg);color:var(--real)}.k.sim{background:var(--simk-bg);color:var(--simk)}
 .k.inv{background:var(--invk-bg);color:var(--invk)}.k.ai{background:var(--aik-bg);color:var(--aik)}
 .k.untr{background:var(--surface);color:var(--deny);border:1px solid var(--deny)}
 .k.yours{background:var(--simk);color:var(--simk-bg)}
-.d{display:inline-block;font:700 11px/1.5 var(--mono);border-radius:4px;padding:1px 6px;white-space:nowrap;text-decoration:none;vertical-align:middle}
+.d{display:inline-block;font:700 12px/1.5 var(--mono);border-radius:4px;padding:1px 6px;white-space:nowrap;text-decoration:none;vertical-align:middle}
 a.d:hover{text-decoration:underline}
 .d.allow{background:var(--allow-bg);color:var(--allow)}.d.ask{background:var(--ask-bg);color:var(--ask)}.d.deny{background:var(--deny-bg);color:var(--deny)}
 

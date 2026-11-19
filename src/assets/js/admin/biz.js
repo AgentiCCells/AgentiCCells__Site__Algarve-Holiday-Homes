@@ -200,6 +200,8 @@ const w53 = v => (v.status === 'ends-now' ? `turnover ${eur(v.turnover)} is abov
 // "The rules, row by row" (round 4, PROPOSAL.md 6): every row of LEGAL-PT.md from /data/legal-pt.json,
 // with its source, date checked and how sure, as the research gives them.
 const SURE_WORDS = ['high', 'medium', 'low', 'unknown'];
+// The pin of the home in each municipality (round 5, PROPOSAL.md 8).
+const PIN_OF = { tavira: 1, faro: 2, loule: 3, lagos: 4, 'vila-do-bispo': 5 };
 const sureChip = r => { const g = SURE_WORDS.includes(r.sure) ? r.sure : 'none'; return `<span class="sure s-${g}">${esc(g === 'none' ? 'not given' : g)}</span>${r.sureText && r.sureText.toLowerCase() !== r.sure ? ` <span class="small">${esc(r.sureText)}</span>` : ''}`; };
 const srcHtml = r => (r.sources || []).length ? r.sources.map(x => (x.url ? `<a href="${esc(x.url)}">${esc(x.label)}</a>` : esc(x.label))).join('; ') : '<span class="small">Not modelled. No source read.</span>';
 const checkedHtml = r => (r.checked ? `${esc(r.checked)}${r.checkedNote ? ` <span class="small">(${esc(r.checkedNote)})</span>` : ''}` : '<span class="small">not given</span>');
@@ -249,8 +251,8 @@ export function legality(S, ctx) {
   for (const e of S.ledger) if (e.kind === 'tourist-tax') { const mm = municipalityId(S.homes[e.homeId]?.municipality); collected[mm] = round2((collected[mm] || 0) + e.amount); }
   const tt = `<div class="tscroll" tabindex="0" role="region" aria-label="Tourist tax per municipality"><table class="tbl wide"><thead><tr><th>Municipality</th><th>Rate</th><th>Season</th><th class="n">Night cap</th><th class="n">From age</th><th>Regulation</th><th>How sure</th><th class="n">Collected this session</th></tr></thead><tbody>${munis.map(([n, mid]) => {
     const rows = TOURIST_TAX.filter(r => r.municipality === mid);
-    if (!rows.length) return `<tr><td>${n}</td><td colspan="5">No municipal tourist tax found on ${esc(CHECKED_WORDS)}; check with the câmara. <a href="${esc(NO_TAX[mid].urls[0])}">source</a></td><td>${esc(TAX_SURE[mid])}</td><td class="n">${eur(collected[mid] || 0, 2)}</td></tr>`;
-    return `<tr><td>${n}</td><td>${rows.map(r => `€${r.eur}`).join(' / ')}</td><td>${rows.map(r => r.months.map(mm => MONTHS[mm - 1]).join(', ')).join(' / ')}</td><td class="n">${rows[0].cap}</td><td class="n">${rows[0].min_age}</td><td>${esc(rows[0].source)} <a href="${esc(rows[0].urls[0])}">source</a></td><td>${esc(TAX_SURE[mid])}</td><td class="n">${eur(collected[mid] || 0, 2)}</td></tr>`;
+    if (!rows.length) return `<tr><td data-pin="${PIN_OF[mid]}">${n}</td><td colspan="5">No municipal tourist tax found on ${esc(CHECKED_WORDS)}; check with the câmara. <a href="${esc(NO_TAX[mid].urls[0])}">source</a></td><td>${esc(TAX_SURE[mid])}</td><td class="n">${eur(collected[mid] || 0, 2)}</td></tr>`;
+    return `<tr><td data-pin="${PIN_OF[mid]}">${n}</td><td>${rows.map(r => `€${r.eur}`).join(' / ')}</td><td>${rows.map(r => r.months.map(mm => MONTHS[mm - 1]).join(', ')).join(' / ')}</td><td class="n">${rows[0].cap}</td><td class="n">${rows[0].min_age}</td><td>${esc(rows[0].source)} <a href="${esc(rows[0].urls[0])}">source</a></td><td>${esc(TAX_SURE[mid])}</td><td class="n">${eur(collected[mid] || 0, 2)}</td></tr>`;
   }).join('')}</tbody></table></div><p class="small">Per guest aged 16 or over, per night, up to the cap; collected by the host and passed to the municipality: never revenue, never cost.</p>`;
   const L = lines(S, { to: today, assumptions: AS });
   const exp = Number(ctx.keep['irs-exp'] ?? round2(L.documented)) || 0;

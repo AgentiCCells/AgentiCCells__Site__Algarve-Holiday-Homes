@@ -34,6 +34,8 @@ if (existsSync(page) && readFileSync(page, 'utf8').includes('<!--DESIGN-CARDS-->
     const href = d.href || `/d/${d.slug}/`;
     const built = d.slug === 'main' || existsSync(`_site/d/${d.slug}/index.html`);
     const shot = existsSync(`src/d/previews/${d.slug}.jpg`);
+    // Round 5 (team/rounds/5/design/PROPOSAL.md 10): the five designs restyle the admin too; a second screenshot shows it.
+    const adm = d.slug !== 'main' && existsSync(`src/d/previews/${d.slug}-admin.jpg`);
     const pic = shot
       ? `<img src="/d/previews/${d.slug}.jpg" width="${PREVIEW_W}" height="${PREVIEW_H}" loading="lazy" decoding="async" alt="Screenshot of ${d.slug === 'main' ? 'the main design' : `the ${esc(d.name)} design`} of this made-up example site.">`
       : `<ul class="swatches" aria-label="The ${esc(d.name)} palette (no screenshot yet)">${Object.entries(d.palette).map(([k, v]) => `<li><span style="background:${v}"></span><code>${esc(k)}</code> <code>${v}</code></li>`).join('')}</ul>`;
@@ -44,6 +46,7 @@ if (existsSync(page) && readFileSync(page, 'utf8').includes('<!--DESIGN-CARDS-->
 <p>${esc(d.line)}</p>
 <p class="small">Type: ${esc(d.type)}.</p>
 ${built ? `<p><a class="btn small" href="${href}">Open the design<span class="sr-only">: ${esc(d.name)}</span></a></p>` : '<p class="status empty">Not built yet.</p>'}
+${adm ? `<figure class="dadm"><a href="/admin/?design=${d.slug}"><img src="/d/previews/${d.slug}-admin.jpg" width="${PREVIEW_W}" height="${PREVIEW_H}" loading="lazy" decoding="async" alt="Screenshot of the admin in the ${esc(d.name)} design, with the simulated example activity."></a><figcaption class="small">And its admin: <a href="/admin/?design=${d.slug}">open the admin in ${esc(d.name)}</a> (simulated).</figcaption></figure>` : ''}
 </div>
 </article></li>`;
   }).join('\n');

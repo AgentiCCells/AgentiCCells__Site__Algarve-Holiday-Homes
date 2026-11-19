@@ -7,6 +7,7 @@
 // Round 2 (developer.algarve-holiday-homes@, PROPOSAL.md 4): `node scripts/shots.mjs --previews <base-url>` writes
 // the /d/ chooser's screenshots instead: src/d/previews/<slug>.jpg, the top 900 px of each design at 1366 px
 // wide, saved 800 px wide (JPEG quality 70, each under 120 KB). Rebuild afterwards so /d/ shows them.
+// Round 5: it also writes each design's admin (<slug>-admin.jpg); add --admin-only to take only those.
 import { createRequire } from 'node:module';
 const { chromium } = createRequire(import.meta.url)('playwright');
 import { mkdirSync } from 'node:fs';
@@ -20,7 +21,7 @@ if (args[0] === '--previews') {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1366, height: 900 }, deviceScaleFactor: PREVIEW_W / 1366, colorScheme: 'light' });
   let big = 0;
-  for (const d of DESIGNS) {
+  for (const d of args.includes('--admin-only') ? [] : DESIGNS) {
     const res = await page.goto(base + (d.href || `/d/${d.slug}/`), { waitUntil: 'networkidle' });
     if (!res || !res.ok()) { console.log(`${d.slug}: not built (${res ? res.status() : 'no answer'}), no screenshot`); continue; }
     await page.addStyleTag({ content: '.dock{display:none!important}' }); // the docked agent link would cover the design
@@ -29,6 +30,27 @@ if (args[0] === '--previews') {
     await page.screenshot({ path: f, type: 'jpeg', quality: 70, clip: { x: 0, y: 0, width: 1366, height: 900 } });
     const kb = Math.round(statSync(f).size / 1024); if (kb >= 120) big++;
     console.log(`${f} ${kb} KB${kb >= 120 ? ' (over 120 KB)' : ''}`);
+  }
+  // Round 5 (team/rounds/5/design/PROPOSAL.md 10): each of the five designs' admin, as a second screenshot
+  // ("and its admin"): src/d/previews/<slug>-admin.jpg, Today with "Load example activity (simulated)", light.
+  // Requests that leave the site are blocked, so the picture holds only invented figures and no copied data.
+  const origin = new URL(base).origin;
+  for (const d of DESIGNS.filter(x => x.slug !== 'main')) {
+    const actx = await browser.newContext({ viewport: { width: 1366, height: 900 }, deviceScaleFactor: PREVIEW_W / 1366, colorScheme: 'light', reducedMotion: 'reduce' });
+    await actx.route(u => u.origin !== origin, r => r.abort());
+    const ap = await actx.newPage();
+    await ap.goto(`${base}/admin/?design=${d.slug}#today`, { waitUntil: 'load' });
+    await ap.evaluate(() => { try { localStorage.clear(); } catch { /* blocked */ } });
+    await ap.goto(`${base}/admin/?design=${d.slug}#today`, { waitUntil: 'load' });
+    const btn = await ap.waitForSelector('[data-act="examples"]', { timeout: 10000 }).catch(() => null);
+    if (!btn) { console.log(`${d.slug}: the admin did not load, no admin screenshot`); await actx.close(); continue; }
+    await btn.click(); await ap.waitForTimeout(500);
+    await ap.evaluate(() => { window.scrollTo(0, 0); document.activeElement?.blur(); });
+    const f = `src/d/previews/${d.slug}-admin.jpg`;
+    await ap.screenshot({ path: f, type: 'jpeg', quality: 70, clip: { x: 0, y: 0, width: 1366, height: 900 } });
+    const kb = Math.round(statSync(f).size / 1024); if (kb >= 120) big++;
+    console.log(`${f} ${kb} KB${kb >= 120 ? ' (over 120 KB)' : ''}`);
+    await actx.close();
   }
   await browser.close();
   process.exit(big ? 1 : 0);

@@ -1,0 +1,55 @@
+/* admin-themes/linho.css: the admin of Cinco Chaminés (a made-up example) in the Linho, the concierge's book design (round 5,
+   team/rounds/5/design/PROPOSAL.md; mock-up mockup-admin-themes.html). Tokens for light and dark, then layout
+   rules on existing classes only. Meaning colours (allow, ask, deny, real, simulated, invented, the warn and ok
+   chips, how sure, booking kinds) are not changed here, labels are never hidden or set under 12 px, and no text
+   is added but Costa's pin numbers. System fonts only. Code Apache-2.0.
+   developer.algarve-holiday-homes@AgentiCCells.dinis, 2026-11-19, round 5. */
+:root[data-design="linho"]{--a-bg:#F4F1EB;--a-surface:#FBFAF7;--a-ink:#141414;--a-ink2:#5E5A53;--a-line:#D6CFC2;--a-side:#F4F1EB;--a-side-ink:#141414;--a-side-lab:#5E5A53;--a-active:#E7E0D3;--a-mark:#141414;
+ --a-accent:#7B5B34;--a-pill:transparent;--a-pill-ink:#141414;--a-hot:#141414;--a-hot-ink:#F4F1EB;--a-today:#E7E0D3;--band-bg:#E7E0D3;--band-ink:#141414;
+ --f-head:Didot,"Bodoni 72","Bodoni MT","Noto Serif Display","DejaVu Serif",Georgia,serif;
+ --f-text:"Helvetica Neue",Helvetica,Inter,Arial,sans-serif;--f-num:var(--f-head);--rad:0;--row:11px;--kv:2rem}
+@media (prefers-color-scheme:dark){:root[data-design="linho"]:not([data-theme="light"]){--a-bg:#121211;--a-surface:#1B1A18;--a-ink:#EFEBE3;--a-ink2:#ABA59A;--a-line:#34312C;--a-side:#121211;--a-side-ink:#EFEBE3;--a-side-lab:#ABA59A;--a-active:#2A2824;--a-mark:#EFEBE3;
+ --a-accent:#D2B48A;--a-pill-ink:#EFEBE3;--a-hot:#EFEBE3;--a-hot-ink:#121211;--a-today:#2A2824;--band-bg:#26231F;--band-ink:#EFEBE3}}
+:root[data-design="linho"][data-theme="dark"]{--a-bg:#121211;--a-surface:#1B1A18;--a-ink:#EFEBE3;--a-ink2:#ABA59A;--a-line:#34312C;--a-side:#121211;--a-side-ink:#EFEBE3;--a-side-lab:#ABA59A;--a-active:#2A2824;--a-mark:#EFEBE3;
+ --a-accent:#D2B48A;--a-pill-ink:#EFEBE3;--a-hot:#EFEBE3;--a-hot-ink:#121211;--a-today:#2A2824;--band-bg:#26231F;--band-ink:#EFEBE3}
+:root[data-design="linho"] .adm{grid-template-columns:200px minmax(0,1fr)}
+:root[data-design="linho"] .adm-side{border-right:1px solid var(--a-line);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+:root[data-design="linho"] .adm-gt{letter-spacing:.12em;font-size:.75rem}
+:root[data-design="linho"] .adm-side a{border-left:0;padding:7px 22px}
+:root[data-design="linho"] .adm-side a[aria-current]{background:transparent;text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+:root[data-design="linho"] .pill{border:1px solid var(--a-ink2)}
+:root[data-design="linho"] .pill.hot{border-color:var(--a-hot)}
+:root[data-design="linho"] .adm-main{padding:26px 34px 34px}
+:root[data-design="linho"] .adm-title h1{font-size:2.6rem;font-weight:400;letter-spacing:.01em}
+:root[data-design="linho"] .kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:0 28px}
+/* Round 5 build: the 8- and 9-tile rows in four columns, before the 640 px rule so phones get two (it came after it and won). */
+:root[data-design="linho"] .kpis.k8,:root[data-design="linho"] .kpis.k9{grid-template-columns:repeat(4,minmax(0,1fr))}
+:root[data-design="linho"] .kpi{background:transparent;border:0;border-top:1px solid var(--a-line);padding:12px 0 16px}
+:root[data-design="linho"] .kpi.warn{border-left:0;border-top:1px solid var(--a-ink)}
+:root[data-design="linho"] .kl{text-transform:uppercase;letter-spacing:.12em;font-size:.75rem}
+:root[data-design="linho"] .kv{font-weight:400}
+:root[data-design="linho"] .cols{gap:34px}
+:root[data-design="linho"] .panel{background:transparent;border:0;border-top:1px solid var(--a-ink);padding:14px 0 6px;margin-bottom:26px}
+:root[data-design="linho"] .pnh h2{font-size:1.4rem;font-weight:400}
+:root[data-design="linho"] .tbl thead th{text-transform:uppercase;letter-spacing:.12em;font-size:.75rem;font-weight:500}
+:root[data-design="linho"] .res{border-radius:0;background:transparent}
+/* shared by every theme: the design's own faces, density, radius, panel header band and site chrome */
+:root[data-design="linho"]{--a-theme-ok:linho;--a-hot-edge:var(--a-hot);--a-side-cur-ink:var(--a-side-ink);--a-side-focus:var(--a-side-ink);--a-side-rule:var(--a-side-lab);--bg:var(--a-bg);--surface:var(--a-surface);--ink:var(--a-ink);--ink-2:var(--a-ink2);--line:var(--a-line);--accent:var(--a-accent)}
+:root[data-design="linho"] .adm,:root[data-design="linho"] .adm-content{font-family:var(--f-text)}
+:root[data-design="linho"] .adm h1,:root[data-design="linho"] .adm h2,:root[data-design="linho"] .adm h3{font-family:var(--f-head)}
+:root[data-design="linho"] .kv{font-family:var(--f-num);font-size:var(--kv)}
+:root[data-design="linho"] .tbl th,:root[data-design="linho"] .tbl td{padding:var(--row) 8px}
+:root[data-design="linho"] .panel,:root[data-design="linho"] .kpi,:root[data-design="linho"] .res{border-radius:var(--rad)}
+:root[data-design="linho"] .panel .pnh{background:var(--a-head,transparent);color:var(--a-head-ink,inherit)}
+:root[data-design="linho"] .panel .pnh h2{color:inherit}
+:root[data-design="linho"] .panel .pnh a{color:inherit;text-decoration:underline}
+:root[data-design="linho"] .adm-side a:focus-visible{outline-color:var(--a-side-ink)}
+:root[data-design="linho"] .adm :focus-visible{outline:3px solid var(--a-ink);outline-offset:2px}
+:root[data-design="linho"] .adm-side a[aria-current]{color:var(--a-side-ink)}
+:root[data-design="linho"] .adm-who{border-top-color:var(--a-side-lab);color:var(--a-side-lab)}
+@media (max-width:900px){:root[data-design="linho"] .adm-side{border-right:0}:root[data-design="linho"] .adm-side a{border-radius:0;margin:0}}
+@media (max-width:900px){:root[data-design="linho"] .adm{grid-template-columns:minmax(0,1fr)}:root[data-design="linho"] .adm-main{padding:14px 16px 28px}:root[data-design="linho"] .adm-title h1{font-size:1.9rem}:root[data-design="linho"] .adm-side a{padding:10px 12px}}
+@media (max-width:1200px){:root[data-design="linho"] .kpis.k8,:root[data-design="linho"] .kpis.k9{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:640px){:root[data-design="linho"] .kpis,:root[data-design="linho"] .kpis.k8,:root[data-design="linho"] .kpis.k9{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}}
+/* Round 5 build: the 8- and 9-tile rows are narrow above 1200 px; a smaller figure keeps each number on one line, inside its tile. */
+@media (min-width:1201px){:root[data-design="linho"] .kpis.k8 .kv,:root[data-design="linho"] .kpis.k9 .kv{font-size:1.15rem}}

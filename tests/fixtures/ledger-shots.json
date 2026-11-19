@@ -1,0 +1,81 @@
+{
+ "about": "SHA-256 of full-page PNG screenshots of the default admin (Ledger), 52 views; compared only on the same Chromium and platform.",
+ "chromium": "157.0.8103.78",
+ "platform": "linux-x64",
+ "history": [
+  {
+   "at": "2026-11-19T05:32Z",
+   "reason": "Baseline before any round 5 change, on commit db9d993 (PROPOSAL.md 2.9 step 1)"
+  },
+  {
+   "at": "2026-11-19T05:35Z",
+   "reason": "Answer 6, step 1 (team/rounds/5.md, about 08:40 UTC): the needs-action colour (urgent count pill and warn tile edge) moves from #B4530F (pill) and --a-warn (edge) to the ink, #1B232C light and #E9EDF1 dark, with the surface colour as the pill text: #B4530F was 1.01:1 from the allow edge"
+  },
+  {
+   "at": "2026-11-19T05:36Z",
+   "reason": "Answer 6, step 2 (team/rounds/5.md, about 08:40 UTC): the dark-mode danger button text moves from #B42318 (2.41:1 on the dark surface #1C232B) to #FBE1DE (12.78:1); its border keeps the deny red; light mode unchanged"
+  },
+  {
+   "at": "2026-11-19T05:39Z",
+   "reason": "Step 3, the 12 px floor (PROPOSAL.md 4.1; answer 7): sizes change on purpose (admin labels, pills, chips, occupancy headers and bars, chart labels sized to the drawing, .k and .d chips 12 px site-wide); the colour fixture showed zero differences before this re-recording of the screenshots"
+  },
+  {
+   "at": "2026-11-19T05:53Z",
+   "reason": "step 4: the Design chooser in the admin title row (12 new elements in every view: the wrapper, its paragraph, label, select with six options, link and note); with those removed in the page, all 52 views equal the previous recording, so per-home check-out times and the pins change no Ledger colour"
+  }
+ ],
+ "views": {
+  "today|390-light": "6c8b98857a04a55d527056b64106f5f954f6ef4b",
+  "bookings|390-light": "c733ce1cfe148d25cd9bf61676d9ab196bfe0cdc",
+  "calendar|390-light": "064fc6a64fdf322434c73fb81e780ea1a2725e2f",
+  "cleaning|390-light": "a175bfe6c7321ef125d13923a25ab0bb08efc38f",
+  "stock|390-light": "c44d26d0188263f75dcd0b8d5c0d3697158e6333",
+  "issues|390-light": "102ae4a3273c1caff81f734aaca49d96e245d0bc",
+  "messages|390-light": "3cb1c9fcb7a4e477f262594818789b91ec194ded",
+  "reviews|390-light": "c851672e3df74a880dd1c3adbec28fa443d3c513",
+  "rates|390-light": "13494f75b9b294fab7fd2554bdcef797b0d61d95",
+  "money|390-light": "d8a76f0811be25e73254bbe4341eb1687ea8be5a",
+  "legality|390-light": "e74351da903fe5f164e32834d1203063cf90b70f",
+  "integrations|390-light": "64064499ef065f30fe070223f7bcb53ece04a430",
+  "policies|390-light": "587427264eb6db1c2582e5a97a8082d6b4121c51",
+  "today|390-dark": "bfdb79edc624c07a4804b774d3032e773d5eb915",
+  "bookings|390-dark": "2cbd3844007a36fde1e0fbc7ed00e63e713192fb",
+  "calendar|390-dark": "a847f6053e7e82e05f0ec0ecf07587363e969cc1",
+  "cleaning|390-dark": "7e13ec9b69421f80ee9a2c4f3fc0cfc7a967a8ba",
+  "stock|390-dark": "623477c7abcfcdeaf9a100ca3adcdf909f54db1f",
+  "issues|390-dark": "0ace67e3e15264657035c9d2dabbc1f6eb25baee",
+  "messages|390-dark": "1b01a0ad90cd2581abfb83a5df7313003900b409",
+  "reviews|390-dark": "15521de2809a7cf38b6faa9ebf321c87a8c72d5b",
+  "rates|390-dark": "5aac058c429e0b5cfa4204a1c7dd7bea2bba6448",
+  "money|390-dark": "afa8edbf931533c612787017477c12f8f579ce37",
+  "legality|390-dark": "09ddad593238fdf2f5ad350e209221e6671c8011",
+  "integrations|390-dark": "5c697b9a9156d0b1ea642eb045162a2b4493a96d",
+  "policies|390-dark": "d477fd6ed883960cae49fe7cc4342e530621a59b",
+  "today|1366-light": "34f479a338820816dc7019a755d2d7e1219e066f",
+  "bookings|1366-light": "8b82d6d97f4654cf46e5419fdc5632b914672f62",
+  "calendar|1366-light": "71f773d460a8e1f23e3263eee933c0af5f8424a6",
+  "cleaning|1366-light": "3ac693592665b4e482050134abe908394e221043",
+  "stock|1366-light": "673c7b586e37f1fb79b32ba3c81daf0c6d240c45",
+  "issues|1366-light": "9f0789c3ce0f39ec46cbec271b26eddc3bdfa367",
+  "messages|1366-light": "6f6716055c86bdbcf126efa4778d638fff193840",
+  "reviews|1366-light": "84a34c2412e257beec64815d85844a204e1065fc",
+  "rates|1366-light": "5cdd1ad50f9b8749c3c914a7a72f2c658fc676c6",
+  "money|1366-light": "e34813ea66e99f20dd83ed2c44ae69dc2aedb60f",
+  "legality|1366-light": "8be7a44b551154f049011cb320db5a896f2a9965",
+  "integrations|1366-light": "a95d8a57b0767830181a3f35d9adc7e0d22ac631",
+  "policies|1366-light": "c341814ffc44a4a40c1f36f7818a64567208d824",
+  "today|1366-dark": "04045efd423484f449eebbddc698af06388685f8",
+  "bookings|1366-dark": "1bb435143953702c29102bbc847b9ff9efa234c4",
+  "calendar|1366-dark": "707b8a41be490f95b41f0fe75bef563e0ca4ea00",
+  "cleaning|1366-dark": "ab475b13d91d78650ad0ad01406cc21ccc183211",
+  "stock|1366-dark": "3be85c95d7b74ebf0eee5c2dfff21d865c3df161",
+  "issues|1366-dark": "c3f2c87d4c48c9d89b128eeab3dc74c09ec8f280",
+  "messages|1366-dark": "21f46b5e53f6dd6c645f337c5c341ea2f4b71de4",
+  "reviews|1366-dark": "efb153b204bbe808a4d61a13850e13fd2b7b421a",
+  "rates|1366-dark": "570bc1920ea8e087e815356bd0f6fa44d9179dde",
+  "money|1366-dark": "8420fd194f33815ff1969770ed086353466793dd",
+  "legality|1366-dark": "6da12155182db188525967b7b147cd7cbf02e15d",
+  "integrations|1366-dark": "65d79a99a5df8ea2e6f96f211e2e4e70e94e5073",
+  "policies|1366-dark": "1c3c4ce09fb13ce68acf0da26adfe26a011b69f0"
+ }
+}
