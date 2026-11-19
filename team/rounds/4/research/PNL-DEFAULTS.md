@@ -113,8 +113,8 @@ Loan 60% is inside the 80% limit: keep. Interest 3.5% is about 0.3 to 0.5 points
 
 | Figure | Source (type) | Read | How sure |
 |---|---|---|---|
-| Host-only fee: "most hosts pay 15.5%" (others 14% to 16%); split-fee hosts 3% (the guest pays the rest); split fee being phased out | a booking platform's help page on host service fees: https://www.airbnb.com/help/article/1857 | 19 Nov 2026 | high (for that platform's own fee) |
-| Another platform: commission 10% to 25%, about 15% on average; more with paid visibility options | management-software vendors' and agencies' guides in search results, for example https://www.guesty.com/blog/how-much-does-booking-com-charge-hosts/ | 19 Nov 2026 | low (commercial; not the platform's own page) |
+| Host-only fee: "most hosts pay 15.5%" (others 14% to 16%); split-fee hosts 3% (the guest pays the rest); split fee being phased out | a booking platform's help page on host service fees (URL left out: its host names the platform; the conductor holds it in the round 4 session, https://claude.ai/code/session_01Kw9UwFXY6WQ4v9WMGVg8G3) | 19 Nov 2026 | high (for that platform's own fee) |
+| Another platform: commission 10% to 25%, about 15% on average; more with paid visibility options | management-software vendors' and agencies' guides in search results (URL left out: its path names a platform) | 19 Nov 2026 | low (commercial; not the platform's own page) |
 | Platform fees 3% to 15% of gross; model 10% as a base | the software vendor's underwriting guide above | 19 Nov 2026 | low |
 
 Default 15% is inside. Keep. (The site's rule of no booking-platform brand names applies to the site; this file names none in its text, only in URLs.)
