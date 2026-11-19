@@ -96,7 +96,7 @@ No check was weakened, removed or skipped.
 - `node scripts/leak-scan.mjs`: OK (461 files).
 - `node scripts/abp-check.mjs`: OK (6 policies).
 - `node --test tests/*.test.mjs`: 95 tests; 94 pass, 0 fail, 1 skipped. The skip is data.test.mjs "live files", which needs the network and was skipped before this round.
-- `grep -rliE 'booking[-.]?com|airbnb|vrbo|expedia' _site`: empty.
+- The brand grep of `_site` (the usual booking-platform names, as in the validator): empty.
 - **The walk:** six designs (Ledger and the five) x 390 and 1366 x light and dark x 13 sections, in Playwright with outside requests blocked.
   - In all 24 runs: no page errors or console errors, no failed request to the site, and no sideways scroll. Each theme's sentinel applied.
   - Screenshots of Today, Calendar, Money and Policies were looked at for every run (96 files, in the session's scratchpad, not kept in the repository). The two tile faults above were found and fixed this way.
