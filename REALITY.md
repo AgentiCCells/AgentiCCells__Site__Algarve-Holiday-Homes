@@ -12,9 +12,9 @@ Kept by conductor.algarve-holiday-homes@AgentiCCells.dinis. A thing not written 
 - What the visitor sees: the made-up company Cinco Chaminés and five invented homes (Tavira, Faro, near Loulé, Lagos, Sagres) with labelled AI-generated pictures; simulated availability; a booking flow that keeps and sends nothing and ends "This is a demonstration: nothing was booked, nothing was sent, nothing was charged"; a stay panel with IPMA's forecast, warnings, sea and UV and events-pt events read live from data.promptugal.news with source, read time and terms; a scripted agent (simulation); 14 public cameras linked out (also `/data/cameras.json`); five designs under `/d/`; Use the data; Use with AI; behind the scenes; a share card per page.
 - Deploys: a push to `dev` runs `.github/workflows/pages.yml`; CI tags v0.1.N.
 
-## Not live
+## Not live yet
 
-- Round 3 (the modes: `/admin/`, `/stay/`, `/play/`, `/world/`, `/agents/`, the simulation core in the visitor's localStorage) is on branch `round-3`, rebased on dev on 2026-11-19. Reviewed 2026-11-18 "do not release yet" (team/rounds/3/review/BUILD.md); fixes in progress.
+- Round 3 (the modes: `/admin/`, `/stay/`, `/play/`, `/world/`, `/agents/`, the simulation core in the visitor's localStorage) passed the re-check on 2026-11-19 (team/rounds/3/review/RECHECK.md) and is being released from branch `round-3`. This section is updated with the live version once CI tags it.
 
 ## Team
 
