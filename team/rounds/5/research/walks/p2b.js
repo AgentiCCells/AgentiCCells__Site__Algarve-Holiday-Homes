@@ -1,0 +1,36 @@
+const { start } = require('./lib');
+(async () => {
+  const { browser, page, step, shot, text, B, log } = await start(390, 844);
+  await page.goto(B + '/?from=2026-12-12&to=2026-12-19&guests=2', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(2500);
+  const t = await text(); const a = t.indexOf('For Sat 12 Dec');
+  step('RESULTS: ' + t.slice(a, a + 1800).replace(/\n+/g, ' / '));
+  // Free home
+  await page.goto(B + '/homes/lagoon/?from=2026-12-12&to=2026-12-19', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(2500);
+  let h = await text(); let k = h.indexOf('Sat 12 Dec to Sat 19 Dec:');
+  step('LAGOON SUMMARY: ' + h.slice(k, k + 300).replace(/\n+/g, ' / '));
+  await page.getByRole('button', { name: 'Next: guests' }).click(); await page.waitForTimeout(500);
+  const t2 = await text(); k = t2.indexOf('Step 2 of 5'); step('STEP2: ' + t2.slice(k, k + 400).replace(/\n+/g, ' / '));
+  await page.getByRole('button', { name: 'One adult more' }).click().catch(e=>step('adult+ '+e.message));
+  await page.getByRole('button', { name: 'Next: details' }).click(); await page.waitForTimeout(500);
+  await page.getByLabel(/A name for the booking/).fill('Sam');
+  await page.getByRole('button', { name: 'Next: review' }).click(); await page.waitForTimeout(800);
+  const r = await text(); k = r.indexOf('Step 4 of 5');
+  step('REVIEW: ' + r.slice(k, k + 1100).replace(/\n+/g, ' / '));
+  await shot('p2-guest-review-price');
+  await page.getByRole('button', { name: /Book \(pretend\)/ }).click(); await page.waitForTimeout(800);
+  const p = await text(); k = p.indexOf('Step 5 of 5');
+  step('PAY: ' + p.slice(k, k + 700).replace(/\n+/g, ' / '));
+  await page.getByRole('button', { name: 'Pay (pretend)' }).click(); await page.waitForTimeout(800);
+  const f = await text(); k = f.indexOf('Booked (pretend)');
+  step('FINAL: ' + f.slice(k, k + 500).replace(/\n+/g, ' / '));
+  await shot('p2-guest-final');
+  await page.getByRole('link', { name: 'Go to your stay' }).click();
+  await page.waitForLoadState('networkidle'); await page.waitForTimeout(3000);
+  const s = await text(); k = s.indexOf('Made-up example: the guest');
+  step('STAY: ' + s.slice(k, k + 5000).replace(/\n+/g, ' / '));
+  await shot('p2-guest-stay');
+  require('fs').writeFileSync('out/p2b.log', log.join('\n'));
+  await browser.close();
+})();
